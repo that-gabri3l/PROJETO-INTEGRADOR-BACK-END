@@ -8,22 +8,65 @@
     
     <style>
         :root {
-            --background: #F2EDE5;
-            --foreground: #1A1714;
-            --card: #FAF8F4;
-            --card-foreground: #1A1714;
-            --primary: #1B3557;
-            --primary-foreground: #F2EDE5;
-            --secondary: #E8E0D4;
-            --secondary-foreground: #1A1714;
-            --muted: #DDD7CE;
-            --muted-foreground: #6B6358;
-            --accent: #B54A1C;
-            --accent-foreground: #FAF8F4;
-            --border: #C9C2B4;
-            --ring: #1B3557;
-            --radius: 2px;
-        }
+    --background: #FFFFFF;
+    --foreground: #000000;
+    --card: #FAFAFA;
+    --primary: #000000;
+    --secondary: #F4F4F5;
+    --muted: #F4F4F5;
+    --muted-foreground: #71717A;
+    --accent: #2563EB;
+    --border: #E4E4E7;
+    --radius: 4px;
+}
+
+/* Modo Escuro (Inversão Elegante) */
+/* Modo Escuro (Padrão Apple iOS/macOS) */
+[data-theme="dark"] {
+    --background: #000000;       /* Fundo preto absoluto */
+    --foreground: #F5F5F7;       /* Texto off-white para leitura confortável */
+    --card: #1C1C1E;             /* Cinza escuro para destacar as caixas do fundo */
+    --primary: #0A84FF;          /* Azul vibrante para botões principais */
+    --secondary: #2C2C2E;        /* Fundos secundários (hovers) */
+    --muted: #2C2C2E;
+    --muted-foreground: #98989D; /* Cinza claro correto para textos secundários */
+    --accent: #30D158;           /* Verde vivo para alertas e links */
+    --border: #38383A;           /* Bordas suaves */
+}
+
+/* Correção automática de contraste para os botões no Modo Escuro */
+[data-theme="dark"] .btn-primary,
+[data-theme="dark"] .nav-btn,
+[data-theme="dark"] .candidate-side .btn-action {
+    background-color: var(--primary) !important;
+    color: #FFFFFF !important; 
+}
+
+[data-theme="dark"] .company-side .btn-action {
+    background-color: var(--accent) !important;
+    color: #000000 !important; 
+}
+
+/* Correção do hover na tela de escolha de cadastro */
+[data-theme="dark"] .candidate-side:hover,
+[data-theme="dark"] .company-side:hover {
+    background-color: var(--secondary) !important;
+}
+
+/* Estilo do botão de trocar tema */
+.theme-toggle {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    margin-left: 16px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+.theme-toggle:hover {
+    background-color: var(--secondary);
+}
 
         * { box-sizing: border-box; }
 
@@ -197,6 +240,7 @@
 
     <nav class="navbar">
         <a href="index.html" class="navbar-logo">JobBoard.</a>
+        <button id="theme-toggle" class="theme-toggle" title="Mudar tema">🌗</button>
     </nav>
 
     <main class="container">
@@ -314,6 +358,26 @@
 
         </form>
     </main>
+    <script>
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const htmlElement = document.documentElement;
+
+    // Verifica se o usuário já tinha escolhido o tema escuro antes
+    if (localStorage.getItem('theme') === 'dark') {
+        htmlElement.setAttribute('data-theme', 'dark');
+    }
+
+    // Função do clique
+    themeToggleBtn.addEventListener('click', () => {
+        if (htmlElement.getAttribute('data-theme') === 'dark') {
+            htmlElement.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'light');
+        } else {
+            htmlElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        }
+    });
+</script>
 
 </body>
 </html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+ <style>
+    /* Reset básico e layout padrão */
+* {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+}
+body {
+ font-family: Arial, sans-serif;
+}
+.navbar {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ background-color: #1a1a1a;
+ padding: 15px 20px;
+ color: white;
+}
+.navbar-logo {
+font-family: 'Fraunces', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+}
+.navbar-links {
+ display: flex;
+ list-style: none;
+ gap: 20px;
+}
+.menu a {
+  color: var(--foreground);
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+}
+.menu a:hover {
+ color: #00bcd4;
+}
+/* Esconde o checkbox e o botão hambúrguer no Desktop */
+.menu-toggle,
+.hamburger {
+ display: none;
+}
+/* Layout Responsivo (Mobile) */
+@media (max-width: 768px) {
+ /* Exibe o ícone hambúrguer */
+ .hamburger {
+ display: flex;
+ flex-direction: column;
+ justify-content: space-between;
+ width: 30px;
+ height: 21px;
+ cursor: pointer;
+ }
+ /* Cria os três riscos do hambúrguer */
+ .hamburger .bar {
+ height: 3px;
+ width: 100%;
+ background-color: white;
+ border-radius: 3px;
+ transition: all 0.3s ease;
+ }
+ /* Esconde a lista de links no mobile por padrão */
+ .navbar-links {
+ position: absolute;
+ top: 60px;
+ left: 0;
+ width: 100%;
+ background-color: #1a1a1a;
+ flex-direction: column;
+ align-items: center;
+ gap: 0;
+ max-height: 0;
+ overflow: hidden;
+ transition: max-height 0.3s ease-out;
+ }
+ .menu li {
+ width: 100%;
+ text-align: center;
+ }
+ .menu a {
+ display: block;
+ padding: 15px 0;
+ }
+ /* QUANDO O CHECKBOX ESTIVER MARCADO: exibe o menu */
+ .menu-toggle:checked ~ .menu {
+ max-height: 300px; /* Ajuste se tiver mais links */
+ }
+ /* Efeito opcional: Transforma o hambúrguer em um "X" */
+ .menu-toggle:checked ~ .hamburger .bar:nth-child(1) {
+ transform: translateY(9px) rotate(45deg);
+ }
+ .menu-toggle:checked ~ .hamburger .bar:nth-child(2) {
+ opacity: 0;
+ }
+ .menu-toggle:checked ~ .hamburger .bar:nth-child(3) {
+ transform: translateY(-9px) rotate(-45deg);
+ }
+}
+
+ </style>
+</head>
+
+<body>
+
+
+    <nav class="navbar">
+<a href="index.html" class="navbar-logo">
+            <!-- Imagem para o Modo Claro -->
+            <img src="logo-claro-infodin.png" alt="Logo do site" class="logo-light"
+                style="height:40px; width: auto; object-fit: contain;">
+
+            <!-- Imagem para o Modo Escuro -->
+            <img src="logo-infodin.png" alt="Logo do site" class="logo-dark"
+                style="height: 40px; width: auto; object-fit: contain;">
+        </a>
+ <!-- Checkbox invisível que controla o menu -->
+ <input type="checkbox" id="menu-toggle" class="menu-toggle">
+ <!-- Ícone do Hambúrguer (associado ao checkbox) -->
+ <label for="menu-toggle" class="hamburger">
+ <span class="bar"></span>
+ <span class="bar"></span>
+ <span class="bar"></span>
+ </label>
+ <!-- Lista de links -->
+ 
+ <ul class="navbar-links">
+            <li><a href="vagas.html" class="nav-link">Buscar Vagas</a></li>
+         <li><a href="cadastro-empresa.html" class="nav-link">Para Empresas</a></li>
+         <li><a href="escolha-cadastro.html" class="nav-link">Cadastrar</a></li>
+         <li><a href="painel-empresa.html" class="nav-btn">Entrar</a></li>
+         <button id="theme-toggle" class="theme-toggle" title="Mudar tema">🌗</button>
+        </ul>
+</nav>
+
+
+</body>
+</html>

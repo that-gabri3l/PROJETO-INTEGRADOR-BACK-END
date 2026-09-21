@@ -54,6 +54,14 @@
     background-color: var(--secondary) !important;
 }
 
+/* Controle das Logos (Claro/Escuro) */
+.logo-dark { display: none; } /* Esconde a logo escura por padrão */
+.logo-light { display: block; } /* Mostra a logo clara por padrão */
+
+/* Quando o Modo Escuro for ativado: inverte a lógica */
+[data-theme="dark"] .logo-light { display: none !important; }
+[data-theme="dark"] .logo-dark { display: block !important; }
+
 /* Estilo do botão de trocar tema */
 .theme-toggle {
     background: none;
@@ -375,8 +383,12 @@
 
     <nav class="navbar">
         <a href="index.html" class="navbar-logo">
-            Vagas<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent);">.BR</span>
-        </a>
+    <!-- Imagem para o Modo Claro -->
+    <img src="logo-claro-infodin.png" alt="Logo do site" class="logo-light" style="height: 50px; width: auto; object-fit: contain;">
+    
+    <!-- Imagem para o Modo Escuro -->
+    <img src="logo-infodin.png" alt="Logo do site" class="logo-dark" style="height: 40px; width: auto; object-fit: contain;">
+</a>
         <div class="navbar-links">
             <a href="vagas.html" class="nav-link">Buscar Vagas</a>
             <a href="cadastro-empresa.html" class="nav-link">Para Empresas</a>

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Candidato - JobBoard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --background: #F2EDE5;
+            --foreground: #1A1714;
+            --card: #FAF8F4;
+            --primary: #1B3557;
+            --secondary: #E8E0D4;
+            --muted: #DDD7CE;
+            --muted-foreground: #6B6358;
+            --accent: #B54A1C;
+            --border: #C9C2B4;
+            --radius: 2px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-logo {
+            font-family: 'Fraunces', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Header do Dashboard */
+        .dashboard-header {
+            background-color: var(--primary);
+            padding: 32px 24px 40px;
+            border-bottom: 3px solid var(--accent);
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .avatar-large {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 3px solid rgba(242,237,229,0.2);
+            font-family: 'Fraunces', serif;
+            font-size: 26px;
+            font-weight: 600;
+            color: #FAF8F4;
+        }
+        .header-info {
+            flex: 1;
+        }
+        .eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 4px;
+        }
+        .user-name {
+            font-family: 'Fraunces', serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: #F2EDE5;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+        .user-meta {
+            font-size: 14px;
+            color: rgba(242,237,229,0.65);
+            margin-top: 2px;
+        }
+        .profile-progress {
+            background-color: rgba(242,237,229,0.08);
+            border: 1px solid rgba(242,237,229,0.15);
+            padding: 16px 24px;
+            border-radius: 2px;
+            min-width: 180px;
+        }
+        .progress-title {
+            color: rgba(242,237,229,0.6);
+            margin-bottom: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .progress-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .progress-track {
+            flex: 1;
+            height: 6px;
+            background-color: rgba(242,237,229,0.15);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            width: 72%;
+            height: 100%;
+            background-color: var(--accent);
+            border-radius: 3px;
+        }
+        .progress-percentage {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: #F2EDE5;
+        }
+
+        /* Layout Principal */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background-color: var(--border);
+            border: 1px solid var(--border);
+            margin-bottom: 36px;
+        }
+        .kpi-card {
+            background-color: var(--card);
+            padding: 20px 24px;
+        }
+        .kpi-value {
+            font-family: 'Fraunces', serif;
+            font-size: 30px;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+            line-height: 1;
+        }
+        .kpi-label {
+            font-size: 12px;
+            color: var(--muted-foreground);
+            margin-top: 6px;
+        }
+
+        /* Grid de Conteúdo Secundário (Duas Colunas) */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        /* Cabeçalhos de Sessão */
+        .section-header {
+            margin-bottom: 14px;
+        }
+        .section-eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted-foreground);
+            display: block;
+        }
+        .section-title {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 600;
+            margin: 4px 0 0;
+            letter-spacing: -0.3px;
+        }
+
+        /* Listas de Itens (Candidaturas e Vagas Salvas) */
+        .list-container {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        .list-item {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: background-color 0.1s;
+        }
+        .list-item:first-child { border-top: none; }
+        .list-item:hover { background-color: var(--secondary); }
+        
+        .company-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-family: 'Fraunces', serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #FAF8F4;
+        }
+        .item-details { flex: 1; min-width: 0; }
+        .item-title {
+            font-weight: 500;
+            font-size: 13px;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .item-meta {
+            font-size: 12px;
+            color: var(--muted-foreground);
+        }
+
+        /* Checklist do Perfil */
+        .checklist-item {
+            padding: 12px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .checklist-item:first-child { border-top: none; }
+        .checklist-item.done { opacity: 0.5; }
+        .checklist-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .checklist-pending .checklist-circle {
+            background-color: var(--muted);
+            border: 2px solid var(--border);
+        }
+        .checklist-done .checklist-circle {
+            background-color: #ECFDF5;
+            border: 2px solid #10B981;
+        }
+        .check-mark { font-size: 10px; color: #10B981; }
+        .checklist-label { flex: 1; font-size: 13px; }
+        .checklist-done .checklist-label { text-decoration: line-through; }
+        .checklist-points {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .checklist-pending .checklist-points { color: var(--accent); }
+        .checklist-done .checklist-points { color: var(--muted-foreground); }
+
+        /* Vagas Recomendadas */
+        .rec-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        .rec-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            padding: 20px;
+            cursor: pointer;
+            transition: border-color 0.15s;
+        }
+        .rec-card:hover { border-color: var(--primary); }
+
+        /* Badges de Status */
+        .badge {
+            display: inline-block;
+            padding: 3px 9px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 2px;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .badge-yellow { background-color: #FEF9C3; color: #854D0E; }
+        .badge-green { background-color: #ECFDF5; color: #065F46; }
+        .badge-blue { background-color: #EFF6FF; color: #1D4ED8; }
+        .badge-gray { background-color: #F3F4F6; color: #6B7280; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="navbar-logo">JobBoard.</a>
+    </nav>
+
+    <!-- Header do Painel -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="avatar-large">M</div>
+            <div class="header-info">
+                <span class="eyebrow">Perfil do candidato</span>
+                <h1 class="user-name">Maria Silva</h1>
+                <div class="user-meta">Desenvolvedora Frontend · São Paulo, SP</div>
+            </div>
+            <div class="profile-progress">
+                <div class="progress-title">Perfil completo</div>
+                <div class="progress-bar-container">
+                    <div class="progress-track">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <span class="progress-percentage">72%</span>
+                </div>
+                <div style="font-size: 11px; color: rgba(242,237,229,0.5); margin-top: 6px;">Adicione currículo para completar</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-value">4</div>
+                <div class="kpi-label">Candidaturas enviadas</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">1</div>
+                <div class="kpi-label">Entrevista agendada</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">2</div>
+                <div class="kpi-label">Vagas salvas</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">87</div>
+                <div class="kpi-label">Perfil visualizado (dias 30)</div>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            
+            <!-- Minhas Candidaturas -->
+            <div>
+                <div class="section-header">
+                    <span class="section-eyebrow">§ 01</span>
+                    <h2 class="section-title">Minhas candidaturas</h2>
+                </div>
+                <div class="list-container">
+                    <div class="list-item">
+                        <div class="company-logo" style="background-color: #6B21A8;">N</div>
+                        <div class="item-details">
+                            <div class="item-title">Engenheira de Software Sênior</div>
+                            <div class="item-meta">Nubank · 14/09/2025</div>
+                        </div>
+                        <span class="badge badge-yellow">Em análise</span>
+                    </div>
+                    
+                    <div class="list-item">
+                        <div class="company-logo" style="background-color: #15803D;">S</div>
+                        <div class="item-details">
+                            <div class="item-title">Designer de Produto</div>
+                            <div class="item-meta">Stone · 10/09/2025</div>
+                        </div>
+                        <span class="badge badge-green">Entrevista agendada</span>
+                    </div>
+                    
+                    <div class="list-item">
+                        <div class="company-logo" style="background-color: #1B3557;">H</div>
+                        <div class="item-details">
+                            <div class="item-title">Desenvolvedora Frontend</div>
+                            <div class="item-meta">Hotmart · 06/09/2025</div>
+                        </div>
+                        <span class="badge badge-blue">Aguardando resposta</span>
+                    </div>
+                    
+                    <div class="list-item">
+                        <div class="company-logo" style="background-color: #8B6914;">R</div>
+                        <div class="item-details">
+                            <div class="item-title">Analista de Marketing Digital</div>
+                            <div class="item-meta">RD Station · 01/09/2025</div>
+                        </div>
+                        <span class="badge badge-gray">Encerrada</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coluna da Direita (Vagas Salvas e Checklist) -->
+            <div style="display: flex; flex-direction: column; gap: 28px;">
+                
+                <!-- Vagas Salvas -->
+                <div>
+                    <div class="section-header">
+                        <span class="section-eyebrow">§ 02</span>
+                        <h2 class="section-title">Vagas salvas</h2>
+                    </div>
+                    <div class="list-container">
+                        <div class="list-item">
+                            <div class="item-details">
+                                <div class="item-title">Cientista de Dados</div>
+                                <div class="item-meta">iFood · Campinas, SP · Híbrido</div>
+                                <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">R$ 14k – 20k</div>
+                            </div>
+                            <span style="font-size: 14px; color: var(--muted-foreground);">→</span>
+                        </div>
+                        
+                        <div class="list-item">
+                            <div class="item-details">
+                                <div class="item-title">Tech Lead</div>
+                                <div class="item-meta">Totvs · São Paulo, SP · Presencial</div>
+                                <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">R$ 20k – 28k</div>
+                            </div>
+                            <span style="font-size: 14px; color: var(--muted-foreground);">→</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Complete seu perfil -->
+                <div>
+                    <div class="section-header">
+                        <span class="section-eyebrow">§ 03</span>
+                        <h2 class="section-title">Complete seu perfil</h2>
+                    </div>
+                    <div class="list-container">
+                        <div class="checklist-item checklist-pending">
+                            <div class="checklist-circle"></div>
+                            <span class="checklist-label">Adicionar currículo</span>
+                            <span class="checklist-points">+15%</span>
+                        </div>
+                        <div class="checklist-item checklist-done">
+                            <div class="checklist-circle"><span class="check-mark">✓</span></div>
+                            <span class="checklist-label">Confirmar e-mail</span>
+                            <span class="checklist-points">+10%</span>
+                        </div>
+                        <div class="checklist-item checklist-pending">
+                            <div class="checklist-circle"></div>
+                            <span class="checklist-label">Adicionar foto</span>
+                            <span class="checklist-points">+8%</span>
+                        </div>
+                        <div class="checklist-item checklist-done">
+                            <div class="checklist-circle"><span class="check-mark">✓</span></div>
+                            <span class="checklist-label">Preencher "Sobre mim"</span>
+                            <span class="checklist-points">+12%</span>
+                        </div>
+                        <div class="checklist-item checklist-pending">
+                            <div class="checklist-circle"></div>
+                            <span class="checklist-label">Adicionar LinkedIn</span>
+                            <span class="checklist-points">+5%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vagas Recomendadas -->
+        <div style="margin-top: 36px;">
+            <div class="section-header">
+                <span class="section-eyebrow">§ 04</span>
+                <h2 class="section-title">Vagas recomendadas para você</h2>
+            </div>
+            
+            <div class="rec-grid">
+                <!-- Vaga Recomendada 1 -->
+                <div class="rec-card">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 2px;">Desenvolvedor Full Stack</div>
+                            <div style="font-size: 12px; color: var(--muted-foreground);">Acme Corp</div>
+                        </div>
+                        <div class="company-logo" style="background-color: var(--primary);">A</div>
+                    </div>
+                    <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px;">São Paulo, SP · Híbrido</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 13px; font-weight: 600; color: var(--primary);">R$ 8.000</span>
+                        <span style="font-size: 12px; color: var(--accent); font-weight: 600;">Ver vaga →</span>
+                    </div>
+                </div>
+
+                <!-- Vaga Recomendada 2 -->
+                <div class="rec-card">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 2px;">Engenheiro de Dados</div>
+                            <div style="font-size: 12px; color: var(--muted-foreground);">Tech Start</div>
+                        </div>
+                        <div class="company-logo" style="background-color: var(--primary);">T</div>
+                    </div>
+                    <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px;">Remoto · Integral</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 13px; font-weight: 600; color: var(--primary);">R$ 11.500</span>
+                        <span style="font-size: 12px; color: var(--accent); font-weight: 600;">Ver vaga →</span>
+                    </div>
+                </div>
+
+                <!-- Vaga Recomendada 3 -->
+                <div class="rec-card">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 2px;">UX/UI Designer</div>
+                            <div style="font-size: 12px; color: var(--muted-foreground);">Creative Agency</div>
+                        </div>
+                        <div class="company-logo" style="background-color: var(--primary);">C</div>
+                    </div>
+                    <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px;">Rio de Janeiro, RJ · Presencial</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 13px; font-weight: 600; color: var(--primary);">R$ 6.200</span>
+                        <span style="font-size: 12px; color: var(--accent); font-weight: 600;">Ver vaga →</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

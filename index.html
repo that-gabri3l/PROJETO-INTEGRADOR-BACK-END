@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vagas.BR - Encontre a vaga certa para você</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Modo Claro (Vibe Apple Minimalista) */
+:root {
+    --background: #FFFFFF;
+    --foreground: #000000;
+    --card: #FAFAFA;
+    --primary: #000000;
+    --secondary: #F4F4F5;
+    --muted: #F4F4F5;
+    --muted-foreground: #71717A;
+    --accent: #2563EB;
+    --border: #E4E4E7;
+    --radius: 4px;
+}
+
+/* Modo Escuro (Inversão Elegante) */
+/* Modo Escuro (Padrão Apple iOS/macOS) */
+[data-theme="dark"] {
+    --background: #000000;       /* Fundo preto absoluto */
+    --foreground: #F5F5F7;       /* Texto off-white para leitura confortável */
+    --card: #1C1C1E;             /* Cinza escuro para destacar as caixas do fundo */
+    --primary: #0A84FF;          /* Azul vibrante para botões principais */
+    --secondary: #2C2C2E;        /* Fundos secundários (hovers) */
+    --muted: #2C2C2E;
+    --muted-foreground: #98989D; /* Cinza claro correto para textos secundários */
+    --accent: #30D158;           /* Verde vivo para alertas e links */
+    --border: #38383A;           /* Bordas suaves */
+}
+
+/* Correção automática de contraste para os botões no Modo Escuro */
+[data-theme="dark"] .btn-primary,
+[data-theme="dark"] .nav-btn,
+[data-theme="dark"] .candidate-side .btn-action {
+    background-color: var(--primary) !important;
+    color: #FFFFFF !important; 
+}
+
+[data-theme="dark"] .company-side .btn-action {
+    background-color: var(--accent) !important;
+    color: #000000 !important; 
+}
+
+/* Correção do hover na tela de escolha de cadastro */
+[data-theme="dark"] .candidate-side:hover,
+[data-theme="dark"] .company-side:hover {
+    background-color: var(--secondary) !important;
+}
+
+/* Estilo do botão de trocar tema */
+.theme-toggle {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    margin-left: 16px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+.theme-toggle:hover {
+    background-color: var(--secondary);
+}
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a { text-decoration: none; }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-logo {
+            font-family: 'Fraunces', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+        .navbar-links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        .nav-link {
+            color: var(--foreground);
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-link:hover { color: var(--accent); }
+        .nav-btn {
+            background-color: var(--primary);
+            color: #F2EDE5;
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+        .nav-btn:hover { opacity: 0.9; }
+
+        /* Hero Section */
+        .hero {
+            background-color: var(--primary);
+            padding: 72px 24px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-pattern {
+            position: absolute;
+            top: 0; right: 0;
+            width: 40%; height: 100%;
+            background-image: repeating-linear-gradient(-45deg, rgba(242,237,229,0.03) 0px, rgba(242,237,229,0.03) 1px, transparent 1px, transparent 20px);
+            pointer-events: none;
+        }
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .hero-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .hero-label-line { width: 28px; height: 1px; background-color: var(--accent); }
+        .hero-label-text {
+            font-family: 'JetBrains Mono', monospace; font-size: 11px;
+            letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 500;
+        }
+        .hero-title {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(36px, 5vw, 58px);
+            font-weight: 600; color: #ebe4d9;
+            margin: 0 0 20px; line-height: 1.12; letter-spacing: -1px;
+        }
+        .hero-title em { font-style: italic; font-weight: 300; }
+        .hero-desc {
+            font-size: 16px; color: rgba(242,237,229,0.7);
+            margin: 0 0 40px; line-height: 1.6; max-width: 480px;
+        }
+
+        /* Hero Search Bar */
+        .search-bar {
+            display: flex; background-color: #FAF8F4;
+            border-radius: 2px; overflow: hidden; max-width: 540px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        .search-bar input {
+            flex: 1; padding: 14px 18px; border: none; outline: none;
+            font-family: 'Work Sans', sans-serif; font-size: 14px;
+            background-color: transparent; color: var(--foreground);
+        }
+        .search-bar button {
+            padding: 14px 24px; background-color: var(--accent); color: #FAF8F4;
+            border: none; cursor: pointer; font-family: 'Work Sans', sans-serif;
+            font-size: 14px; font-weight: 600; white-space: nowrap; transition: opacity 0.15s;
+        }
+        .search-bar button:hover { opacity: 0.85; }
+
+        /* Stats Bar */
+        .stats-bar { background-color: #FAF8F4; border-bottom: 1px solid var(--border); }
+        .stats-grid {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            display: grid; grid-template-columns: repeat(4, 1fr);
+        }
+        .stat-item {
+            padding: 24px 0; text-align: center; border-right: 1px solid var(--border);
+        }
+        .stat-item:last-child { border-right: none; }
+        .stat-value {
+            font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600;
+            color: var(--primary); letter-spacing: -0.5px;
+        }
+        .stat-label { font-size: 12px; color: var(--muted-foreground); margin-top: 2px; }
+
+        /* General Section Styles */
+        .section-container { padding: 64px 24px; max-width: 1200px; margin: 0 auto; }
+        .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; }
+        .section-eyebrow {
+            font-family: 'JetBrains Mono', monospace; font-size: 10px;
+            letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted-foreground);
+            display: block;
+        }
+        .section-title {
+            font-family: 'Fraunces', serif; font-size: 30px; font-weight: 600;
+            margin: 6px 0 0; letter-spacing: -0.5px;
+        }
+
+        /* Area Filters */
+        .filter-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+        .filter-tag {
+            padding: 6px 12px; border: 1px solid var(--border); background-color: transparent;
+            color: var(--muted-foreground); font-family: 'Work Sans', sans-serif;
+            font-size: 12px; font-weight: 400; cursor: pointer; border-radius: var(--radius);
+            transition: all 0.15s;
+        }
+        .filter-tag.active, .filter-tag:hover {
+            border-color: var(--primary); background-color: var(--primary);
+            color: #F2EDE5; font-weight: 600;
+        }
+
+        /* Job Grid (Reused style) */
+        .job-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .job-card {
+            background-color: var(--card); border: 1px solid var(--border);
+            padding: 20px; cursor: pointer; transition: border-color 0.15s;
+        }
+        .job-card:hover { border-color: var(--primary); }
+        .btn-outline {
+            display: inline-block; padding: 12px 32px; border: 1px solid var(--primary);
+            background-color: transparent; color: var(--primary);
+            font-family: 'Work Sans', sans-serif; font-size: 14px; font-weight: 600;
+            cursor: pointer; border-radius: var(--radius); transition: all 0.15s; margin-top: 40px;
+        }
+        .btn-outline:hover { background-color: var(--primary); color: #F2EDE5; }
+
+        /* Companies Grid */
+        .companies-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+            background-color: var(--border); border: 1px solid var(--border);
+        }
+        .company-card {
+            background-color: var(--card); padding: 24px 28px; display: flex;
+            align-items: center; gap: 16px; transition: background-color 0.15s; cursor: pointer;
+        }
+        .company-card:hover { background-color: var(--secondary); }
+        .company-logo {
+            width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
+            border-radius: var(--radius); flex-shrink: 0;
+            font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; color: #FAF8F4;
+        }
+
+        /* How it Works Section */
+        .how-it-works { background-color: var(--primary); padding: 64px 24px; }
+        .how-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+        .step-col-title {
+            font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(242,237,229,0.5);
+            letter-spacing: 0.1em; margin-bottom: 20px; text-transform: uppercase;
+        }
+        .step-item { display: flex; gap: 20px; margin-bottom: 28px; }
+        .step-number {
+            font-family: 'Fraunces', serif; font-size: 32px; font-weight: 300;
+            color: var(--accent); line-height: 1; min-width: 36px;
+        }
+        .step-text h4 { font-weight: 600; font-size: 15px; color: #F2EDE5; margin: 0 0 4px; }
+        .step-text p { font-size: 13px; color: rgba(242,237,229,0.6); margin: 0; line-height: 1.5; }
+
+        /* Footer */
+        .footer {
+            border-top: 1px solid var(--border); padding: 32px 24px;
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 1200px; margin: 0 auto;
+        }
+        .footer-links { display: flex; gap: 24px; }
+        .footer-links a {
+            font-size: 12px; color: var(--muted-foreground); font-family: 'Work Sans', sans-serif;
+        }
+        .footer-links a:hover { color: var(--foreground); }
+
+        /* =========================================
+   RESPONSIVIDADE (MOBILE E TABLETS)
+   ========================================= */
+@media (max-width: 768px) {
+    /* 1. Ajuste da Barra de Navegação */
+    .navbar {
+        flex-direction: column;
+        gap: 16px;
+        padding: 16px;
+    }
+    .navbar-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 16px;
+    }
+
+    /* 2. Todos os Grids viram 1 única coluna no celular */
+    .split-layout,
+    .kpi-grid,
+    .tables-grid,
+    .job-grid,
+    .companies-grid,
+    .how-grid,
+    .grid-2,
+    .grid-2-cols,
+    .grid-3-cols,
+    .content-grid,
+    .rec-grid,
+    .stats-grid,
+    .detail-layout {
+        grid-template-columns: 1fr !important; /* Força a ficar em 1 coluna */
+        gap: 24px;
+    }
+
+    /* 3. Ajustes de Espaçamento e Paddings para telas pequenas */
+    .container, .section-container, .hero {
+        padding: 32px 16px !important;
+    }
+    .form-card, .split-card, .dashboard-header {
+        padding: 24px 16px !important;
+    }
+    .kpi-card, .company-card, .job-card {
+        padding: 16px !important;
+    }
+
+    /* 4. Ajustes nos Headers dos Painéis (Empresa e Candidato) */
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 16px;
+    }
+    .profile-progress, .btn-publish {
+        width: 100%;
+        text-align: center;
+        margin-top: 8px;
+    }
+
+    /* 5. Tabelas Responsivas (Permite arrastar para o lado) */
+    .table-container, .list-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    table {
+        min-width: 600px; /* Impede que o texto esprema, ativando a rolagem horizontal */
+    }
+
+    /* 6. Indicadores de passo do formulário */
+    .step-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .step-line {
+        width: 2px;
+        height: 20px;
+        margin: 0 0 0 13px !important;
+    }
+    .form-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+    .form-actions button {
+        width: 100%;
+        margin: 0 !important;
+    }
+}
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="navbar-logo">
+            Vagas<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent);">.BR</span>
+        </a>
+        <div class="navbar-links">
+            <a href="vagas.html" class="nav-link">Buscar Vagas</a>
+            <a href="cadastro-empresa.html" class="nav-link">Para Empresas</a>
+            <a href="escolha-cadastro.html" class="nav-link">Cadastrar</a>
+            <a href="painel-candidato.html" class="nav-btn">Entrar</a>
+            <button id="theme-toggle" class="theme-toggle" title="Mudar tema">🌗</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-pattern"></div>
+        <div class="hero-content">
+            <div style="max-width: 640px;">
+                <div class="hero-label">
+                    <div class="hero-label-line"></div>
+                    <span class="hero-label-text">Plataforma de empregos</span>
+                </div>
+                <h1 class="hero-title">Encontre a vaga<br><em>certa para você</em></h1>
+                <p class="hero-desc">Conectamos profissionais talentosos às melhores empresas do Brasil. Mais de 4.800 vagas em aberto em todas as áreas.</p>
+                
+                <!-- Aponte o action para a rota de busca no seu backend -->
+                <form class="search-bar" action="/vagas" method="GET">
+                    <input type="text" name="q" placeholder="Cargo, empresa ou palavra-chave...">
+                    <button type="submit">Buscar Vagas</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value">4.800+</div>
+                <div class="stat-label">Vagas ativas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">1.200+</div>
+                <div class="stat-label">Empresas cadastradas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">180 mil</div>
+                <div class="stat-label">Candidatos registrados</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">92%</div>
+                <div class="stat-label">Taxa de resposta</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Jobs -->
+    <section class="section-container">
+        <div class="section-header">
+            <div>
+                <span class="section-eyebrow">§ 01 — Destaques</span>
+                <h2 class="section-title">Vagas em destaque</h2>
+            </div>
+            <div class="filter-tags">
+                <button class="filter-tag active">Todos</button>
+                <button class="filter-tag">Tecnologia</button>
+                <button class="filter-tag">Design</button>
+                <button class="filter-tag">Marketing</button>
+                <button class="filter-tag">Dados</button>
+                <button class="filter-tag">Gestão</button>
+            </div>
+        </div>
+
+        <div class="job-grid">
+            <!-- Vaga 1 -->
+            <a href="detalhes-vaga.html" class="job-card" style="display: block; text-decoration: none; color: inherit;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                    <div>
+                        <div style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 2px;">Engenheiro de Software Sênior</div>
+                        <div style="font-size: 12px; color: var(--muted-foreground);">Nubank</div>
+                    </div>
+                    <div class="company-logo" style="width: 36px; height: 36px; font-size: 14px; background-color: #6B21A8;">N</div>
+                </div>
+                <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px;">São Paulo, SP · Híbrido</div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 13px; font-weight: 600; color: var(--primary);">R$ 15.000</span>
+                    <span style="font-size: 12px; color: var(--accent); font-weight: 600;">Ver vaga →</span>
+                </div>
+            </a>
+
+            <!-- Vaga 2 -->
+            <a href="detalhes-vaga.html" class="job-card" style="display: block; text-decoration: none; color: inherit;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                    <div>
+                        <div style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 2px;">Designer de Produto (UX/UI)</div>
+                        <div style="font-size: 12px; color: var(--muted-foreground);">Stone</div>
+                    </div>
+                    <div class="company-logo" style="width: 36px; height: 36px; font-size: 14px; background-color: #15803D;">S</div>
+                </div>
+                <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px;">Remoto · Integral</div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 13px; font-weight: 600; color: var(--primary);">R$ 9.500</span>
+                    <span style="font-size: 12px; color: var(--accent); font-weight: 600;">Ver vaga →</span>
+                </div>
+            </a>
+
+            <!-- Vaga 3 -->
+            <a href="detalhes-vaga.html" class="job-card" style="display: block; text-decoration: none; color: inherit;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                    <div>
+                        <div style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 2px;">Cientista de Dados</div>
+                        <div style="font-size: 12px; color: var(--muted-foreground);">iFood</div>
+                    </div>
+                    <div class="company-logo" style="width: 36px; height: 36px; font-size: 14px; background-color: #C2410C;">i</div>
+                </div>
+                <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px;">Campinas, SP · Híbrido</div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 13px; font-weight: 600; color: var(--primary);">R$ 14.000</span>
+                    <span style="font-size: 12px; color: var(--accent); font-weight: 600;">Ver vaga →</span>
+                </div>
+            </a>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="vagas.html" class="btn-outline">Ver todas as vagas →</a>
+        </div>
+    </section>
+
+    <!-- Divider -->
+    <div style="height: 1px; background-color: var(--border); max-width: 1200px; margin: 0 auto;"></div>
+
+    <!-- Companies Section -->
+    <section class="section-container">
+        <span class="section-eyebrow" style="margin-bottom: 6px;">§ 02 — Empresas</span>
+        <div class="section-header" style="margin-bottom: 32px;">
+            <h2 class="section-title" style="margin: 0;">Empresas que confiam em nós</h2>
+            <a href="cadastro-empresa.html" style="font-size: 13px; color: var(--accent); font-weight: 600; font-family: 'Work Sans', sans-serif;">Cadastrar minha empresa →</a>
+        </div>
+
+        <div class="companies-grid">
+            <div class="company-card">
+                <div class="company-logo" style="background-color: #6B21A8;">N</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 15px;">Nubank</div>
+                    <div style="font-size: 12px; color: var(--muted-foreground);">Fintech</div>
+                    <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">34 vagas abertas</div>
+                </div>
+            </div>
+            <div class="company-card">
+                <div class="company-logo" style="background-color: #15803D;">S</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 15px;">Stone</div>
+                    <div style="font-size: 12px; color: var(--muted-foreground);">Pagamentos</div>
+                    <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">18 vagas abertas</div>
+                </div>
+            </div>
+            <div class="company-card">
+                <div class="company-logo" style="background-color: #C2410C;">i</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 15px;">iFood</div>
+                    <div style="font-size: 12px; color: var(--muted-foreground);">Delivery</div>
+                    <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">27 vagas abertas</div>
+                </div>
+            </div>
+            <div class="company-card">
+                <div class="company-logo" style="background-color: #1B3557;">H</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 15px;">Hotmart</div>
+                    <div style="font-size: 12px; color: var(--muted-foreground);">Ed-tech</div>
+                    <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">15 vagas abertas</div>
+                </div>
+            </div>
+            <div class="company-card">
+                <div class="company-logo" style="background-color: #1B5757;">T</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 15px;">Totvs</div>
+                    <div style="font-size: 12px; color: var(--muted-foreground);">ERP / SaaS</div>
+                    <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">22 vagas abertas</div>
+                </div>
+            </div>
+            <div class="company-card">
+                <div class="company-logo" style="background-color: #8B6914;">R</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 15px;">RD Station</div>
+                    <div style="font-size: 12px; color: var(--muted-foreground);">MarTech</div>
+                    <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">11 vagas abertas</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="how-it-works">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 6px;">
+                § 03 — Como funciona
+            </span>
+            <h2 style="font-family: 'Fraunces', serif; font-size: 30px; font-weight: 600; color: #F2EDE5; margin: 0 0 48px; letter-spacing: -0.5px;">
+                Simples para empresas e candidatos
+            </h2>
+
+            <div class="how-grid">
+                <!-- For candidates -->
+                <div>
+                    <div class="step-col-title">Para candidatos</div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">01</div>
+                        <div class="step-text">
+                            <h4>Crie seu perfil</h4>
+                            <p>Cadastre-se gratuitamente e construa seu perfil profissional com currículo e portfólio.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">02</div>
+                        <div class="step-text">
+                            <h4>Explore vagas</h4>
+                            <p>Filtre por área, localização, regime e faixa salarial para encontrar a vaga ideal.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">03</div>
+                        <div class="step-text">
+                            <h4>Candidate-se</h4>
+                            <p>Envie sua candidatura com um clique e acompanhe o status em tempo real.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- For companies -->
+                <div style="padding-left: 48px; border-left: 1px solid rgba(242,237,229,0.1);">
+                    <div class="step-col-title">Para empresas</div>
+                    
+                    <div class="step-item">
+                        <div class="step-number" style="color: #F2EDE5;">01</div>
+                        <div class="step-text">
+                            <h4>Registre sua empresa</h4>
+                            <p>Cadastre CNPJ, perfil da empresa e informações de contato em poucos minutos.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number" style="color: #F2EDE5;">02</div>
+                        <div class="step-text">
+                            <h4>Publique vagas</h4>
+                            <p>Descreva a vaga, defina requisitos, salário e benefícios. Publique instantaneamente.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number" style="color: #F2EDE5;">03</div>
+                        <div class="step-text">
+                            <h4>Gerencie candidatos</h4>
+                            <p>Receba candidaturas, filtre perfis, agende entrevistas e feche contratações.</p>
+                        </div>
+                    </div>
+                    
+                    <a href="cadastro-empresa.html" style="display: inline-block; padding: 12px 24px; background-color: var(--accent); color: #FAF8F4; font-size: 13px; font-weight: 600; border-radius: 2px; margin-top: 8px; transition: opacity 0.15s;">
+                        Começar agora →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div style="display: flex; alignItems: baseline; gap: 6px;">
+            <span style="font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; color: var(--primary);">Vagas</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); font-weight: 500;">.BR</span>
+        </div>
+        <p style="font-size: 12px; color: var(--muted-foreground); margin: 0;">
+            © 2026 Vagas.BR — Todos os direitos reservados
+        </p>
+        <div class="footer-links">
+            <a href="#">Termos</a>
+            <a href="#">Privacidade</a>
+            <a href="#">Contato</a>
+        </div>
+    </footer>
+
+    <script>
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const htmlElement = document.documentElement;
+
+    // Verifica se o usuário já tinha escolhido o tema escuro antes
+    if (localStorage.getItem('theme') === 'dark') {
+        htmlElement.setAttribute('data-theme', 'dark');
+    }
+
+    // Função do clique
+    themeToggleBtn.addEventListener('click', () => {
+        if (htmlElement.getAttribute('data-theme') === 'dark') {
+            htmlElement.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'light');
+        } else {
+            htmlElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        }
+    });
+</script>
+
+</body>
+</html>

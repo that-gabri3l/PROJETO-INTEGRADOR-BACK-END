@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vagas - JobBoard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+    --background: #FFFFFF;
+    --foreground: #000000;
+    --card: #FAFAFA;
+    --primary: #000000;
+    --secondary: #F4F4F5;
+    --muted: #F4F4F5;
+    --muted-foreground: #71717A;
+    --accent: #2563EB;
+    --border: #E4E4E7;
+    --radius: 4px;
+}
+
+/* Modo Escuro (Inversão Elegante) */
+/* Modo Escuro (Padrão Apple iOS/macOS) */
+[data-theme="dark"] {
+    --background: #000000;       /* Fundo preto absoluto */
+    --foreground: #F5F5F7;       /* Texto off-white para leitura confortável */
+    --card: #1C1C1E;             /* Cinza escuro para destacar as caixas do fundo */
+    --primary: #0A84FF;          /* Azul vibrante para botões principais */
+    --secondary: #2C2C2E;        /* Fundos secundários (hovers) */
+    --muted: #2C2C2E;
+    --muted-foreground: #98989D; /* Cinza claro correto para textos secundários */
+    --accent: #30D158;           /* Verde vivo para alertas e links */
+    --border: #38383A;           /* Bordas suaves */
+}
+
+/* Correção automática de contraste para os botões no Modo Escuro */
+[data-theme="dark"] .btn-primary,
+[data-theme="dark"] .nav-btn,
+[data-theme="dark"] .candidate-side .btn-action {
+    background-color: var(--primary) !important;
+    color: #FFFFFF !important; 
+}
+
+[data-theme="dark"] .company-side .btn-action {
+    background-color: var(--accent) !important;
+    color: #000000 !important; 
+}
+
+/* Correção do hover na tela de escolha de cadastro */
+[data-theme="dark"] .candidate-side:hover,
+[data-theme="dark"] .company-side:hover {
+    background-color: var(--secondary) !important;
+}
+
+/* Estilo do botão de trocar tema */
+.theme-toggle {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    margin-left: 16px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+.theme-toggle:hover {
+    background-color: var(--secondary);
+}
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navbar Placeholder */
+        .navbar {
+            background-color: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-logo {
+            font-family: 'Fraunces', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Cabeçalho da Página (Page Header) */
+        .page-header {
+            background-color: var(--primary);
+            padding: 40px 24px 48px;
+            border-bottom: 3px solid var(--accent);
+        }
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .eyebrow-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+        .page-title {
+            font-family: 'Fraunces', serif;
+            font-size: 36px;
+            font-weight: 600;
+            color: #F2EDE5;
+            margin: 8px 0 24px;
+            letter-spacing: -0.5px;
+        }
+
+        /* Barra de Busca (Search) */
+        .search-bar {
+            display: flex;
+            background-color: #FAF8F4;
+            border-radius: 2px;
+            overflow: hidden;
+            max-width: 600px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        .search-bar input {
+            flex: 1;
+            padding: 12px 18px;
+            border: none;
+            outline: none;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 14px;
+            background-color: transparent;
+            color: var(--foreground);
+        }
+        .search-bar button {
+            padding: 12px 20px;
+            background-color: var(--accent);
+            color: #FAF8F4;
+            border: none;
+            cursor: pointer;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Layout Principal (Content) */
+        .main-layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 24px;
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 32px;
+        }
+
+        /* Barra Lateral (Sidebar) */
+        .sidebar {
+            position: sticky;
+            top: 80px;
+        }
+        .filter-section {
+            margin-bottom: 28px;
+        }
+        .filter-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted-foreground);
+            margin-bottom: 12px;
+        }
+        .filter-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .filter-btn {
+            padding: 8px 12px;
+            text-align: left;
+            border: none;
+            background-color: transparent;
+            color: var(--foreground);
+            font-family: 'Work Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: all 0.12s;
+        }
+        .filter-btn:hover {
+            background-color: var(--secondary);
+        }
+        .filter-btn.active-primary {
+            background-color: var(--primary);
+            color: #F2EDE5;
+            font-weight: 600;
+        }
+        .filter-btn.active-secondary {
+            background-color: var(--secondary);
+            font-weight: 600;
+        }
+        .divider {
+            height: 1px;
+            background-color: var(--border);
+            margin: 0 0 24px;
+        }
+
+        /* Grid de Vagas (Job List) */
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .job-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            transition: border-color 0.2s;
+        }
+        .job-card:hover {
+            border-color: var(--primary);
+        }
+        .job-company {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--muted-foreground);
+            margin-bottom: 8px;
+        }
+        .job-title {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            color: var(--foreground);
+        }
+        .job-meta {
+            font-size: 13px;
+            color: var(--muted-foreground);
+            margin-bottom: 24px;
+        }
+        .job-footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .job-salary {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--primary);
+        }
+        .btn-apply {
+            background-color: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 6px 14px;
+            border-radius: var(--radius);
+            font-weight: 500;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .btn-apply:hover {
+            background-color: var(--accent);
+            color: var(--accent-foreground);
+        }
+        /* =========================================
+   RESPONSIVIDADE (MOBILE E TABLETS)
+   ========================================= */
+@media (max-width: 768px) {
+    /* 1. Ajuste da Barra de Navegação */
+    .navbar {
+        flex-direction: column;
+        gap: 16px;
+        padding: 16px;
+    }
+    .navbar-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 16px;
+    }
+    /* Regras exclusivas para a página de Vagas */
+    .vagas-layout {
+        grid-template-columns: 1fr !important; /* Joga os filtros pra cima e as vagas pra baixo */
+        gap: 24px !important;
+    }
+    .vagas-list {
+        grid-template-columns: 1fr !important; /* Deixa os cards com 1 coluna só */
+    }
+    .vagas-search-bar {
+        flex-direction: column !important; /* Empilha o campo de busca e o botão */
+    }
+    .vagas-search-bar button {
+        width: 100%;
+    }
+
+    /* 2. Todos os Grids viram 1 única coluna no celular */
+    .split-layout,
+    .kpi-grid,
+    .tables-grid,
+    .job-grid,
+    .companies-grid,
+    .how-grid,
+    .grid-2,
+    .grid-2-cols,
+    .grid-3-cols,
+    .content-grid,
+    .rec-grid,
+    .stats-grid,
+    .detail-layout {
+        grid-template-columns: 1fr !important; /* Força a ficar em 1 coluna */
+        gap: 24px;
+    }
+
+    /* 3. Ajustes de Espaçamento e Paddings para telas pequenas */
+    .container, .section-container, .hero {
+        padding: 32px 16px !important;
+    }
+    .form-card, .split-card, .dashboard-header {
+        padding: 24px 16px !important;
+    }
+    .kpi-card, .company-card, .job-card {
+        padding: 16px !important;
+    }
+
+    /* 4. Ajustes nos Headers dos Painéis (Empresa e Candidato) */
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 16px;
+    }
+    .profile-progress, .btn-publish {
+        width: 100%;
+        text-align: center;
+        margin-top: 8px;
+    }
+
+    /* 5. Tabelas Responsivas (Permite arrastar para o lado) */
+    .table-container, .list-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    table {
+        min-width: 600px; /* Impede que o texto esprema, ativando a rolagem horizontal */
+    }
+
+    /* 6. Indicadores de passo do formulário */
+    .step-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .step-line {
+        width: 2px;
+        height: 20px;
+        margin: 0 0 0 13px !important;
+    }
+    .form-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+    .form-actions button {
+        width: 100%;
+        margin: 0 !important;
+    }
+}
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="navbar-logo">JobBoard.</a>
+        <div>
+            <button id="theme-toggle" class="theme-toggle" title="Mudar tema">🌗</button>
+            <a href="#" style="text-decoration: none; color: var(--foreground); font-weight: 500; margin-right: 20px;">Para Empresas</a>
+            <a href="#" style="text-decoration: none; color: var(--primary); font-weight: 600;">Entrar</a>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <div class="header-container">
+            <span class="eyebrow-text">Explorar vagas</span>
+            <h1 class="page-title">4 vagas disponíveis</h1>
+            
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar por cargo, empresa ou habilidade...">
+                <button>Buscar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-layout">
+        <!-- Sidebar Filters -->
+        <aside class="sidebar">
+            <div class="filter-section">
+                <div class="filter-title">Área</div>
+                <div class="filter-list">
+                    <button class="filter-btn active-primary">Todos</button>
+                    <button class="filter-btn">Tecnologia</button>
+                    <button class="filter-btn">Design</button>
+                    <button class="filter-btn">Marketing</button>
+                    <button class="filter-btn">Dados</button>
+                    <button class="filter-btn">Gestão</button>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="filter-section">
+                <div class="filter-title">Regime</div>
+                <div class="filter-list">
+                    <button class="filter-btn active-primary">Todos</button>
+                    <button class="filter-btn">Remoto</button>
+                    <button class="filter-btn">Híbrido</button>
+                    <button class="filter-btn">Presencial</button>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="filter-section">
+                <div class="filter-title">Ordenar por</div>
+                <div class="filter-list">
+                    <button class="filter-btn active-secondary">Mais recente</button>
+                    <button class="filter-btn">Maior salário</button>
+                    <button class="filter-btn">Relevância</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Job List -->
+        <div class="jobs-grid">
+            <!-- Vaga 1 -->
+            <div class="job-card">
+                <div class="job-company">Tech Solutions Ltda.</div>
+                <h3 class="job-title">Desenvolvedor Back-End Node.js</h3>
+                <div class="job-meta">Tecnologia • Remoto</div>
+                <div class="job-footer">
+                    <span class="job-salary">R$ 5.000</span>
+                    <a href="detalhes-vaga.html" class="btn-apply">Ver vaga</a>
+                </div>
+            </div>
+
+            <!-- Vaga 2 -->
+            <div class="job-card">
+                <div class="job-company">Agência Web Brasil</div>
+                <h3 class="job-title">UX/UI Designer</h3>
+                <div class="job-meta">Design • Híbrido</div>
+                <div class="job-footer">
+                    <span class="job-salary">R$ 4.200</span>
+                    <a href="#" class="btn-apply">Ver vaga</a>
+                </div>
+            </div>
+
+            <!-- Vaga 3 -->
+            <div class="job-card">
+                <div class="job-company">Fintech Startup</div>
+                <h3 class="job-title">Engenheiro de Dados</h3>
+                <div class="job-meta">Dados • Remoto</div>
+                <div class="job-footer">
+                    <span class="job-salary">R$ 9.500</span>
+                    <a href="#" class="btn-apply">Ver vaga</a>
+                </div>
+            </div>
+            
+            <!-- Vaga 4 -->
+            <div class="job-card">
+                <div class="job-company">Marketing Co.</div>
+                <h3 class="job-title">Analista de Marketing</h3>
+                <div class="job-meta">Marketing • Presencial</div>
+                <div class="job-footer">
+                    <span class="job-salary">R$ 3.800</span>
+                    <a href="#" class="btn-apply">Ver vaga</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const htmlElement = document.documentElement;
+
+    // Verifica se o usuário já tinha escolhido o tema escuro antes
+    if (localStorage.getItem('theme') === 'dark') {
+        htmlElement.setAttribute('data-theme', 'dark');
+    }
+
+    // Função do clique
+    themeToggleBtn.addEventListener('click', () => {
+        if (htmlElement.getAttribute('data-theme') === 'dark') {
+            htmlElement.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'light');
+        } else {
+            htmlElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        }
+    });
+</script>
+
+</body>
+</html>

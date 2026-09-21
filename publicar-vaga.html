@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicar Vaga - JobBoard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --background: #F2EDE5;
+            --foreground: #1A1714;
+            --card: #FAF8F4;
+            --card-foreground: #1A1714;
+            --primary: #1B3557;
+            --primary-foreground: #F2EDE5;
+            --secondary: #E8E0D4;
+            --secondary-foreground: #1A1714;
+            --muted: #DDD7CE;
+            --muted-foreground: #6B6358;
+            --accent: #B54A1C;
+            --accent-foreground: #FAF8F4;
+            --border: #C9C2B4;
+            --ring: #1B3557;
+            --radius: 2px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-logo {
+            font-family: 'Fraunces', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Layout Principal */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Cabeçalho da Página */
+        .page-header { margin-bottom: 36px; }
+        .btn-back {
+            background: none;
+            border: none;
+            font-size: 13px;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            font-family: 'Work Sans', sans-serif;
+            padding: 0;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+        .btn-back:hover { color: var(--foreground); }
+        .eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted-foreground);
+        }
+        .page-title {
+            font-family: 'Fraunces', serif;
+            font-size: 34px;
+            font-weight: 600;
+            margin: 8px 0 4px;
+            letter-spacing: -0.5px;
+            color: var(--foreground);
+        }
+
+        /* Sessões do Formulário (FormSection) */
+        .form-section {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        .section-header {
+            padding: 16px 24px;
+            background-color: var(--secondary);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-number {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 300;
+            color: var(--accent);
+        }
+        .section-title {
+            font-family: 'Fraunces', serif;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+            color: var(--foreground);
+        }
+        .section-body { padding: 24px; }
+
+        /* Grids de Formulário */
+        .grid-2-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        .grid-3-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+        .flex-col { display: flex; flex-direction: column; gap: 18px; }
+        .col-full { grid-column: 1 / -1; }
+
+        /* Campos (Field) */
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--foreground);
+            margin-bottom: 6px;
+            font-family: 'Work Sans', sans-serif;
+            letter-spacing: 0.02em;
+        }
+        .required-mark { color: var(--accent); margin-left: 3px; }
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'Work Sans', sans-serif;
+            font-size: 14px;
+            background-color: var(--background);
+            color: var(--foreground);
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        .form-input:focus { border-color: var(--primary); }
+        textarea.form-input { resize: vertical; }
+
+        /* Botões */
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 28px;
+        }
+        .btn-primary {
+            padding: 12px 28px;
+            background-color: var(--primary);
+            color: #F2EDE5;
+            border: none;
+            cursor: pointer;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: var(--radius);
+            letter-spacing: 0.02em;
+            transition: opacity 0.2s;
+        }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-secondary {
+            padding: 12px 28px;
+            background-color: transparent;
+            color: var(--foreground);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: var(--radius);
+            transition: background-color 0.2s;
+        }
+        .btn-secondary:hover { background-color: var(--secondary); }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="navbar-logo">JobBoard.</a>
+    </nav>
+
+    <main class="container">
+        <!-- Header -->
+        <div class="page-header">
+            <a href="painel-empresa.html" class="btn-back">← Voltar ao painel</a>
+            <span class="eyebrow">Nova publicação</span>
+            <h1 class="page-title">Publicar vaga</h1>
+        </div>
+
+        <!-- Formulário apontando para a sua rota -->
+        <form action="/api/vagas" method="POST">
+            
+            <!-- Section 01 -->
+            <div class="form-section">
+                <div class="section-header">
+                    <span class="section-number">01</span>
+                    <h3 class="section-title">Informações básicas</h3>
+                </div>
+                <div class="section-body">
+                    <div class="grid-2-cols">
+                        <div class="col-full">
+                            <label class="form-label">Título da vaga<span class="required-mark">*</span></label>
+                            <input type="text" name="titulo" class="form-input" placeholder="Ex: Engenheiro de Software Sênior" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Área<span class="required-mark">*</span></label>
+                            <select name="area" class="form-input" required>
+                                <option value="">Selecione...</option>
+                                <option value="Tecnologia">Tecnologia</option>
+                                <option value="Design">Design</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Dados">Dados</option>
+                                <option value="Gestão">Gestão</option>
+                                <option value="Vendas">Vendas</option>
+                                <option value="Jurídico">Jurídico</option>
+                                <option value="Financeiro">Financeiro</option>
+                                <option value="RH">RH</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Regime de trabalho<span class="required-mark">*</span></label>
+                            <select name="regime" class="form-input" required>
+                                <option value="">Selecione...</option>
+                                <option value="Presencial">Presencial</option>
+                                <option value="Híbrido">Híbrido</option>
+                                <option value="Remoto">Remoto</option>
+                            </select>
+                        </div>
+                        <div class="col-full">
+                            <label class="form-label">Localização<span class="required-mark">*</span></label>
+                            <input type="text" name="localizacao" class="form-input" placeholder="Ex: São Paulo, SP" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 02 -->
+            <div class="form-section">
+                <div class="section-header">
+                    <span class="section-number">02</span>
+                    <h3 class="section-title">Remuneração</h3>
+                </div>
+                <div class="section-body">
+                    <div class="grid-3-cols">
+                        <div>
+                            <label class="form-label">Salário mínimo (R$)</label>
+                            <input type="number" name="salario_min" class="form-input" placeholder="Ex: 8000">
+                        </div>
+                        <div>
+                            <label class="form-label">Salário máximo (R$)</label>
+                            <input type="number" name="salario_max" class="form-input" placeholder="Ex: 12000">
+                        </div>
+                        <div>
+                            <label class="form-label">Exibir salário?</label>
+                            <select name="exibir_salario" class="form-input">
+                                <option value="sim">Sim, exibir no anúncio</option>
+                                <option value="nao">Não exibir</option>
+                                <option value="combinar">A combinar</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 03 -->
+            <div class="form-section">
+                <div class="section-header">
+                    <span class="section-number">03</span>
+                    <h3 class="section-title">Descrição e requisitos</h3>
+                </div>
+                <div class="section-body">
+                    <div class="flex-col">
+                        <div>
+                            <label class="form-label">Descrição da vaga<span class="required-mark">*</span></label>
+                            <textarea name="descricao" class="form-input" rows="5" placeholder="Descreva a vaga, responsabilidades do cargo e o que o candidato irá fazer no dia a dia..." required></textarea>
+                        </div>
+                        <div>
+                            <label class="form-label">Requisitos<span class="required-mark">*</span></label>
+                            <textarea name="requisitos" class="form-input" rows="4" placeholder="Liste os requisitos, um por linha. Ex:&#10;5+ anos de experiência com Java&#10;Inglês avançado&#10;Experiência com AWS" required></textarea>
+                        </div>
+                        <div>
+                            <label class="form-label">Benefícios</label>
+                            <textarea name="beneficios" class="form-input" rows="3" placeholder="Liste os benefícios, um por linha. Ex:&#10;Plano de saúde Bradesco&#10;Vale alimentação R$ 1.000&#10;Gympass"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ações -->
+            <div class="form-actions">
+                <button type="button" class="btn-secondary">Salvar como rascunho</button>
+                <button type="submit" class="btn-primary">Publicar vaga</button>
+            </div>
+
+        </form>
+    </main>
+
+</body>
+</html>

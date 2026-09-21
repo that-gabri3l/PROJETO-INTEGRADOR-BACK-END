@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escolha o seu perfil - JobBoard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --background: #F2EDE5;
+            --foreground: #1A1714;
+            --card: #FAF8F4;
+            --primary: #1B3557;
+            --secondary: #E8E0D4;
+            --muted: #DDD7CE;
+            --muted-foreground: #6B6358;
+            --accent: #B54A1C;
+            --border: #C9C2B4;
+            --radius: 2px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-logo {
+            font-family: 'Fraunces', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Layout de Tela Dividida */
+        .split-layout {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .split-card {
+            padding: 80px 64px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        /* Lado do Candidato */
+        .candidate-side {
+            background-color: var(--background);
+            border-right: 1px solid var(--border);
+        }
+        .candidate-side:hover { background-color: #EDE8DF; }
+
+        /* Lado da Empresa */
+        .company-side {
+            background-color: var(--primary);
+        }
+        .company-side:hover { background-color: #142A45; }
+
+        /* Números de Fundo (01 e 02) */
+        .bg-number {
+            position: absolute;
+            bottom: -20px;
+            right: 32px;
+            font-family: 'Fraunces', serif;
+            font-size: 200px;
+            font-weight: 700;
+            line-height: 1;
+            user-select: none;
+            pointer-events: none;
+        }
+        .candidate-side .bg-number { color: rgba(27,53,87,0.04); }
+        .company-side .bg-number { color: rgba(242,237,229,0.04); }
+
+        /* Textos e Estrutura Interna */
+        .content-wrapper { position: relative; z-index: 2; }
+        
+        .eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 24px;
+        }
+
+        .icon-box {
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 28px;
+            font-size: 28px;
+            border-radius: 2px;
+        }
+        .candidate-side .icon-box { border: 2px solid var(--primary); }
+        .company-side .icon-box { border: 2px solid rgba(242,237,229,0.4); }
+
+        .main-title {
+            font-family: 'Fraunces', serif;
+            font-size: 38px;
+            font-weight: 600;
+            margin: 0 0 16px;
+            letter-spacing: -0.8px;
+            line-height: 1.1;
+        }
+        .candidate-side .main-title { color: var(--foreground); }
+        .company-side .main-title { color: #F2EDE5; }
+        .main-title em { font-style: italic; font-weight: 300; }
+
+        .description {
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            max-width: 340px;
+        }
+        .candidate-side .description { color: var(--muted-foreground); }
+        .company-side .description { color: rgba(242,237,229,0.65); }
+
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .benefits-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+        .candidate-side .benefits-list li { color: var(--foreground); }
+        .company-side .benefits-list li { color: rgba(242,237,229,0.85); }
+        .check-icon {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        /* Botões Estilizados (Fake buttons pois o card inteiro é clicável) */
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 28px;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            border-radius: var(--radius);
+        }
+        .candidate-side .btn-action {
+            background-color: var(--primary);
+            color: #F2EDE5;
+        }
+        .company-side .btn-action {
+            background-color: var(--accent);
+            color: #FAF8F4;
+        }
+
+        /* Barra Inferior */
+        .bottom-bar {
+            border-top: 1px solid var(--border);
+            padding: 20px 24px;
+            text-align: center;
+            background-color: var(--card);
+        }
+        .bottom-text {
+            font-size: 13px;
+            color: var(--muted-foreground);
+        }
+        .login-link {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: underline;
+            font-family: 'Work Sans', sans-serif;
+        }
+        .login-link:hover { opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="navbar-logo">JobBoard.</a>
+    </nav>
+
+    <main class="split-layout">
+        <!-- Lado do Candidato -->
+        <a href="cadastro-candidato.html" class="split-card candidate-side">
+            <div class="bg-number">01</div>
+            
+            <div class="content-wrapper">
+                <span class="eyebrow">Para candidatos</span>
+                <div class="icon-box">👤</div>
+                
+                <h2 class="main-title">
+                    Sou<br><em>candidato</em>
+                </h2>
+                
+                <p class="description">
+                    Crie seu perfil profissional, envie candidaturas com um clique e acompanhe o status de cada processo seletivo.
+                </p>
+
+                <ul class="benefits-list">
+                    <li><span class="check-icon">✓</span> Cadastro gratuito e sem complicações</li>
+                    <li><span class="check-icon">✓</span> Acesso a mais de 4.800 vagas ativas</li>
+                    <li><span class="check-icon">✓</span> Candidatura com 1 clique</li>
+                    <li><span class="check-icon">✓</span> Acompanhamento em tempo real</li>
+                </ul>
+
+                <div class="btn-action">
+                    Cadastrar como candidato <span style="font-size: 16px;">→</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- Lado da Empresa -->
+        <a href="cadastro-empresa.html" class="split-card company-side">
+            <div class="bg-number">02</div>
+            
+            <div class="content-wrapper">
+                <span class="eyebrow">Para empresas</span>
+                <div class="icon-box">🏢</div>
+                
+                <h2 class="main-title">
+                    Sou<br><em>empresa</em>
+                </h2>
+                
+                <p class="description">
+                    Publique vagas, gerencie candidatos e encontre os melhores talentos do Brasil de forma simples e eficiente.
+                </p>
+
+                <ul class="benefits-list">
+                    <li><span class="check-icon">✓</span> Publicação ilimitada de vagas</li>
+                    <li><span class="check-icon">✓</span> Painel completo de gestão</li>
+                    <li><span class="check-icon">✓</span> Filtros avançados de candidatos</li>
+                    <li><span class="check-icon">✓</span> Relatórios e métricas em tempo real</li>
+                </ul>
+
+                <div class="btn-action">
+                    Cadastrar minha empresa <span style="font-size: 16px;">→</span>
+                </div>
+            </div>
+        </a>
+    </main>
+
+    <!-- Barra Inferior -->
+    <footer class="bottom-bar">
+        <span class="bottom-text">
+            Já tem uma conta? <a href="painel-candidato.html" class="login-link">Entrar</a>
+        </span>
+    </footer>
+
+</body>
+</html>

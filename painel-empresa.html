@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel da Empresa - JobBoard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --background: #F2EDE5;
+            --foreground: #1A1714;
+            --card: #FAF8F4;
+            --card-foreground: #1A1714;
+            --primary: #1B3557;
+            --primary-foreground: #F2EDE5;
+            --secondary: #E8E0D4;
+            --secondary-foreground: #1A1714;
+            --muted: #DDD7CE;
+            --muted-foreground: #6B6358;
+            --accent: #B54A1C;
+            --accent-foreground: #FAF8F4;
+            --border: #C9C2B4;
+            --radius: 2px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-logo {
+            font-family: 'Fraunces', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            background-color: var(--primary);
+            padding: 32px 24px 40px;
+            border-bottom: 3px solid var(--accent);
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+        .company-title {
+            font-family: 'Fraunces', serif;
+            font-size: 30px;
+            font-weight: 600;
+            color: #F2EDE5;
+            margin: 8px 0 0;
+            letter-spacing: -0.5px;
+        }
+        .btn-publish {
+            padding: 12px 24px;
+            background-color: var(--accent);
+            color: #FAF8F4;
+            border: none;
+            cursor: pointer;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: var(--radius);
+            letter-spacing: 0.02em;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .btn-publish:hover { opacity: 0.9; }
+
+        /* Layout Principal */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background-color: var(--border);
+            border: 1px solid var(--border);
+            margin-bottom: 36px;
+        }
+        .kpi-card {
+            background-color: var(--card);
+            padding: 24px 28px;
+        }
+        .kpi-value {
+            font-family: 'Fraunces', serif;
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+            line-height: 1;
+        }
+        .kpi-label {
+            font-size: 13px;
+            color: var(--foreground);
+            font-weight: 500;
+            margin-top: 6px;
+        }
+        .kpi-delta {
+            font-size: 11px;
+            color: var(--accent);
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        /* Tabelas */
+        .tables-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+        .table-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .section-eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted-foreground);
+            display: block;
+        }
+        .section-title {
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 600;
+            margin: 4px 0 0;
+            letter-spacing: -0.3px;
+        }
+        .btn-text {
+            background: none;
+            border: none;
+            font-size: 12px;
+            color: var(--accent);
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Work Sans', sans-serif;
+            text-decoration: none;
+        }
+        
+        .table-container {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        thead tr {
+            background-color: var(--secondary);
+        }
+        th {
+            padding: 10px 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted-foreground);
+            font-weight: 500;
+            text-align: left;
+        }
+        tbody tr {
+            border-top: 1px solid var(--border);
+            cursor: pointer;
+            transition: background-color 0.1s;
+        }
+        tbody tr:first-child { border-top: none; }
+        tbody tr:hover {
+            background-color: var(--secondary);
+        }
+        td {
+            padding: 12px 16px;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        /* Estilos específicos de colunas */
+        .col-center { text-align: center; }
+        .col-right { text-align: right; }
+        .text-bold { font-weight: 500; }
+        .text-meta {
+            font-size: 11px;
+            color: var(--muted-foreground);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .large-number {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Avatar do Candidato */
+        .candidate-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 13px;
+            font-weight: 600;
+            color: #F2EDE5;
+        }
+
+        /* Badges de Status */
+        .badge {
+            display: inline-block;
+            padding: 3px 9px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 2px;
+            letter-spacing: 0.03em;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .badge-blue { background-color: #EFF6FF; color: #1D4ED8; }
+        .badge-yellow { background-color: #FEF9C3; color: #854D0E; }
+        .badge-green { background-color: #ECFDF5; color: #065F46; }
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="navbar-logo">JobBoard.</a>
+    </nav>
+
+    <!-- Dashboard Header -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div>
+                <span class="eyebrow">Painel da empresa</span>
+                <h1 class="company-title">Acme Tecnologia LTDA</h1>
+            </div>
+            <a href="publicar-vaga.html" class="btn-publish">+ Publicar nova vaga</a>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-value">4</div>
+                <div class="kpi-label">Vagas publicadas</div>
+                <div class="kpi-delta">+1 este mês</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">97</div>
+                <div class="kpi-label">Total de candidatos</div>
+                <div class="kpi-delta">+23 esta semana</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">732</div>
+                <div class="kpi-label">Visualizações totais</div>
+                <div class="kpi-delta">+89 hoje</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">9,3%</div>
+                <div class="kpi-label">Taxa de conversão</div>
+                <div class="kpi-delta">↑ vs mês anterior</div>
+            </div>
+        </div>
+
+        <!-- Tabelas -->
+        <div class="tables-grid">
+            
+            <!-- Tabela: Suas Vagas -->
+            <div>
+                <div class="table-section-header">
+                    <div>
+                        <span class="section-eyebrow">§ 01</span>
+                        <h2 class="section-title">Suas vagas</h2>
+                    </div>
+                    <a href="publicar-vaga.html" class="btn-text">+ Nova vaga</a>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Vaga</th>
+                                <th class="col-center">Candidatos</th>
+                                <th class="col-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-bold">
+                                    <div>Engenheiro de Software Sênior</div>
+                                    <div class="text-meta">312 views · 12/09/2025</div>
+                                </td>
+                                <td class="col-center"><span class="large-number">47</span></td>
+                                <td class="col-center"><span class="badge badge-green">Ativa</span></td>
+                            </tr>
+                            <tr>
+                                <td class="text-bold">
+                                    <div>Designer de Produto</div>
+                                    <div class="text-meta">189 views · 10/09/2025</div>
+                                </td>
+                                <td class="col-center"><span class="large-number">23</span></td>
+                                <td class="col-center"><span class="badge badge-green">Ativa</span></td>
+                            </tr>
+                            <tr>
+                                <td class="text-bold">
+                                    <div>Analista de Dados</div>
+                                    <div class="text-meta">143 views · 05/09/2025</div>
+                                </td>
+                                <td class="col-center"><span class="large-number">18</span></td>
+                                <td class="col-center"><span class="badge badge-yellow">Pausada</span></td>
+                            </tr>
+                            <tr>
+                                <td class="text-bold">
+                                    <div>Tech Lead</div>
+                                    <div class="text-meta">88 views · 15/09/2025</div>
+                                </td>
+                                <td class="col-center"><span class="large-number">9</span></td>
+                                <td class="col-center"><span class="badge badge-green">Ativa</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tabela: Candidatos Recentes -->
+            <div>
+                <div class="table-section-header" style="margin-bottom: 16px; display: block;">
+                    <span class="section-eyebrow">§ 02</span>
+                    <h2 class="section-title">Candidatos recentes</h2>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Candidato</th>
+                                <th class="col-right">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="candidate-info">
+                                        <div class="avatar">A</div>
+                                        <div>
+                                            <div class="text-bold">Ana Costa</div>
+                                            <div class="text-meta" style="font-family: 'Work Sans', sans-serif;">Engenheira de Software Sênior</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="col-right"><span class="badge badge-blue">Novo</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="candidate-info">
+                                        <div class="avatar">B</div>
+                                        <div>
+                                            <div class="text-bold">Bruno Ferreira</div>
+                                            <div class="text-meta" style="font-family: 'Work Sans', sans-serif;">Designer de Produto</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="col-right"><span class="badge badge-yellow">Em análise</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="candidate-info">
+                                        <div class="avatar">C</div>
+                                        <div>
+                                            <div class="text-bold">Camila Rodrigues</div>
+                                            <div class="text-meta" style="font-family: 'Work Sans', sans-serif;">Engenheira de Software Sênior</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="col-right"><span class="badge badge-blue">Novo</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="candidate-info">
+                                        <div class="avatar">D</div>
+                                        <div>
+                                            <div class="text-bold">Diego Alves</div>
+                                            <div class="text-meta" style="font-family: 'Work Sans', sans-serif;">Tech Lead</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="col-right"><span class="badge badge-green">Entrevista agendada</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="candidate-info">
+                                        <div class="avatar">E</div>
+                                        <div>
+                                            <div class="text-bold">Elisa Mendes</div>
+                                            <div class="text-meta" style="font-family: 'Work Sans', sans-serif;">Analista de Dados</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="col-right"><span class="badge badge-yellow">Em análise</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro Empresarial - JobBoard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --background: #F2EDE5;
+            --foreground: #1A1714;
+            --card: #FAF8F4;
+            --card-foreground: #1A1714;
+            --primary: #1B3557;
+            --primary-foreground: #F2EDE5;
+            --secondary: #E8E0D4;
+            --secondary-foreground: #1A1714;
+            --muted: #DDD7CE;
+            --muted-foreground: #6B6358;
+            --accent: #B54A1C;
+            --border: #C9C2B4;
+            --radius: 2px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-logo {
+            font-family: 'Fraunces', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Layout */
+        .container {
+            max-width: 640px;
+            margin: 48px auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        .eyebrow {
+            font-family: 'JetBrains Mono', monospace; font-size: 10px;
+            letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted-foreground);
+        }
+        .page-title {
+            font-family: 'Fraunces', serif; font-size: 34px; font-weight: 600;
+            margin: 8px 0 4px; letter-spacing: -0.5px;
+        }
+
+        /* Form Card */
+        .form-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            padding: 36px;
+        }
+
+        /* Step Indicators */
+        .step-container {
+            display: flex; align-items: center; margin-bottom: 36px;
+        }
+        .step-item {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .step-circle {
+            width: 28px; height: 28px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600;
+            background-color: var(--muted); color: var(--muted-foreground);
+            transition: all 0.2s;
+        }
+        .step-label {
+            font-size: 12px; font-weight: 400; color: var(--muted-foreground);
+        }
+        .step-line {
+            flex: 1; height: 1px; margin: 0 12px; background-color: var(--border);
+        }
+        
+        /* Modificadores de Estado (Passos) */
+        .step-active .step-circle { background-color: var(--primary); color: #F2EDE5; }
+        .step-active .step-label { font-weight: 600; color: var(--foreground); }
+        .step-done .step-circle { background-color: var(--accent); color: #F2EDE5; }
+        .step-done-line { background-color: var(--accent); }
+
+        /* Form Fields */
+        .form-group { display: flex; flex-direction: column; gap: 18px; }
+        .form-label {
+            display: block; font-size: 12px; font-weight: 600;
+            color: var(--foreground); margin-bottom: 6px; letter-spacing: 0.02em;
+        }
+        .required { color: var(--accent); margin-left: 3px; }
+        .form-input {
+            width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+            border-radius: var(--radius); font-family: inherit; font-size: 14px;
+            background-color: var(--background); color: var(--foreground); outline: none;
+        }
+        .form-input:focus { border-color: var(--primary); }
+        
+        /* Ações (Botões) */
+        .form-actions {
+            display: flex; justify-content: space-between; align-items: center; margin-top: 28px;
+        }
+        .btn-primary {
+            padding: 12px 28px; background-color: var(--primary); color: #F2EDE5;
+            border: none; font-family: inherit; font-size: 14px; font-weight: 600;
+            border-radius: var(--radius); cursor: pointer; margin-left: auto;
+        }
+        .btn-secondary {
+            background: none; border: 1px solid var(--border); padding: 10px 20px;
+            cursor: pointer; font-family: inherit; font-size: 13px; border-radius: var(--radius);
+        }
+
+        /* Exibição Condicional */
+        .step-content { display: none; }
+        .step-content.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="navbar-logo">JobBoard.</a>
+    </nav>
+
+    <div class="container">
+        <!-- Header -->
+        <div style="margin-bottom: 36px;">
+            <span class="eyebrow">Cadastro empresarial</span>
+            <h1 class="page-title">Registre sua empresa</h1>
+            <p style="font-size: 14px; color: var(--muted-foreground); margin: 0; line-height: 1.5;">
+                Publique vagas e encontre os melhores talentos do Brasil.
+            </p>
+        </div>
+
+        <!-- Indicadores de Progresso -->
+        <div class="step-container">
+            <div class="step-item step-active" id="indicator-1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Dados da empresa</div>
+            </div>
+            <div class="step-line" id="line-1"></div>
+            
+            <div class="step-item" id="indicator-2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Contato</div>
+            </div>
+            <div class="step-line" id="line-2"></div>
+            
+            <div class="step-item" id="indicator-3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Acesso e senha</div>
+            </div>
+        </div>
+
+        <!-- Formulário Geral -->
+        <div class="form-card">
+            <!-- Aponte a action para a rota da API no seu backend -->
+            <form action="/api/empresas" method="POST">
+                
+                <!-- PASSO 1: DADOS DA EMPRESA -->
+                <div class="step-content active" id="step-1">
+                    <div class="form-group">
+                        <div>
+                            <label class="form-label">CNPJ<span class="required">*</span></label>
+                            <input type="text" name="cnpj" class="form-input" placeholder="00.000.000/0000-00" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Razão social / Nome da empresa<span class="required">*</span></label>
+                            <input type="text" name="nome_empresa" class="form-input" placeholder="Ex: Acme Tecnologia LTDA" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Setor de atuação<span class="required">*</span></label>
+                            <select name="setor" class="form-input" required>
+                                <option value="">Selecione...</option>
+                                <option value="Tecnologia">Tecnologia</option>
+                                <option value="Finanças">Finanças</option>
+                                <option value="Saúde">Saúde</option>
+                                <option value="Educação">Educação</option>
+                                <option value="Varejo">Varejo</option>
+                                <option value="Logística">Logística</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Porte da empresa<span class="required">*</span></label>
+                            <select name="porte" class="form-input" required>
+                                <option value="">Selecione...</option>
+                                <option value="Microempresa">Microempresa (até 9 funcionários)</option>
+                                <option value="Pequena">Pequena (10–49)</option>
+                                <option value="Média">Média (50–249)</option>
+                                <option value="Grande">Grande (250+)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PASSO 2: CONTATO -->
+                <div class="step-content" id="step-2">
+                    <div class="form-group">
+                        <div>
+                            <label class="form-label">E-mail corporativo<span class="required">*</span></label>
+                            <input type="email" name="email_corporativo" class="form-input" placeholder="rh@empresa.com.br" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Telefone</label>
+                            <input type="text" name="telefone_empresa" class="form-input" placeholder="(11) 99999-9999">
+                        </div>
+                        <div>
+                            <label class="form-label">Site da empresa</label>
+                            <input type="url" name="site" class="form-input" placeholder="https://empresa.com.br">
+                        </div>
+                        <div>
+                            <label class="form-label">Cidade sede<span class="required">*</span></label>
+                            <input type="text" name="cidade_sede" class="form-input" placeholder="São Paulo, SP" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PASSO 3: ACESSO -->
+                <div class="step-content" id="step-3">
+                    <div class="form-group">
+                        <div style="padding: 14px; background-color: var(--secondary); border: 1px solid var(--border); font-size: 13px; color: var(--foreground); line-height: 1.5; border-radius: 2px;">
+                            Uma senha de acesso será usada para entrar no painel da empresa e gerenciar vagas e candidatos.
+                        </div>
+                        
+                        <div>
+                            <label class="form-label">Senha<span class="required">*</span></label>
+                            <input type="password" name="senha" class="form-input" placeholder="Mínimo 8 caracteres" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Confirmar senha<span class="required">*</span></label>
+                            <input type="password" name="confirmar_senha" class="form-input" placeholder="Repita a senha" required>
+                        </div>
+                        
+                        <div style="font-size: 12px; color: var(--muted-foreground); line-height: 1.5;">
+                            Ao criar a conta você concorda com os 
+                            <span style="color: var(--primary); text-decoration: underline; cursor: pointer;">Termos de Uso</span> 
+                            e a 
+                            <span style="color: var(--primary); text-decoration: underline; cursor: pointer;">Política de Privacidade</span>.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botoes de Controle -->
+                <div class="form-actions">
+                    <button type="button" id="btnPrev" class="btn-secondary" style="display: none;" onclick="changeStep(-1)">← Voltar</button>
+                    <button type="button" id="btnNext" class="btn-primary" onclick="changeStep(1)">Continuar →</button>
+                    <button type="submit" id="btnSubmit" class="btn-primary" style="display: none;">Criar conta da empresa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script de transição de abas (Idêntico ao do Candidato) -->
+    <script>
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        function changeStep(direction) {
+            document.getElementById(`step-${currentStep}`).classList.remove('active');
+            
+            if(direction === 1) {
+                document.getElementById(`indicator-${currentStep}`).classList.remove('step-active');
+                document.getElementById(`indicator-${currentStep}`).classList.add('step-done');
+                document.getElementById(`indicator-${currentStep}`).querySelector('.step-circle').innerHTML = '✓';
+                if(currentStep < totalSteps) document.getElementById(`line-${currentStep}`).classList.add('step-done-line');
+            } else {
+                document.getElementById(`indicator-${currentStep}`).classList.remove('step-active');
+                document.getElementById(`indicator-${currentStep}`).classList.remove('step-done');
+                document.getElementById(`indicator-${currentStep}`).querySelector('.step-circle').innerHTML = currentStep;
+                if(currentStep > 1) document.getElementById(`line-${currentStep-1}`).classList.remove('step-done-line');
+            }
+
+            currentStep += direction;
+
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+            
+            document.getElementById(`indicator-${currentStep}`).classList.remove('step-done');
+            document.getElementById(`indicator-${currentStep}`).classList.add('step-active');
+            document.getElementById(`indicator-${currentStep}`).querySelector('.step-circle').innerHTML = currentStep;
+
+            document.getElementById('btnPrev').style.display = (currentStep === 1) ? 'none' : 'block';
+            
+            if (currentStep === totalSteps) {
+                document.getElementById('btnNext').style.display = 'none';
+                document.getElementById('btnSubmit').style.display = 'block';
+            } else {
+                document.getElementById('btnNext').style.display = 'block';
+                document.getElementById('btnSubmit').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

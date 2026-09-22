@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar - JobBoard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Modo Claro */
+        :root {
+            --background: #FFFFFF;
+            --foreground: #000000;
+            --card: #FAFAFA;
+            --primary: #000000;
+            --secondary: #F4F4F5;
+            --muted: #F4F4F5;
+            --muted-foreground: #71717A;
+            --accent: #2563EB;
+            --border: #E4E4E7;
+            --radius: 4px;
+        }
+
+        /* Modo Escuro */
+        [data-theme="dark"] {
+            --background: #000000;
+            --foreground: #F5F5F7;
+            --card: #1C1C1E;
+            --primary: #0A84FF;
+            --secondary: #2C2C2E;
+            --muted: #2C2C2E;
+            --muted-foreground: #98989D;
+            --accent: #30D158;
+            --border: #38383A;
+        }
+
+        /* Controle das Logos */
+        .logo-dark { display: none; }
+        .logo-light { display: block; }
+        [data-theme="dark"] .logo-light { display: none !important; }
+        [data-theme="dark"] .logo-dark { display: block !important; }
+
+        /* Ajustes Botões Dark Mode */
+        [data-theme="dark"] .btn-primary { background-color: var(--primary) !important; color: #FFFFFF !important; }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            margin: 0; padding: 0;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* Navbar Simplificada para o Login */
+        .navbar {
+            background-color: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-logo {
+            display: flex; align-items: center;
+        }
+        
+        .theme-toggle {
+            background: none; border: none; font-size: 20px; cursor: pointer;
+            padding: 8px; border-radius: 50%; transition: background-color 0.2s;
+        }
+        .theme-toggle:hover { background-color: var(--secondary); }
+
+        /* Container do Login */
+        .login-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .login-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .login-title {
+            font-family: 'Fraunces', serif;
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0 0 8px;
+            letter-spacing: -0.5px;
+        }
+        .login-subtitle {
+            font-size: 14px;
+            color: var(--muted-foreground);
+        }
+
+        /* Formulário */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--foreground);
+            margin-bottom: 8px;
+        }
+        .forgot-password {
+            color: var(--accent);
+            font-weight: 500;
+        }
+        .forgot-password:hover { text-decoration: underline; }
+        
+        .form-input {
+            width: 100%; padding: 12px 14px; border: 1px solid var(--border);
+            border-radius: var(--radius); font-family: inherit; font-size: 14px;
+            background-color: var(--background); color: var(--foreground); outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-input:focus { border-color: var(--primary); }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: #FFFFFF;
+            border: none;
+            cursor: pointer;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: var(--radius);
+            margin-top: 8px;
+            transition: opacity 0.2s;
+        }
+        .btn-primary:hover { opacity: 0.85; }
+
+        .register-link {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 14px;
+            color: var(--muted-foreground);
+        }
+        .register-link a {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .register-link a:hover { text-decoration: underline; }
+
+        /* Responsividade */
+        @media (max-width: 480px) {
+            .login-card { padding: 32px 24px; border: none; background-color: transparent; box-shadow: none; }
+            .login-wrapper { padding: 0; align-items: flex-start; margin-top: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar Minimalista para a tela de Login -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-logo">
+            <!-- Coloque o nome da sua logo clara e escura aqui -->
+            <img src="logo-claro-infodin.png" alt="Logo do site" class="logo-light" style="height: 36px; width: auto;">
+            <img src="logo-infodin.png" alt="Logo do site" class="logo-dark" style="height: 36px; width: auto;">
+        </a>
+        <button id="theme-toggle" class="theme-toggle" title="Mudar tema">🌗</button>
+    </nav>
+
+    <!-- Área de Login -->
+    <main class="login-wrapper">
+        <div class="login-card">
+            
+            <div class="login-header">
+                <h1 class="login-title">Bem-vindo de volta</h1>
+                <p class="login-subtitle">Faça login para acessar o seu painel.</p>
+            </div>
+
+            <!-- Formulário apontando para a rota de autenticação -->
+            <form action="/api/login" method="POST">
+                
+                <div class="form-group">
+                    <label class="form-label">E-mail</label>
+                    <input type="email" name="email" class="form-input" placeholder="seu@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label">
+                        <span>Senha</span>
+                        <a href="#" class="forgot-password">Esqueceu a senha?</a>
+                    </div>
+                    <input type="password" name="senha" class="form-input" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn-primary">Entrar</button>
+
+            </form>
+
+            <div class="register-link">
+                Ainda não tem uma conta? <br><a href="escolha-cadastro.html">Criar uma conta agora</a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Script de Modo Escuro -->
+    <script>
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+
+        if (localStorage.getItem('theme') === 'dark') {
+            htmlElement.setAttribute('data-theme', 'dark');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (htmlElement.getAttribute('data-theme') === 'dark') {
+                htmlElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            } else {
+                htmlElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+    </script>
+</body>
+</html>

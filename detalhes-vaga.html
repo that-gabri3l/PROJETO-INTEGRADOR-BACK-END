@@ -53,6 +53,27 @@
     background-color: var(--secondary) !important;
 }
 
+/* Controle das Logos (Claro/Escuro) */
+        .logo-dark {
+            display: none;
+        }
+
+        /* Esconde a logo escura por padrão */
+        .logo-light {
+            display: block;
+        }
+
+        /* Mostra a logo clara por padrão */
+
+        /* Quando o Modo Escuro for ativado: inverte a lógica */
+        [data-theme="dark"] .logo-light {
+            display: none !important;
+        }
+
+        [data-theme="dark"] .logo-dark {
+            display: block !important;
+        }
+
 /* Estilo do botão de trocar tema */
 .theme-toggle {
     background: none;
@@ -332,7 +353,14 @@
 <body>
 
     <nav class="navbar">
-        <a href="index.html" class="navbar-logo">JobBoard.</a>
+        <a href="index.html" class="navbar-logo"><!-- Imagem para o Modo Claro -->
+            <img src="logo-claro-infodin.png" alt="Logo do site" class="logo-light"
+                style="height:40px; width: auto; object-fit: contain;">
+
+            <!-- Imagem para o Modo Escuro -->
+            <img src="logo-infodin.png" alt="Logo do site" class="logo-dark"
+                style="height: 40px; width: auto; object-fit: contain;"></a>
+                <button id="theme-toggle" class="theme-toggle" title="Mudar tema">🌗</button>
     </nav>
 
     <div class="breadcrumb">
@@ -342,7 +370,6 @@
             <a href="vagas.html">Vagas</a>
             <span class="separator">›</span>
             <span class="current">Desenvolvedor Back-End Node.js</span>
-            <button id="theme-toggle" class="theme-toggle" title="Mudar tema">🌗</button>
         </div>
     </div>
 

@@ -145,16 +145,18 @@
             display: flex;
             gap: 24px;
             align-items: center;
-        }
 
-        .menu-link {
+            
+        }
+        .nav-link {
             color: var(--foreground);
             font-size: 14px;
             font-weight: 500;
             transition: color 0.3s;
+         
         }
 
-        .menu-link:hover {
+        .nav-link:hover {
             color: var(--accent);
         }
 
@@ -551,10 +553,11 @@
             .menu-links {
                 display: none;
                 width: 100%;
-                flex-direction: column;
+                flex-direction: column-reverse;
                 align-items: center;
                 gap: 16px;
                 padding-top: 8px;
+        
             }
 
             .menu-toggle:checked ~ .menu-links {
@@ -583,7 +586,7 @@
             }
 
             .menu-toggle:checked ~ .hamburger .bar:nth-child(1) {
-                transform: translateY(9px) rotate(45deg);
+                transform: translateY(-9px) rotate(45deg);
             }
 
             .menu-toggle:checked ~ .hamburger .bar:nth-child(2) {

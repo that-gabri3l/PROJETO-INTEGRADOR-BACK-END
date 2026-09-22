@@ -1,0 +1,215 @@
+/* Shared responsive rules for the site */
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+input,
+select,
+textarea,
+button {
+    max-width: 100%;
+}
+
+@media (max-width: 768px) {
+    body {
+        min-width: 0;
+    }
+
+    .navbar {
+        position: relative;
+        flex-wrap: wrap;
+        padding: 12px 16px;
+    }
+
+    .navbar-logo {
+        max-width: calc(100% - 52px);
+    }
+
+    .navbar-links,
+    .menu-links {
+        width: 100%;
+        min-width: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding-top: 8px;
+    }
+
+    .navbar-links > *,
+    .menu-links > * {
+        width: 100%;
+        margin: 0 !important;
+        text-align: center;
+    }
+
+    .menu-toggle:checked ~ .menu-links,
+    .menu-toggle:checked ~ .navbar-links {
+        display: flex;
+    }
+
+    .hamburger {
+        right: 16px;
+        top: 18px;
+    }
+
+    .page-header,
+    .hero,
+    .section,
+    .section-container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .header-container,
+    .container,
+    .main-layout,
+    .detail-layout,
+    .form-container {
+        width: 100%;
+        max-width: 100%;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .main-layout,
+    .detail-layout,
+    .split-layout,
+    .kpi-grid,
+    .content-grid,
+    .tables-grid,
+    .rec-grid,
+    .job-grid,
+    .jobs-grid,
+    .companies-grid,
+    .how-grid,
+    .grid-2,
+    .grid-2-cols,
+    .grid-3-cols,
+    .benefits-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .main-layout,
+    .detail-layout {
+        gap: 24px;
+    }
+
+    .sidebar {
+        position: static;
+    }
+
+    .split-card {
+        min-height: 0;
+        padding: 40px 24px;
+    }
+
+    .form-card,
+    .section-body,
+    .card {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .step-container {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .step-line {
+        width: 2px;
+        height: 20px;
+        margin-left: 13px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .form-actions button,
+    .form-actions a,
+    .btn-primary,
+    .btn-secondary,
+    .btn-publish,
+    .nav-btn {
+        width: 100%;
+        margin-left: 0 !important;
+        text-align: center;
+    }
+
+    .search-bar {
+        width: 100%;
+        max-width: none;
+        flex-direction: column;
+    }
+
+    .search-bar input,
+    .search-bar button {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .header-content,
+    .section-header,
+    .job-footer {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .table-container {
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+        min-width: 600px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p,
+    td,
+    th,
+    .nav-link,
+    .page-title {
+        overflow-wrap: anywhere;
+    }
+
+    .page-title {
+        font-size: clamp(28px, 8vw, 36px);
+    }
+}
+
+@media (max-width: 480px) {
+    .page-header {
+        padding-top: 28px;
+        padding-bottom: 32px;
+    }
+
+    .split-card {
+        padding: 32px 20px;
+    }
+
+    .form-card,
+    .section-body,
+    .card {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+}

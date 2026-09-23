@@ -1,0 +1,270 @@
+
+        :root {
+    --background: #FFFFFF;
+    --foreground: #000000;
+    --card: #FAFAFA;
+    --primary: #000000;
+    --secondary: #F4F4F5;
+    --muted: #F4F4F5;
+    --muted-foreground: #71717A;
+    --accent: #2563EB;
+    --border: #E4E4E7;
+    --radius: 4px;
+}
+
+/* Modo Escuro (Inversão Elegante) */
+/* Modo Escuro (Padrão Apple iOS/macOS) */
+[data-theme="dark"] {
+    --background: #000000;       /* Fundo preto absoluto */
+    --foreground: #F5F5F7;       /* Texto off-white para leitura confortável */
+    --card: #1C1C1E;             /* Cinza escuro para destacar as caixas do fundo */
+    --primary: #0A84FF;          /* Azul vibrante para botões principais */
+    --secondary: #2C2C2E;        /* Fundos secundários (hovers) */
+    --muted: #2C2C2E;
+    --muted-foreground: #98989D; /* Cinza claro correto para textos secundários */
+    --accent: #30D158;           /* Verde vivo para alertas e links */
+    --border: #38383A;           /* Bordas suaves */
+}
+
+/* Correção automática de contraste para os botões no Modo Escuro */
+[data-theme="dark"] .btn-primary,
+[data-theme="dark"] .nav-btn,
+[data-theme="dark"] .candidate-side .btn-action {
+    background-color: var(--primary) !important;
+    color: #FFFFFF !important; 
+}
+
+[data-theme="dark"] .company-side .btn-action {
+    background-color: var(--accent) !important;
+    color: #000000 !important; 
+}
+
+/* Correção do hover na tela de escolha de cadastro */
+[data-theme="dark"] .candidate-side:hover,
+[data-theme="dark"] .company-side:hover {
+    background-color: var(--secondary) !important;
+}
+
+/* Controle das Logos (Claro/Escuro) */
+        .logo-dark {
+            display: none;
+        }
+
+        /* Esconde a logo escura por padrão */
+        .logo-light {
+            display: block;
+        }
+
+        /* Mostra a logo clara por padrão */
+
+        /* Quando o Modo Escuro for ativado: inverte a lógica */
+        [data-theme="dark"] .logo-light {
+            display: none !important;
+        }
+
+        [data-theme="dark"] .logo-dark {
+            display: block !important;
+        }
+
+/* Estilo do botão de trocar tema */
+.theme-toggle {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    margin-left: 16px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+.theme-toggle:hover {
+    background-color: var(--secondary);
+}
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-logo {
+            font-family: 'Fraunces', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Layout de Tela Dividida */
+        .split-layout {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .split-card {
+            padding: 80px 64px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        /* Lado do Candidato */
+        .candidate-side {
+            background-color: var(--background);
+            border-right: 1px solid var(--border);
+        }
+        .candidate-side:hover { background-color: #EDE8DF; }
+
+        /* Lado da Empresa */
+        .company-side {
+            background-color: var(--primary);
+        }
+        .company-side:hover { background-color: #142A45; }
+
+        /* Números de Fundo (01 e 02) */
+        .bg-number {
+            position: absolute;
+            bottom: -20px;
+            right: 32px;
+            font-family: 'Fraunces', serif;
+            font-size: 200px;
+            font-weight: 700;
+            line-height: 1;
+            user-select: none;
+            pointer-events: none;
+        }
+        .candidate-side .bg-number { color: rgba(27,53,87,0.04); }
+        .company-side .bg-number { color: rgba(242,237,229,0.04); }
+
+        /* Textos e Estrutura Interna */
+        .content-wrapper { position: relative; z-index: 2; }
+        
+        .eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 24px;
+        }
+
+        .icon-box {
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 28px;
+            font-size: 28px;
+            border-radius: 2px;
+        }
+        .candidate-side .icon-box { border: 2px solid var(--primary); }
+        .company-side .icon-box { border: 2px solid rgba(242,237,229,0.4); }
+
+        .main-title {
+            font-family: 'Fraunces', serif;
+            font-size: 38px;
+            font-weight: 600;
+            margin: 0 0 16px;
+            letter-spacing: -0.8px;
+            line-height: 1.1;
+        }
+        .candidate-side .main-title { color: var(--foreground); }
+        .company-side .main-title { color: #F2EDE5; }
+        .main-title em { font-style: italic; font-weight: 300; }
+
+        .description {
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            max-width: 340px;
+        }
+        .candidate-side .description { color: var(--muted-foreground); }
+        .company-side .description { color: rgba(242,237,229,0.65); }
+
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .benefits-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+        .candidate-side .benefits-list li { color: var(--foreground); }
+        .company-side .benefits-list li { color: rgba(242,237,229,0.85); }
+        .check-icon {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        /* Botões Estilizados (Fake buttons pois o card inteiro é clicável) */
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 28px;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            border-radius: var(--radius);
+        }
+        .candidate-side .btn-action {
+            background-color: var(--primary);
+            color: #F2EDE5;
+        }
+        .company-side .btn-action {
+            background-color: var(--accent);
+            color: #FAF8F4;
+        }
+
+        /* Barra Inferior */
+        .bottom-bar {
+            border-top: 1px solid var(--border);
+            padding: 20px 24px;
+            text-align: center;
+            background-color: var(--card);
+        }
+        .bottom-text {
+            font-size: 13px;
+            color: var(--muted-foreground);
+        }
+        .login-link {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: underline;
+            font-family: 'Work Sans', sans-serif;
+        }
+        .login-link:hover { opacity: 0.8; }
+    

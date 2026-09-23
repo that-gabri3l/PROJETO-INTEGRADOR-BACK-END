@@ -1,0 +1,194 @@
+
+        :root {
+    --background: #FFFFFF;
+    --foreground: #000000;
+    --card: #FAFAFA;
+    --primary: #000000;
+    --secondary: #F4F4F5;
+    --muted: #F4F4F5;
+    --muted-foreground: #71717A;
+    --accent: #2563EB;
+    --border: #E4E4E7;
+    --radius: 4px;
+}
+
+/* Modo Escuro (Inversão Elegante) */
+/* Modo Escuro (Padrão Apple iOS/macOS) */
+[data-theme="dark"] {
+    --background: #000000;       /* Fundo preto absoluto */
+    --foreground: #F5F5F7;       /* Texto off-white para leitura confortável */
+    --card: #1C1C1E;             /* Cinza escuro para destacar as caixas do fundo */
+    --primary: #0A84FF;          /* Azul vibrante para botões principais */
+    --secondary: #2C2C2E;        /* Fundos secundários (hovers) */
+    --muted: #2C2C2E;
+    --muted-foreground: #98989D; /* Cinza claro correto para textos secundários */
+    --accent: #30D158;           /* Verde vivo para alertas e links */
+    --border: #38383A;           /* Bordas suaves */
+}
+
+/* Correção automática de contraste para os botões no Modo Escuro */
+[data-theme="dark"] .btn-primary,
+[data-theme="dark"] .nav-btn,
+[data-theme="dark"] .candidate-side .btn-action {
+    background-color: var(--primary) !important;
+    color: #FFFFFF !important; 
+}
+
+[data-theme="dark"] .company-side .btn-action {
+    background-color: var(--accent) !important;
+    color: #000000 !important; 
+}
+
+/* Correção do hover na tela de escolha de cadastro */
+[data-theme="dark"] .candidate-side:hover,
+[data-theme="dark"] .company-side:hover {
+    background-color: var(--secondary) !important;
+}
+
+/* Controle das Logos (Claro/Escuro) */
+        .logo-dark {
+            display: none;
+        }
+
+        /* Esconde a logo escura por padrão */
+        .logo-light {
+            display: block;
+        }
+
+        /* Mostra a logo clara por padrão */
+
+        /* Quando o Modo Escuro for ativado: inverte a lógica */
+        [data-theme="dark"] .logo-light {
+            display: none !important;
+        }
+
+        [data-theme="dark"] .logo-dark {
+            display: block !important;
+        }
+
+/* Estilo do botão de trocar tema */
+.theme-toggle {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    margin-left: 16px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+.theme-toggle:hover {
+    background-color: var(--secondary);
+}
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-logo {
+            font-family: 'Fraunces', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Layout */
+        .container {
+            max-width: 640px;
+            margin: 48px auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        .eyebrow {
+            font-family: 'JetBrains Mono', monospace; font-size: 10px;
+            letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted-foreground);
+        }
+        .page-title {
+            font-family: 'Fraunces', serif; font-size: 34px; font-weight: 600;
+            margin: 8px 0 4px; letter-spacing: -0.5px;
+        }
+
+        /* Form Card */
+        .form-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            padding: 36px;
+        }
+
+        /* Step Indicators */
+        .step-container {
+            display: flex; align-items: center; margin-bottom: 36px;
+        }
+        .step-item {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .step-circle {
+            width: 28px; height: 28px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600;
+            background-color: var(--muted); color: var(--muted-foreground);
+            transition: all 0.2s;
+        }
+        .step-label {
+            font-size: 12px; font-weight: 400; color: var(--muted-foreground);
+        }
+        .step-line {
+            flex: 1; height: 1px; margin: 0 12px; background-color: var(--border);
+        }
+        
+        /* Modificadores de Estado (Passos) */
+        .step-active .step-circle { background-color: var(--primary); color: #F2EDE5; }
+        .step-active .step-label { font-weight: 600; color: var(--foreground); }
+        .step-done .step-circle { background-color: var(--accent); color: #F2EDE5; }
+        .step-done-line { background-color: var(--accent); }
+
+        /* Form Fields */
+        .form-group { display: flex; flex-direction: column; gap: 18px; }
+        .form-label {
+            display: block; font-size: 12px; font-weight: 600;
+            color: var(--foreground); margin-bottom: 6px; letter-spacing: 0.02em;
+        }
+        .required { color: var(--accent); margin-left: 3px; }
+        .form-input {
+            width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+            border-radius: var(--radius); font-family: inherit; font-size: 14px;
+            background-color: var(--background); color: var(--foreground); outline: none;
+        }
+        .form-input:focus { border-color: var(--primary); }
+        
+        /* Ações (Botões) */
+        .form-actions {
+            display: flex; justify-content: space-between; align-items: center; margin-top: 28px;
+        }
+        .btn-primary {
+            padding: 12px 28px; background-color: var(--primary); color: #F2EDE5;
+            border: none; font-family: inherit; font-size: 14px; font-weight: 600;
+            border-radius: var(--radius); cursor: pointer; margin-left: auto;
+        }
+        .btn-secondary {
+            background: none; border: 1px solid var(--border); padding: 10px 20px;
+            cursor: pointer; font-family: inherit; font-size: 13px; border-radius: var(--radius);
+        }
+
+        /* Exibição Condicional */
+        .step-content { display: none; }
+        .step-content.active { display: block; }
+    

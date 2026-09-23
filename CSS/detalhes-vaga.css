@@ -1,0 +1,343 @@
+
+        :root {
+    --background: #FFFFFF;
+    --foreground: #000000;
+    --card: #FAFAFA;
+    --primary: #000000;
+    --secondary: #F4F4F5;
+    --muted: #F4F4F5;
+    --muted-foreground: #71717A;
+    --accent: #2563EB;
+    --border: #E4E4E7;
+    --radius: 4px;
+}
+
+/* Modo Escuro (Inversão Elegante) */
+/* Modo Escuro (Padrão Apple iOS/macOS) */
+[data-theme="dark"] {
+    --background: #000000;       /* Fundo preto absoluto */
+    --foreground: #F5F5F7;       /* Texto off-white para leitura confortável */
+    --card: #1C1C1E;             /* Cinza escuro para destacar as caixas do fundo */
+    --primary: #0A84FF;          /* Azul vibrante para botões principais */
+    --secondary: #2C2C2E;        /* Fundos secundários (hovers) */
+    --muted: #2C2C2E;
+    --muted-foreground: #98989D; /* Cinza claro correto para textos secundários */
+    --accent: #30D158;           /* Verde vivo para alertas e links */
+    --border: #38383A;           /* Bordas suaves */
+}
+
+/* Correção automática de contraste para os botões no Modo Escuro */
+[data-theme="dark"] .btn-primary,
+[data-theme="dark"] .nav-btn,
+[data-theme="dark"] .candidate-side .btn-action {
+    background-color: var(--primary) !important;
+    color: #FFFFFF !important; 
+}
+
+[data-theme="dark"] .company-side .btn-action {
+    background-color: var(--accent) !important;
+    color: #000000 !important; 
+}
+
+/* Correção do hover na tela de escolha de cadastro */
+[data-theme="dark"] .candidate-side:hover,
+[data-theme="dark"] .company-side:hover {
+    background-color: var(--secondary) !important;
+}
+
+/* Controle das Logos (Claro/Escuro) */
+        .logo-dark {
+            display: none;
+        }
+
+        /* Esconde a logo escura por padrão */
+        .logo-light {
+            display: block;
+        }
+
+        /* Mostra a logo clara por padrão */
+
+        /* Quando o Modo Escuro for ativado: inverte a lógica */
+        [data-theme="dark"] .logo-light {
+            display: none !important;
+        }
+
+        [data-theme="dark"] .logo-dark {
+            display: block !important;
+        }
+
+/* Estilo do botão de trocar tema */
+.theme-toggle {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    margin-left: 16px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+.theme-toggle:hover {
+    background-color: var(--secondary);
+}
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-logo {
+            font-family: 'Fraunces', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Breadcrumb (Caminho de navegação) */
+        .breadcrumb {
+            border-bottom: 1px solid var(--border);
+            background-color: var(--card);
+            padding: 12px 24px;
+        }
+        .breadcrumb-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            font-size: 13px;
+        }
+        .breadcrumb a {
+            color: var(--muted-foreground);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span.separator { color: var(--border); font-size: 12px; }
+        .breadcrumb span.current { color: var(--foreground); font-weight: 500; }
+
+        /* Layout Principal */
+        .detail-layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 40px;
+        }
+
+        /* Cabeçalho da Vaga */
+        .eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted-foreground);
+            margin-bottom: 8px;
+        }
+        .job-title-large {
+            font-family: 'Fraunces', serif;
+            font-size: 40px;
+            font-weight: 600;
+            color: var(--foreground);
+            margin: 0 0 8px;
+            line-height: 1.15;
+            letter-spacing: -0.5px;
+        }
+        .company-name {
+            font-size: 18px;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .meta-tags {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 36px;
+        }
+        .meta-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background-color: var(--secondary);
+            border: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--foreground);
+            border-radius: var(--radius);
+        }
+
+        .divider-large {
+            height: 1px;
+            background-color: var(--border);
+            margin-bottom: 36px;
+        }
+
+        /* Seções de Texto (SectionLabel) */
+        .section-box { margin-bottom: 40px; }
+        .section-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .section-dash {
+            width: 20px;
+            height: 2px;
+            background-color: var(--accent);
+        }
+        .section-title {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            letter-spacing: -0.2px;
+        }
+        
+        .description-text {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--foreground);
+        }
+
+        /* Lista de Requisitos */
+        .requirements-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .requirements-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .list-bullet {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background-color: var(--accent);
+            margin-top: 6px;
+            flex-shrink: 0;
+        }
+
+        /* Benefícios (Grid) */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .benefit-item {
+            padding: 12px 16px;
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            font-size: 14px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .check-icon { color: var(--accent); font-weight: bold; }
+
+        /* Barra Lateral (Sidebar) */
+        .sidebar {
+            position: sticky;
+            top: 80px;
+        }
+        .sidebar-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            padding: 28px;
+            margin-bottom: 16px;
+        }
+        
+        /* Formulário de Candidatura */
+        .form-group { margin-bottom: 14px; }
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--foreground);
+            margin-bottom: 6px;
+            letter-spacing: 0.02em;
+        }
+        .form-input {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 13px;
+            background-color: var(--background);
+            color: var(--foreground);
+            outline: none;
+            box-sizing: border-box;
+        }
+        .form-input:focus { border-color: var(--primary); }
+        .file-dropzone {
+            border: 1px dashed var(--border);
+            padding: 16px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--muted-foreground);
+            border-radius: var(--radius);
+            cursor: pointer;
+            background-color: var(--background);
+        }
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: #F2EDE5;
+            border: none;
+            cursor: pointer;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: var(--radius);
+            transition: opacity 0.15s;
+            letter-spacing: 0.02em;
+        }
+        .btn-primary:hover { opacity: 0.85; }
+
+        /* Card da Empresa */
+        .company-card {
+            padding: 20px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .company-logo {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+            font-family: 'Fraunces', serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: #FAF8F4;
+        }
+    

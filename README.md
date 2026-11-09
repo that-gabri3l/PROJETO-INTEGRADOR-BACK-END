@@ -1,2 +1,2 @@
-# PROJETO-INTEGRADOR-BACK-END
+# Infodin
 Projeto com samuel, Gabriel, Perola e guilherme 

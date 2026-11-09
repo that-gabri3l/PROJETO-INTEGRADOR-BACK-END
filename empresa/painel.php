@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel da Empresa - Infodin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/CSS/painel-empresa.css"> 
+    
+
+    
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="/index.php" class="navbar-logo"><!-- Imagem para o Modo Claro -->
+            <img src="/images/logo-claro-infodin.png" alt="Logo do site" class="logo-light"
+                style="height:40px; width: auto; object-fit: contain;">
+
+            <!-- Imagem para o Modo Escuro -->
+            <img src="/images/logo-infodin.png" alt="Logo do site" class="logo-dark"
+                style="height: 40px; width: auto; object-fit: contain;">
+                </a>
+        <button id="theme-toggle" class="theme-toggle" title="Mudar tema">🌗</button>
+    </nav>
+
+    <!-- Dashboard Header -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div>
+                <span class="eyebrow">Painel da empresa</span>
+                <h1 class="company-title">Acme Tecnologia LTDA</h1>
+            </div>
+            <a href="/vagas/publicar.php" class="btn-publish">+ Publicar nova vaga</a>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-value">4</div>
+                <div class="kpi-label">Vagas publicadas</div>
+                <div class="kpi-delta">+1 este mês</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">97</div>
+                <div class="kpi-label">Total de candidatos</div>
+                <div class="kpi-delta">+23 esta semana</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">732</div>
+                <div class="kpi-label">Visualizações totais</div>
+                <div class="kpi-delta">+89 hoje</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">9,3%</div>
+                <div class="kpi-label">Taxa de conversão</div>
+                <div class="kpi-delta">↑ vs mês anterior</div>
+            </div>
+        </div>
+
+        <!-- Tabelas -->
+        <div class="tables-grid">
+            
+            <!-- Tabela: Suas Vagas -->
+            <div>
+                <div class="table-section-header">
+                    <div>
+                        <span class="section-eyebrow">§ 01</span>
+                        <h2 class="section-title">Suas vagas</h2>
+                    </div>
+                    <a href="/vagas/publicar.php" class="btn-text">+ Nova vaga</a>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Vaga</th>
+                                <th class="col-center">Candidatos</th>
+                                <th class="col-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-bold">
+                                    <div>Engenheiro de Software Sênior</div>
+                                    <div class="text-meta">312 views · 12/09/2025</div>
+                                </td>
+                                <td class="col-center"><span class="large-number">47</span></td>
+                                <td class="col-center"><span class="badge badge-green">Ativa</span></td>
+                            </tr>
+                            <tr>
+                                <td class="text-bold">
+                                    <div>Designer de Produto</div>
+                                    <div class="text-meta">189 views · 10/09/2025</div>
+                                </td>
+                                <td class="col-center"><span class="large-number">23</span></td>
+                                <td class="col-center"><span class="badge badge-green">Ativa</span></td>
+                            </tr>
+                            <tr>
+                                <td class="text-bold">
+                                    <div>Analista de Dados</div>
+                                    <div class="text-meta">143 views · 05/09/2025</div>
+                                </td>
+                                <td class="col-center"><span class="large-number">18</span></td>
+                                <td class="col-center"><span class="badge badge-yellow">Pausada</span></td>
+                            </tr>
+                            <tr>
+                                <td class="text-bold">
+                                    <div>Tech Lead</div>
+                                    <div class="text-meta">88 views · 15/09/2025</div>
+                                </td>
+                                <td class="col-center"><span class="large-number">9</span></td>
+                                <td class="col-center"><span class="badge badge-green">Ativa</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tabela: Candidatos Recentes -->
+            <div>
+                <div class="table-section-header" style="margin-bottom: 16px; display: block;">
+                    <span class="section-eyebrow">§ 02</span>
+                    <h2 class="section-title">Candidatos recentes</h2>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Candidato</th>
+                                <th class="col-right">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="candidate-info">
+                                        <div class="avatar">A</div>
+                                        <div>
+                                            <div class="text-bold">Ana Costa</div>
+                                            <div class="text-meta" style="font-family: 'Work Sans', sans-serif;">Engenheira de Software Sênior</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="col-right"><span class="badge badge-blue">Novo</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="candidate-info">
+                                        <div class="avatar">B</div>
+                                        <div>
+                                            <div class="text-bold">Bruno Ferreira</div>
+                                            <div class="text-meta" style="font-family: 'Work Sans', sans-serif;">Designer de Produto</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="col-right"><span class="badge badge-yellow">Em análise</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="candidate-info">
+                                        <div class="avatar">C</div>
+                                        <div>
+                                            <div class="text-bold">Camila Rodrigues</div>
+                                            <div class="text-meta" style="font-family: 'Work Sans', sans-serif;">Engenheira de Software Sênior</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="col-right"><span class="badge badge-blue">Novo</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="candidate-info">
+                                        <div class="avatar">D</div>
+                                        <div>
+                                            <div class="text-bold">Diego Alves</div>
+                                            <div class="text-meta" style="font-family: 'Work Sans', sans-serif;">Tech Lead</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="col-right"><span class="badge badge-green">Entrevista agendada</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="candidate-info">
+                                        <div class="avatar">E</div>
+                                        <div>
+                                            <div class="text-bold">Elisa Mendes</div>
+                                            <div class="text-meta" style="font-family: 'Work Sans', sans-serif;">Analista de Dados</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="col-right"><span class="badge badge-yellow">Em análise</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+        <script src="/js/tema.js"></script>
+
+
+</body>
+</html>

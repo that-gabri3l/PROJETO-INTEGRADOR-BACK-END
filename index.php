@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infodin - Encontre a vaga certa para você</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="CSS/index.css">    
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="index.php" class="logo">
+            <!-- Imagem para o Modo Claro -->
+            <img src="images/logo-claro-infodin.png" alt="Logo do site" class="logo-light"
+                style="height:40px; width: auto; object-fit: contain;">
+
+            <!-- Imagem para o Modo Escuro -->
+            <img src="images/logo-infodin.png" alt="Logo do site" class="logo-dark"
+                style="height: 40px; width: auto; object-fit: contain;">
+        </a>
+
+        <!-- Checkbox invisível que controla o menu -->
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+        <!-- Ícone do Hambúrguer (associado ao checkbox) -->
+        <label for="menu-toggle" class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </label>
+
+        <div class="menu-links">
+            <a href="vagas/index.php" class="nav-link">Buscar Vagas</a>
+            <a href="empresa/cadastro.php" class="nav-link">Para Empresas</a>
+
+            <a href="candidato/cadastro.php" class="nav-link">Cadastrar</a>
+
+            <a href="empresa/painel.php" class="nav-btn">Entrar</a>
+            <button id="theme-toggle" class="theme-toggle" title="Mudar tema">🌗</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-pattern"></div>
+        <div class="hero-content">
+            <div style="max-width: 640px;">
+                <div class="hero-label">
+                    <div class="hero-label-line"></div>
+                    <span class="hero-label-text">Plataforma de empregos</span>
+                </div>
+                <h1 class="hero-title">Encontre a vaga<br><em>certa para você</em></h1>
+                <p class="hero-desc">Conectamos profissionais talentosos às melhores empresas do Brasil. Mais de 4.800
+                    vagas em aberto em todas as áreas.</p>
+
+                <!-- Aponte o action para a rota de busca no seu backend -->
+                <form class="search-bar" action="/vagas/index.php" method="GET">
+                    <input type="text" name="q" placeholder="Cargo, empresa ou palavra-chave...">
+                    <button type="submit">Buscar Vagas</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value">4.800+</div>
+                <div class="stat-label">Vagas ativas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">1.200+</div>
+                <div class="stat-label">Empresas cadastradas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">180 mil</div>
+                <div class="stat-label">Candidatos registrados</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">92%</div>
+                <div class="stat-label">Taxa de resposta</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Jobs -->
+    <section class="section-container">
+        <div class="section-header">
+            <div>
+                <span class="section-eyebrow">§ 01 — Destaques</span>
+                <h2 class="section-title">Vagas em destaque</h2>
+            </div>
+            <div class="filter-tags">
+                <button class="filter-tag active">Todos</button>
+                <button class="filter-tag">Tecnologia</button>
+                <button class="filter-tag">Design</button>
+                <button class="filter-tag">Marketing</button>
+                <button class="filter-tag">Dados</button>
+                <button class="filter-tag">Gestão</button>
+            </div>
+        </div>
+
+        <div class="job-grid">
+            <!-- Vaga 1 -->
+            <a href="/vagas/detalhes.php" class="job-card"
+                style="display: block; text-decoration: none; color: inherit;">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                    <div>
+                        <div
+                            style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 2px;">
+                            Engenheiro de Software Sênior</div>
+                        <div style="font-size: 12px; color: var(--muted-foreground);">Nubank</div>
+                    </div>
+                    <div class="company-logo"
+                        style="width: 36px; height: 36px; font-size: 14px; background-color: #6B21A8;">N</div>
+                </div>
+                <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px;">São Paulo, SP ·
+                    Híbrido</div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 13px; font-weight: 600; color: var(--primary);">R$ 15.000</span>
+                    <span style="font-size: 12px; color: var(--accent); font-weight: 600;">Ver vaga →</span>
+                </div>
+            </a>
+
+            <!-- Vaga 2 -->
+            <a href="/vagas/detalhes.php" class="job-card"
+                style="display: block; text-decoration: none; color: inherit;">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                    <div>
+                        <div
+                            style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 2px;">
+                            Designer de Produto (UX/UI)</div>
+                        <div style="font-size: 12px; color: var(--muted-foreground);">Stone</div>
+                    </div>
+                    <div class="company-logo"
+                        style="width: 36px; height: 36px; font-size: 14px; background-color: #15803D;">S</div>
+                </div>
+                <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px;">Remoto · Integral
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 13px; font-weight: 600; color: var(--primary);">R$ 9.500</span>
+                    <span style="font-size: 12px; color: var(--accent); font-weight: 600;">Ver vaga →</span>
+                </div>
+            </a>
+
+            <!-- Vaga 3 -->
+            <a href="/vagas/detalhes.php" class="job-card"
+                style="display: block; text-decoration: none; color: inherit;">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                    <div>
+                        <div
+                            style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 2px;">
+                            Cientista de Dados</div>
+                        <div style="font-size: 12px; color: var(--muted-foreground);">iFood</div>
+                    </div>
+                    <div class="company-logo"
+                        style="width: 36px; height: 36px; font-size: 14px; background-color: #C2410C;">i</div>
+                </div>
+                <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px;">Campinas, SP ·
+                    Híbrido</div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 13px; font-weight: 600; color: var(--primary);">R$ 14.000</span>
+                    <span style="font-size: 12px; color: var(--accent); font-weight: 600;">Ver vaga →</span>
+                </div>
+            </a>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="vagas/index.php" class="btn-outline">Ver todas as vagas →</a>
+        </div>
+    </section>
+
+    <!-- Divider -->
+    <div style="height: 1px; background-color: var(--border); max-width: 1200px; margin: 0 auto;"></div>
+
+    <!-- Companies Section -->
+    <section class="section-container">
+        <span class="section-eyebrow" style="margin-bottom: 6px;">§ 02 — Empresas</span>
+        <div class="section-header" style="margin-bottom: 32px;">
+            <h2 class="section-title" style="margin: 0;">Empresas que confiam em nós</h2>
+            <a href="empresa/cadastro.php"
+                style="font-size: 13px; color: var(--accent); font-weight: 600; font-family: 'Work Sans', sans-serif;">Cadastrar
+                minha empresa →</a>
+        </div>
+
+        <div class="companies-grid">
+            <div class="company-card">
+                <div class="company-logo" style="background-color: #6B21A8;">N</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 15px;">Nubank</div>
+                    <div style="font-size: 12px; color: var(--muted-foreground);">Fintech</div>
+                    <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">34 vagas
+                        abertas</div>
+                </div>
+            </div>
+            <div class="company-card">
+                <div class="company-logo" style="background-color: #15803D;">S</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 15px;">Stone</div>
+                    <div style="font-size: 12px; color: var(--muted-foreground);">Pagamentos</div>
+                    <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">18 vagas
+                        abertas</div>
+                </div>
+            </div>
+            <div class="company-card">
+                <div class="company-logo" style="background-color: #C2410C;">i</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 15px;">iFood</div>
+                    <div style="font-size: 12px; color: var(--muted-foreground);">Delivery</div>
+                    <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">27 vagas
+                        abertas</div>
+                </div>
+            </div>
+            <div class="company-card">
+                <div class="company-logo" style="background-color: #1B3557;">H</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 15px;">Hotmart</div>
+                    <div style="font-size: 12px; color: var(--muted-foreground);">Ed-tech</div>
+                    <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">15 vagas
+                        abertas</div>
+                </div>
+            </div>
+            <div class="company-card">
+                <div class="company-logo" style="background-color: #1B5757;">T</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 15px;">Totvs</div>
+                    <div style="font-size: 12px; color: var(--muted-foreground);">ERP / SaaS</div>
+                    <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">22 vagas
+                        abertas</div>
+                </div>
+            </div>
+            <div class="company-card">
+                <div class="company-logo" style="background-color: #8B6914;">R</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 15px;">RD Station</div>
+                    <div style="font-size: 12px; color: var(--muted-foreground);">MarTech</div>
+                    <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">11 vagas
+                        abertas</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="how-it-works">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <span
+                style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 6px;">
+                § 03 — Como funciona
+            </span>
+            <h2
+                style="font-family: 'Fraunces', serif; font-size: 30px; font-weight: 600; color: #F2EDE5; margin: 0 0 48px; letter-spacing: -0.5px;">
+                Simples para empresas e candidatos
+            </h2>
+
+            <div class="how-grid">
+                <!-- For candidates -->
+                <div>
+                    <div class="step-col-title">Para candidatos</div>
+
+                    <div class="step-item">
+                        <div class="step-number">01</div>
+                        <div class="step-text">
+                            <h4>Crie seu perfil</h4>
+                            <p>Cadastre-se gratuitamente e construa seu perfil profissional com currículo e portfólio.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">02</div>
+                        <div class="step-text">
+                            <h4>Explore vagas</h4>
+                            <p>Filtre por área, localização, regime e faixa salarial para encontrar a vaga ideal.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">03</div>
+                        <div class="step-text">
+                            <h4>Candidate-se</h4>
+                            <p>Envie sua candidatura com um clique e acompanhe o status em tempo real.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- For companies -->
+                <div style="padding-left: 48px; border-left: 1px solid rgba(242,237,229,0.1);">
+                    <div class="step-col-title">Para empresas</div>
+
+                    <div class="step-item">
+                        <div class="step-number" style="color: #F2EDE5;">01</div>
+                        <div class="step-text">
+                            <h4>Registre sua empresa</h4>
+                            <p>Cadastre CNPJ, perfil da empresa e informações de contato em poucos minutos.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number" style="color: #F2EDE5;">02</div>
+                        <div class="step-text">
+                            <h4>Publique vagas</h4>
+                            <p>Descreva a vaga, defina requisitos, salário e benefícios. Publique instantaneamente.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number" style="color: #F2EDE5;">03</div>
+                        <div class="step-text">
+                            <h4>Gerencie candidatos</h4>
+                            <p>Receba candidaturas, filtre perfis, agende entrevistas e feche contratações.</p>
+                        </div>
+                    </div>
+
+                    <a href="/empresa/cadastro.php"
+                        style="display: inline-block; padding: 12px 24px; background-color: var(--accent); color: #FAF8F4; font-size: 13px; font-weight: 600; border-radius: 2px; margin-top: 8px; transition: opacity 0.15s;">
+                        Começar agora →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div style="display: flex; alignItems: baseline; gap: 6px;">
+            <span
+                style="font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; color: var(--primary);">Infodin</span>
+        </div>
+        <p style="font-size: 12px; color: var(--muted-foreground); margin: 0;">
+            © 2026 Infodin — Todos os direitos reservados
+        </p>
+        <div class="footer-links">
+            <a href="#">Termos</a>
+            <a href="#">Privacidade</a>
+            <a href="#">Contato</a>
+        </div>
+    </footer>
+
+    <script src="js/tema.js"></script>
+
+</body>
+
+</html>

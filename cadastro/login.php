@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrar - JobBoard</title>
+    <title>Entrar - Infodin</title>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="CSS/login.css">
+    <link rel="stylesheet" href="/CSS/login.css">
     
 </head>
 <body>
 
     <!-- Navbar Minimalista para a tela de Login -->
     <nav class="navbar">
-        <a href="index.html" class="navbar-logo">
+        <a href="/index.php" class="navbar-logo">
             <!-- Coloque o nome da sua logo clara e escura aqui -->
-            <img src="logo-claro-infodin.png" alt="Logo do site" class="logo-light" style="height: 36px; width: auto;">
-            <img src="logo-infodin.png" alt="Logo do site" class="logo-dark" style="height: 36px; width: auto;">
+            <img src="/images/logo-claro-infodin.png" alt="Logo do site" class="logo-light" style="height: 36px; width: auto;">
+            <img src="/images/logo-infodin.png" alt="Logo do site" class="logo-dark" style="height: 36px; width: auto;">
         </a>
         <button id="theme-toggle" class="theme-toggle" title="Mudar tema">🌗</button>
     </nav>
@@ -51,31 +51,15 @@
 
             <div class="register-link">
     Ainda não tem uma conta? <br>
-    <a href="cadastro-candidato.html">Cadastrar como Candidato</a> ou 
-    <a href="cadastro-empresa.html">Empresa</a>
+    <a href="/candidato/cadastro.php">Cadastrar como Candidato</a> ou 
+    <a href="/empresa/cadastro.php">Empresa</a>
 </div>
 
         </div>
     </main>
 
     <!-- Script de Modo Escuro -->
-    <script>
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const htmlElement = document.documentElement;
+        <script src="/js/tema.js"></script>
 
-        if (localStorage.getItem('theme') === 'dark') {
-            htmlElement.setAttribute('data-theme', 'dark');
-        }
-
-        themeToggleBtn.addEventListener('click', () => {
-            if (htmlElement.getAttribute('data-theme') === 'dark') {
-                htmlElement.removeAttribute('data-theme');
-                localStorage.setItem('theme', 'light');
-            } else {
-                htmlElement.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
-            }
-        });
-    </script>
 </body>
 </html>

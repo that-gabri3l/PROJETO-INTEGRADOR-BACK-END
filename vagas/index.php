@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vagas - Infodin</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+<link rel="stylesheet" href="/CSS/vagas.css"> 
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="/index.php" class="navbar-logo"><!-- Imagem para o Modo Claro -->
+            <img src="/images/logo-claro-infodin.png" alt="Logo do site" class="logo-light"
+                style="height:40px; width: auto; object-fit: contain;">
+
+            <!-- Imagem para o Modo Escuro -->
+            <img src="/images/logo-infodin.png" alt="Logo do site" class="logo-dark"
+                style="height: 40px; width: auto; object-fit: contain;"></a>
+
+        <!-- Checkbox invisível que controla o menu -->
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+
+        <!-- Ícone do Hambúrguer (associado ao checkbox) -->
+        <label for="menu-toggle" class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </label>
+
+
+        <div class="menu-links">
+            <a href="/empresa/cadastro.php" class="nav-link"
+                style="text-decoration: none; color: var(--foreground); font-weight: 500; margin-right: 20px;">Para
+                Empresas</a>
+            <a href="/candidato/cadastro.php" class="nav-btn"
+                style="text-decoration: none; color: var(--primary); font-weight: 600;">Entrar</a>
+            <button id="theme-toggle" class="theme-toggle" title="Mudar tema">🌗</button>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <div class="header-container">
+            <span class="eyebrow-text">Explorar vagas</span>
+            <h1 class="page-title">4 vagas disponíveis</h1>
+
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar por cargo, empresa ou habilidade...">
+                <button>Buscar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-layout">
+        <!-- Sidebar Filters -->
+        <aside class="sidebar">
+            <div class="filter-section">
+                <div class="filter-title">Área</div>
+                <div class="filter-list">
+                    <button class="filter-btn active-primary">Todos</button>
+                    <button class="filter-btn">Tecnologia</button>
+                    <button class="filter-btn">Design</button>
+                    <button class="filter-btn">Marketing</button>
+                    <button class="filter-btn">Dados</button>
+                    <button class="filter-btn">Gestão</button>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="filter-section">
+                <div class="filter-title">Regime</div>
+                <div class="filter-list">
+                    <button class="filter-btn active-primary">Todos</button>
+                    <button class="filter-btn">Remoto</button>
+                    <button class="filter-btn">Híbrido</button>
+                    <button class="filter-btn">Presencial</button>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="filter-section">
+                <div class="filter-title">Ordenar por</div>
+                <div class="filter-list">
+                    <button class="filter-btn active-secondary">Mais recente</button>
+                    <button class="filter-btn">Maior salário</button>
+                    <button class="filter-btn">Relevância</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Job List -->
+        <div class="jobs-grid">
+            <!-- Vaga 1 -->
+            <div class="job-card">
+                <div class="job-company">Tech Solutions Ltda.</div>
+                <h3 class="job-title">Desenvolvedor Back-End Node.js</h3>
+                <div class="job-meta">Tecnologia • Remoto</div>
+                <div class="job-footer">
+                    <span class="job-salary">R$ 5.000</span>
+                    <a href="/vagas/detalhes.php" class="btn-apply">Ver vaga</a>
+                </div>
+            </div>
+
+            <!-- Vaga 2 -->
+            <div class="job-card">
+                <div class="job-company">Agência Web Brasil</div>
+                <h3 class="job-title">UX/UI Designer</h3>
+                <div class="job-meta">Design • Híbrido</div>
+                <div class="job-footer">
+                    <span class="job-salary">R$ 4.200</span>
+                    <a href="#" class="btn-apply">Ver vaga</a>
+                </div>
+            </div>
+
+            <!-- Vaga 3 -->
+            <div class="job-card">
+                <div class="job-company">Fintech Startup</div>
+                <h3 class="job-title">Engenheiro de Dados</h3>
+                <div class="job-meta">Dados • Remoto</div>
+                <div class="job-footer">
+                    <span class="job-salary">R$ 9.500</span>
+                    <a href="#" class="btn-apply">Ver vaga</a>
+                </div>
+            </div>
+
+            <!-- Vaga 4 -->
+            <div class="job-card">
+                <div class="job-company">Marketing Co.</div>
+                <h3 class="job-title">Analista de Marketing</h3>
+                <div class="job-meta">Marketing • Presencial</div>
+                <div class="job-footer">
+                    <span class="job-salary">R$ 3.800</span>
+                    <a href="#" class="btn-apply">Ver vaga</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <script src="/js/tema.js"></script>
+
+
+</body>
+
+</html>

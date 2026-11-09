@@ -1,15 +1,3 @@
-<?php
-// COLE ESTAS DUAS LINHAS AQUI PARA TESTAR:
-var_dump($_POST);
-exit();
-
-require_once 'conexao.php';
-// ... resto do código ... 
-?>
-
-
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 

@@ -57,7 +57,7 @@
         <!-- Formulário (Tudo em um único form para enviar via POST) -->
         <div class="form-card">
             <!-- Aponte o action para a sua rota do back-end e adicione o enctype -->
-            <form id="registerForm" action="processar-candidato.php" method="POST" enctype="multipart/form-data">
+            <form id="registerForm" action="src/processar-candidato.php" method="POST" enctype="multipart/form-data">
 
                 <!-- PASSO 1 -->
                 <div class="step-content active" id="step-1">

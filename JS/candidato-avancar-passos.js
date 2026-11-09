@@ -4,17 +4,29 @@ let currentStep = 1;
 const totalSteps = 3;
 
 function changeStep(direction) {
-    // Esconde o passo atual
-    document.getElementById(`step-${currentStep}`).classList.remove('active');
+    const passoAtualEl = document.getElementById(`step-${currentStep}`);
 
-    // Atualiza o indicador (marcar como concluído se estiver avançando)
+    // Se estiver avançando, valida os campos obrigatórios do passo atual antes de esconder
+    if (direction === 1) {
+        const inputsObrigatorios = passoAtualEl.querySelectorAll('input[required], select[required], textarea[required]');
+        for (let input of inputsObrigatorios) {
+            if (!input.checkValidity()) {
+                input.reportValidity(); // Mostra o balãozinho de erro do navegador na hora
+                return; // Trava o avanço até preencher corretamente
+            }
+        }
+    }
+
+    // Esconde o passo atual
+    passoAtualEl.classList.remove('active');
+
+    // Atualiza o indicador
     if (direction === 1) {
         document.getElementById(`indicator-${currentStep}`).classList.remove('step-active');
         document.getElementById(`indicator-${currentStep}`).classList.add('step-done');
         document.getElementById(`indicator-${currentStep}`).querySelector('.step-circle').innerHTML = '✓';
         if (currentStep < totalSteps) document.getElementById(`line-${currentStep}`).classList.add('step-done-line');
     } else {
-        // Se estiver voltando, remove o visual de concluído do passo que estamos saindo
         document.getElementById(`indicator-${currentStep}`).classList.remove('step-active');
         document.getElementById(`indicator-${currentStep}`).classList.remove('step-done');
         document.getElementById(`indicator-${currentStep}`).querySelector('.step-circle').innerHTML = currentStep;
@@ -44,7 +56,6 @@ function changeStep(direction) {
     }
 }
 
-// Script para gerenciar os botões de Regime de Trabalho
 let regimesSelecionados = [];
 function toggleRegime(btnElement, valor) {
     btnElement.classList.toggle('active');
@@ -55,6 +66,5 @@ function toggleRegime(btnElement, valor) {
         regimesSelecionados.push(valor);
     }
 
-    // Salva no input escondido para enviar pro Back-End (ex: "Presencial,Remoto")
     document.getElementById('regime_input').value = regimesSelecionados.join(',');
 }

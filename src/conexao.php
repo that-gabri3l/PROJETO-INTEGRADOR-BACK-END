@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost';
-$dbname = 'jobboard_db'; 
+$dbname = 'infodin'; 
 $usuario = 'root';
 $senha_db = ''; // Mantenha vazio se estiver a usar o padrão do XAMPP/Codespaces
 

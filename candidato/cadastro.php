@@ -1,13 +1,27 @@
+<?php
+// COLE ESTAS DUAS LINHAS AQUI PARA TESTAR:
+var_dump($_POST);
+exit();
+
+require_once 'conexao.php';
+// ... resto do código ... 
+?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Candidato - Infodin</title>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-       <link rel="stylesheet" href="/CSS/cadastro-candidato.css">  
+    <link rel="stylesheet" href="/CSS/cadastro-candidato.css">
 
 </head>
+
 <body>
 
     <nav class="navbar">
@@ -39,13 +53,13 @@
                 <div class="step-label">Dados pessoais</div>
             </div>
             <div class="step-line" id="line-1"></div>
-            
+
             <div class="step-item" id="indicator-2">
                 <div class="step-circle">2</div>
                 <div class="step-label">Perfil profissional</div>
             </div>
             <div class="step-line" id="line-2"></div>
-            
+
             <div class="step-item" id="indicator-3">
                 <div class="step-circle">3</div>
                 <div class="step-label">Acesso e senha</div>
@@ -54,17 +68,19 @@
 
         <!-- Formulário (Tudo em um único form para enviar via POST) -->
         <div class="form-card">
-            <!-- Aponte o action para a sua rota do back-end -->
-            <form id="registerForm" action="/api/candidatos" method="POST">
-                
+            <!-- Aponte o action para a sua rota do back-end e adicione o enctype -->
+            <form id="registerForm" action="processar-candidato.php" method="POST" enctype="multipart/form-data">
+
                 <!-- PASSO 1 -->
                 <div class="step-content active" id="step-1">
                     <div class="form-group">
-                        <div>
+
+                        <div style="margin-bottom: 16px;">
                             <label class="form-label">Nome completo<span class="required">*</span></label>
                             <input type="text" name="nome" class="form-input" placeholder="Ex: Maria Silva" required>
                         </div>
-                        <div class="grid-2">
+
+                        <div class="grid-2" style="margin-bottom: 16px;">
                             <div>
                                 <label class="form-label">E-mail<span class="required">*</span></label>
                                 <input type="email" name="email" class="form-input" placeholder="maria@email.com" required>
@@ -74,7 +90,8 @@
                                 <input type="text" name="telefone" class="form-input" placeholder="(11) 99999-9999">
                             </div>
                         </div>
-                        <div class="grid-2">
+
+                        <div class="grid-2" style="margin-bottom: 16px;">
                             <div>
                                 <label class="form-label">Cidade<span class="required">*</span></label>
                                 <input type="text" name="cidade" class="form-input" placeholder="São Paulo, SP" required>
@@ -84,40 +101,52 @@
                                 <input type="date" name="data_nascimento" class="form-input">
                             </div>
                         </div>
+
+                        <!-- Campo de Senha Obrigatório para o Login -->
+                        <div style="margin-bottom: 16px;">
+                            <label class="form-label">Crie uma Senha<span class="required">*</span></label>
+                            <input type="password" name="senha" class="form-input" placeholder="••••••••" required>
+                        </div>
+
                         <div>
                             <label class="form-label">Foto de perfil</label>
-                            <div class="upload-box">
+                            <!-- Adicionei um onclick na caixa para abrir a janela de ficheiros quando clicar em qualquer lugar nela -->
+                            <label class="upload-box" style="display: flex; cursor: pointer; align-items: center; gap: 16px;">
                                 <div style="font-size: 24px;">👤</div>
                                 <div style="text-align: left;">
                                     <div style="font-size: 13px; font-weight: 500;">Clique para fazer upload</div>
                                     <div style="font-size: 11px; color: var(--muted-foreground);">JPG ou PNG · Máximo 2 MB</div>
                                 </div>
-                                <input type="file" name="foto" style="display:none;">
-                            </div>
+                                <!-- Alterado para foto_perfil e adicionado accept para só aceitar imagens -->
+                                <input type="file" name="foto_perfil" accept="image/png, image/jpeg" style="display:none;">
+                            </label>
                         </div>
+
                     </div>
                 </div>
 
-                <!-- PASSO 2 -->
-                <div class="step-content" id="step-2">
-                    <div class="form-group">
-                        <div class="grid-2">
-                            <div>
-                                <label class="form-label">Cargo atual / desejado<span class="required">*</span></label>
-                                <input type="text" name="cargo" class="form-input" placeholder="Ex: Desenvolvedora Frontend" required>
-                            </div>
-                            <div>
-                                <label class="form-label">Área de atuação<span class="required">*</span></label>
-                                <select name="area" class="form-input" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="Tecnologia">Tecnologia</option>
-                                    <option value="Design">Design</option>
-                                    <option value="Marketing">Marketing</option>
-                                </select>
-                            </div>
+                <!-- O botão de submit deve estar no final do formulário, possivelmente no Passo 2 -->
+
+            <!-- PASSO 2 -->
+            <div class="step-content" id="step-2">
+                <div class="form-group">
+                    <div class="grid-2">
+                        <div>
+                            <label class="form-label">Cargo atual / desejado<span class="required">*</span></label>
+                            <input type="text" name="cargo" class="form-input" placeholder="Ex: Desenvolvedora Frontend" required>
                         </div>
-                        <div class="grid-2">
-                            <div>
+                        <div>
+                            <label class="form-label">Área de atuação<span class="required">*</span></label>
+                            <select name="area" class="form-input" required>
+                                <option value="">Selecione...</option>
+                                <option value="Tecnologia">Tecnologia</option>
+                                <option value="Design">Design</option>
+                                <option value="Marketing">Marketing</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div>
                                 <label class="form-label">Nível de experiência<span class="required">*</span></label>
                                 <select name="experiencia" class="form-input" required>
                                     <option value="">Selecione...</option>
@@ -204,4 +233,5 @@
 
     <script src="/js/tema.js"></script>
 </body>
+
 </html>

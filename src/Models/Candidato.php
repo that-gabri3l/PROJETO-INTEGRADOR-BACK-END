@@ -32,7 +32,7 @@ class Candidato
     string $areaAtuacao,
     string $experiencia,
     string $escolaridade,
-    Regime $regimePreferido,
+    Regime $regimePreferido = Regime::presencial,
     string $sobre,
     string $linkedin,
     DateTimeImmutable $dataCriacao,

@@ -37,6 +37,7 @@ $erro = isset($_GET['erro']) ? trim((string) $_GET['erro']) : '';
 
         <!-- Formulário apontando para a sua rota -->
         <form action="/src/processar-vaga.php" method="POST">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarTokenCsrf(), ENT_QUOTES, 'UTF-8') ?>">
             <?php if ($erro !== ''): ?>
                 <div class="form-error" role="alert"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></div>
             <?php endif; ?>

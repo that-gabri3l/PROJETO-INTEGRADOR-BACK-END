@@ -3,11 +3,11 @@
 -- Execute este arquivo uma vez no seu servidor MySQL/MariaDB.
 -- IMPORTANTE: este script não exclui dados existentes; ele cria o banco e as tabelas ausentes.
 
-CREATE DATABASE IF NOT EXISTS infodin
+CREATE DATABASE IF NOT EXISTS jobboard_bd
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-USE infodin;
+USE jobboard_bd;
 
 CREATE TABLE IF NOT EXISTS usuarios (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,

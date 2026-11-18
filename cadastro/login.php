@@ -37,6 +37,7 @@ $sucesso = isset($_GET['cadastro']) && $_GET['cadastro'] === 'sucesso';
 
             <!-- Formulário apontando para a rota de autenticação -->
             <form action="/src/processar-login.php" method="POST">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarTokenCsrf(), ENT_QUOTES, 'UTF-8') ?>">
                 <?php if ($erro !== ''): ?>
                     <div class="form-error" role="alert">
                         <?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?>

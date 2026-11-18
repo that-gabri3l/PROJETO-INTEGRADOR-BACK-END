@@ -4,6 +4,43 @@ exigirTipo('candidato');
 
 $nomeUsuario = $_SESSION['usuario_nome'] ?? 'Candidato';
 $cidadeUsuario = $_SESSION['cidade'] ?? '';
+require_once __DIR__ . '/../src/conexao.php';
+
+$candidatoId = $_SESSION['perfil_id'] ?? null;
+$candidaturas = [];
+$vagasSalvas = [];
+$candidaturasTotal = 0;
+$entrevistas = 0;
+$vagasDisponiveis = 0;
+
+if ($candidatoId) {
+    $stmt = $pdo->prepare(
+        'SELECT c.status, c.criado_em, v.id AS vaga_id, v.titulo, e.nome AS empresa_nome
+         FROM candidaturas c
+         INNER JOIN vagas v ON v.id = c.vaga_id
+         INNER JOIN empresas e ON e.id = v.empresa_id
+         WHERE c.candidato_id = :candidato_id
+         ORDER BY c.criado_em DESC'
+    );
+    $stmt->execute(['candidato_id' => $candidatoId]);
+    $candidaturas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $candidaturasTotal = count($candidaturas);
+    $entrevistas = count(array_filter($candidaturas, fn($item) => $item['status'] === 'aprovada'));
+
+    $stmt = $pdo->prepare(
+        'SELECT v.id, v.titulo, v.localizacao, v.regime, v.salario_min, v.salario_max, v.exibir_salario, e.nome AS empresa_nome
+         FROM vagas_salvas vs
+         INNER JOIN vagas v ON v.id = vs.vaga_id
+         INNER JOIN empresas e ON e.id = v.empresa_id
+         WHERE vs.candidato_id = :candidato_id
+         ORDER BY vs.criado_em DESC'
+    );
+    $stmt->execute(['candidato_id' => $candidatoId]);
+    $vagasSalvas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+$stmtVagasDisponiveis = $pdo->query('SELECT COUNT(*) FROM vagas WHERE status = "ativa"');
+$vagasDisponiveis = (int) $stmtVagasDisponiveis->fetchColumn();
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -56,20 +93,20 @@ $cidadeUsuario = $_SESSION['cidade'] ?? '';
         <!-- KPI Cards -->
         <div class="kpi-grid">
             <div class="kpi-card">
-                <div class="kpi-value">4</div>
+                <div class="kpi-value"><?= $candidaturasTotal ?></div>
                 <div class="kpi-label">Candidaturas enviadas</div>
             </div>
             <div class="kpi-card">
-                <div class="kpi-value">1</div>
-                <div class="kpi-label">Entrevista agendada</div>
+                <div class="kpi-value"><?= $entrevistas ?></div>
+                <div class="kpi-label">Candidaturas aprovadas</div>
             </div>
             <div class="kpi-card">
-                <div class="kpi-value">2</div>
+                <div class="kpi-value"><?= count($vagasSalvas) ?></div>
                 <div class="kpi-label">Vagas salvas</div>
             </div>
             <div class="kpi-card">
-                <div class="kpi-value">87</div>
-                <div class="kpi-label">Perfil visualizado (dias 30)</div>
+                <div class="kpi-value"><?= $vagasDisponiveis ?></div>
+                <div class="kpi-label">Vagas disponíveis</div>
             </div>
         </div>
 
@@ -82,41 +119,19 @@ $cidadeUsuario = $_SESSION['cidade'] ?? '';
                     <h2 class="section-title">Minhas candidaturas</h2>
                 </div>
                 <div class="list-container">
+                    <?php foreach ($candidaturas as $candidatura): ?>
                     <div class="list-item">
                         <div class="company-logo" style="background-color: #6B21A8;">N</div>
                         <div class="item-details">
-                            <div class="item-title">Engenheira de Software Sênior</div>
-                            <div class="item-meta">Nubank · 14/09/2025</div>
+                            <div class="item-title"><?= htmlspecialchars($candidatura['titulo'], ENT_QUOTES, 'UTF-8') ?></div>
+                            <div class="item-meta"><?= htmlspecialchars($candidatura['empresa_nome'], ENT_QUOTES, 'UTF-8') ?> · <?= date('d/m/Y', strtotime($candidatura['criado_em'])) ?></div>
                         </div>
-                        <span class="badge badge-yellow">Em análise</span>
+                        <span class="badge badge-yellow"><?= ucfirst(htmlspecialchars($candidatura['status'], ENT_QUOTES, 'UTF-8')) ?></span>
                     </div>
-                    
-                    <div class="list-item">
-                        <div class="company-logo" style="background-color: #15803D;">S</div>
-                        <div class="item-details">
-                            <div class="item-title">Designer de Produto</div>
-                            <div class="item-meta">Stone · 10/09/2025</div>
-                        </div>
-                        <span class="badge badge-green">Entrevista agendada</span>
-                    </div>
-                    
-                    <div class="list-item">
-                        <div class="company-logo" style="background-color: #1B3557;">H</div>
-                        <div class="item-details">
-                            <div class="item-title">Desenvolvedora Frontend</div>
-                            <div class="item-meta">Hotmart · 06/09/2025</div>
-                        </div>
-                        <span class="badge badge-blue">Aguardando resposta</span>
-                    </div>
-                    
-                    <div class="list-item">
-                        <div class="company-logo" style="background-color: #8B6914;">R</div>
-                        <div class="item-details">
-                            <div class="item-title">Analista de Marketing Digital</div>
-                            <div class="item-meta">RD Station · 01/09/2025</div>
-                        </div>
-                        <span class="badge badge-gray">Encerrada</span>
-                    </div>
+                    <?php endforeach; ?>
+                    <?php if (!$candidaturas): ?>
+                        <div class="list-item"><div class="item-details"><div class="item-title">Nenhuma candidatura enviada</div><div class="item-meta">Explore vagas e candidate-se ao seu perfil.</div></div></div>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -130,23 +145,21 @@ $cidadeUsuario = $_SESSION['cidade'] ?? '';
                         <h2 class="section-title">Vagas salvas</h2>
                     </div>
                     <div class="list-container">
+                        <?php foreach ($vagasSalvas as $vaga): ?>
                         <div class="list-item">
                             <div class="item-details">
-                                <div class="item-title">Cientista de Dados</div>
-                                <div class="item-meta">iFood · Campinas, SP · Híbrido</div>
-                                <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">R$ 14k – 20k</div>
+                                <div class="item-title"><?= htmlspecialchars($vaga['titulo'], ENT_QUOTES, 'UTF-8') ?></div>
+                                <div class="item-meta"><?= htmlspecialchars($vaga['empresa_nome'], ENT_QUOTES, 'UTF-8') ?> · <?= htmlspecialchars($vaga['localizacao'], ENT_QUOTES, 'UTF-8') ?> · <?= htmlspecialchars($vaga['regime'], ENT_QUOTES, 'UTF-8') ?></div>
+                                <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">
+                                    R$ <?= number_format($vaga['salario_min'], 0, ',', '.') ?> – R$ <?= number_format($vaga['salario_max'], 0, ',', '.') ?>
+                                </div>
                             </div>
                             <span style="font-size: 14px; color: var(--muted-foreground);">→</span>
                         </div>
-                        
-                        <div class="list-item">
-                            <div class="item-details">
-                                <div class="item-title">Tech Lead</div>
-                                <div class="item-meta">Totvs · São Paulo, SP · Presencial</div>
-                                <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">R$ 20k – 28k</div>
-                            </div>
-                            <span style="font-size: 14px; color: var(--muted-foreground);">→</span>
-                        </div>
+                        <?php endforeach; ?>
+                        <?php if (!$vagasSalvas): ?>
+                            <div class="list-item"><div class="item-details"><div class="item-title">Nenhuma vaga salva</div><div class="item-meta">Use o botão salvar na página de vagas.</div></div></div>
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -246,7 +259,7 @@ $cidadeUsuario = $_SESSION['cidade'] ?? '';
         </div>
     </main>
 
-        <script src="/js/tema.js"></script>
+        <script src="/JS/tema.js"></script>
 
 </body>
 </html>

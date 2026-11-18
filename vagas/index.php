@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../src/conexao.php';
+require_once __DIR__ . '/../src/sessao.php';
 
 $q = trim($_GET['q'] ?? '');
 $area = trim($_GET['area'] ?? '');
@@ -85,7 +86,7 @@ $vagas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="page-header">
         <div class="header-container">
             <span class="eyebrow-text">Explorar vagas</span>
-            <h1 class="page-title"><?= count($vagas) ?> vaga<?= count($vagas) === 1 ? '' : 's' ?> disponível<?= count($vagas) === 1 ? '' : 'is' ?></h1>
+            <h1 class="page-title"><?= count($vagas) ?> vaga<?= count($vagas) === 1 ? '' : 's' ?> disponível<?= count($vagas) === 1 ? '' : 's' ?></h1>
 
             <form class="search-bar" action="/vagas/index.php" method="GET">
                 <input type="text" name="q" value="<?= htmlspecialchars($q, ENT_QUOTES, 'UTF-8') ?>" placeholder="Buscar por cargo, empresa ou habilidade...">
@@ -156,7 +157,13 @@ $vagas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     A combinar
                                 <?php endif; ?>
                             </span>
-                            <a href="/vagas/detalhes.php?id=<?= (int) $vaga['id'] ?>" class="btn-apply">Ver vaga</a>
+                            <form action="/src/vagas-salvas.php" method="POST" style="display:flex;gap:8px">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarTokenCsrf(), ENT_QUOTES, 'UTF-8') ?>">
+                                <input type="hidden" name="vaga_id" value="<?= (int) $vaga['id'] ?>">
+                                <input type="hidden" name="origem" value="/vagas/index.php<?= htmlspecialchars('?' . ($_SERVER['QUERY_STRING'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+                                <button type="submit" name="acao" value="salvar" class="btn-secondary">Salvar</button>
+                                <a href="/vagas/detalhes.php?id=<?= (int) $vaga['id'] ?>" class="btn-apply">Ver vaga</a>
+                            </form>
                         </div>
                     </div>
                 <?php endforeach; ?>

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../src/conexao.php';
+require_once __DIR__ . '/../src/sessao.php';
 
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 if (!$id) {
@@ -11,7 +12,7 @@ $stmt = $pdo->prepare(
     'SELECT v.*, e.nome AS empresa_nome, e.setor, e.cidade_sede
      FROM vagas v
      INNER JOIN empresas e ON e.id = v.empresa_id
-     WHERE v.id = :id AND v.status = \"ativa\"
+     WHERE v.id = :id AND v.status = \'ativa\'
      LIMIT 1'
 );
 $stmt->execute(['id' => $id]);
@@ -22,6 +23,7 @@ if (!$vaga) {
     exit('Vaga não encontrada.');
 }
 
+$erro = isset($_GET['erro']) ? trim((string) $_GET['erro']) : '';
 $requisitos = array_filter(array_map('trim', preg_split('/\R/', (string) $vaga['requisitos'])));
 $beneficios = array_filter(array_map('trim', preg_split('/\R/', (string) $vaga['beneficios'])));
 ?>
@@ -129,7 +131,11 @@ $beneficios = array_filter(array_map('trim', preg_split('/\R/', (string) $vaga['
                     
                     <!-- Formulário para o Back-End -->
                     <form action="/src/processar-candidatura.php" method="POST">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarTokenCsrf(), ENT_QUOTES, 'UTF-8') ?>">
                         <input type="hidden" name="vaga_id" value="<?= (int) $vaga['id'] ?>">
+                        <?php if ($erro !== ''): ?>
+                            <div class="form-error" role="alert"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></div>
+                        <?php endif; ?>
                         <div class="form-group">
                             <label class="form-label">Link do Currículo ou Portfólio</label>
                             <input type="url" name="portfolio" class="form-input" placeholder="https://linkedin.com/in/..." required>
@@ -138,6 +144,12 @@ $beneficios = array_filter(array_map('trim', preg_split('/\R/', (string) $vaga['
                         <button type="submit" class="btn-primary" style="margin-top: 8px;">
                             Me candidatar
                         </button>
+                    </form>
+                    <form action="/src/vagas-salvas.php" method="POST" style="margin-top:8px">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarTokenCsrf(), ENT_QUOTES, 'UTF-8') ?>">
+                        <input type="hidden" name="vaga_id" value="<?= (int) $vaga['id'] ?>">
+                        <input type="hidden" name="origem" value="/vagas/detalhes.php?id=<?= (int) $vaga['id'] ?>">
+                        <button type="submit" name="acao" value="salvar" class="btn-secondary" style="width:100%">Salvar vaga</button>
                     </form>
                 </div>
 

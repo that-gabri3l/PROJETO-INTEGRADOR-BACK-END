@@ -41,15 +41,16 @@ Os links que apontam para `/api/login`, `/api/empresas`, `/api/vagas` ou para um
 
 ## Banco de dados
 
-O projeto espera um banco MySQL/MariaDB chamado `infodin`, com conexão configurada em `src/conexao.php`:
+O projeto usa o banco MySQL/MariaDB chamado `jobboard_bd`, com conexão configurada em `src/conexao.php`:
 
-- Host: `localhost`
-- Usuário: `root`
-- Senha: vazia
-- Charset: `utf8`
+- Host: configurável por `INFODIN_DB_HOST`, padrão `localhost`
+- Banco: configurável por `INFODIN_DB_NAME`, padrão `jobboard_bd`
+- Usuário: configurável por `INFODIN_DB_USER`, padrão `root`
+- Senha: configurável por `INFODIN_DB_PASS`, padrão vazia
+- Charset: `utf8mb4`
 - PDO em modo de exceção
 
-O cadastro de candidato espera uma tabela `infodin.candidatos`. O modelo completo está versionado em `database.sql` e inclui também usuários, empresas, vagas, candidaturas e vagas salvas.
+O modelo completo está versionado em `database.sql` e inclui usuários, candidatos, empresas, vagas, candidaturas e vagas salvas.
 
 Campos persistidos pelo processador atual:
 
@@ -162,4 +163,4 @@ Não há scripts npm ou Composer. Em ambiente local com PHP instalado, a partir 
 php -S localhost:8000
 ```
 
-O projeto também pode ser executado por Apache/Nginx, desde que o diretório raiz seja publicado corretamente. Para recursos persistentes, MySQL/MariaDB deve existir com o banco `infodin` e a tabela `candidatos`; o diretório `src/uploads/fotos_perfil/` precisa permitir escrita pelo processo PHP.
+O projeto também pode ser executado por Apache/Nginx, desde que o diretório raiz seja publicado corretamente. Para recursos persistentes, MySQL/MariaDB deve existir com o banco `jobboard_bd` e as tabelas do `database.sql`; o diretório `src/uploads/fotos_perfil/` precisa permitir escrita pelo processo PHP.

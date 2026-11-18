@@ -1,3 +1,10 @@
+<?php
+require_once __DIR__ . '/src/sessao.php';
+
+$usuarioLogado = usuarioEstaLogado();
+$usuarioTipo = $_SESSION['usuario_tipo'] ?? null;
+$usuarioNome = $_SESSION['usuario_nome'] ?? '';
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -36,11 +43,15 @@
 
         <div class="menu-links">
             <a href="vagas/index.php" class="nav-link">Buscar Vagas</a>
-            <a href="empresa/cadastro.php" class="nav-link">Para Empresas</a>
+            <?php if (!$usuarioLogado): ?>
+                <a href="empresa/cadastro.php" class="nav-link">Para Empresas</a>
+                <a href="candidato/cadastro.php" class="nav-link">Cadastrar</a>
+                <a href="cadastro/login.php" class="nav-btn">Entrar</a>
+            <?php else: ?>
+                <a href="<?= $usuarioTipo === 'empresa' ? '/empresa/painel.php' : '/candidato/painel.php' ?>" class="nav-btn"><?= htmlspecialchars($usuarioNome !== '' ? $usuarioNome : 'Meu painel', ENT_QUOTES, 'UTF-8') ?></a>
+                <a href="/src/logout.php" class="nav-link">Sair</a>
+            <?php endif; ?>
 
-            <a href="candidato/cadastro.php" class="nav-link">Cadastrar</a>
-
-            <a href="empresa/painel.php" class="nav-btn">Entrar</a>
             <button id="theme-toggle" class="theme-toggle" title="Mudar tema">🌗</button>
         </div>
     </nav>
@@ -108,7 +119,7 @@
 
         <div class="job-grid">
             <!-- Vaga 1 -->
-            <a href="/vagas/detalhes.php" class="job-card"
+            <a href="/vagas/index.php" class="job-card"
                 style="display: block; text-decoration: none; color: inherit;">
                 <div
                     style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
@@ -130,7 +141,7 @@
             </a>
 
             <!-- Vaga 2 -->
-            <a href="/vagas/detalhes.php" class="job-card"
+            <a href="/vagas/index.php" class="job-card"
                 style="display: block; text-decoration: none; color: inherit;">
                 <div
                     style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
@@ -152,7 +163,7 @@
             </a>
 
             <!-- Vaga 3 -->
-            <a href="/vagas/detalhes.php" class="job-card"
+            <a href="/vagas/index.php" class="job-card"
                 style="display: block; text-decoration: none; color: inherit;">
                 <div
                     style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
@@ -328,7 +339,7 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div style="display: flex; alignItems: baseline; gap: 6px;">
+        <div style="display: flex; align-items: baseline; gap: 6px;">
             <span
                 style="font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; color: var(--primary);">Infodin</span>
         </div>
@@ -342,7 +353,7 @@
         </div>
     </footer>
 
-    <script src="js/tema.js"></script>
+    <script src="/JS/tema.js"></script>
 
 </body>
 

@@ -1,5 +1,4 @@
-
-        :root {
+:root {
     --background: #FFFFFF;
     --foreground: #000000;
     --card: #FAFAFA;
@@ -340,4 +339,13 @@
             font-weight: 600;
             color: #FAF8F4;
         }
-    
+
+        .form-error {
+            margin-bottom: 12px;
+            padding: 10px 12px;
+            border: 1px solid #FECACA;
+            border-radius: var(--radius);
+            background-color: #FEF2F2;
+            color: #991B1B;
+            font-size: 12px;
+        }

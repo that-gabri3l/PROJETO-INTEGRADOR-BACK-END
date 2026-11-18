@@ -5,17 +5,15 @@ Projeto com samuel, Gabriel, Perola e guilherme
 
 1. Inicie o MySQL/MariaDB.
 2. Acesse o phpMyAdmin ou o terminal do banco.
-3. Execute o arquivo `database.sql` da raiz do projeto.
-4. Confirme que foi criado o banco `infodin` e suas tabelas.
-5. Configure, se necessário, `src/conexao.php` com host, usuário e senha do seu servidor.
-
-O esquema inclui usuários, candidatos, empresas, vagas, candidaturas e vagas salvas. O arquivo pode ser executado novamente sem excluir tabelas ou dados existentes.
-
-## Executar localmente
-
-Na raiz do projeto:
+3. Execute o arquivo `database.sql` da raiz do projeto no banco existente `jobboard_bd`.
+4. Confirme que foram criadas as tabelas necessárias sem apagar dados já existentes.
+5. Se o MySQL tiver senha, defina as variáveis antes de iniciar o PHP:
 
 ```powershell
+$env:INFODIN_DB_HOST = "localhost"
+$env:INFODIN_DB_NAME = "jobboard_bd"
+$env:INFODIN_DB_USER = "root"
+$env:INFODIN_DB_PASS = "SUA_SENHA"
 php -S localhost:8000
 ```
 

@@ -2,6 +2,8 @@
 require_once __DIR__ . '/conexao.php';
 require_once __DIR__ . '/sessao.php';
 
+exigirTokenCsrf();
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: /cadastro/login.php');
     exit;
@@ -62,7 +64,7 @@ try {
             exit;
         }
 
-        $_SESSION['usuario_id'] = null;
+        $_SESSION['usuario_id'] = (int) $candidato['id'];
         $_SESSION['usuario_tipo'] = 'candidato';
         $_SESSION['usuario_email'] = $candidato['email'];
         $_SESSION['perfil_id'] = (int) $candidato['id'];

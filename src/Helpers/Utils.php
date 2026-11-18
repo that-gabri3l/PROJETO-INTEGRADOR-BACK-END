@@ -1,5 +1,10 @@
 <?php
 
+namespace Infodin\Helpers;
+use Throwable;
+use DateTimeImmutable;
+use DateTimeZone;
+
 class Utils
 {
     public static function errorLog(Throwable $e): void

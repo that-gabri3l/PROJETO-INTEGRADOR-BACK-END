@@ -1,3 +1,6 @@
+<?php
+$erro = isset($_GET['erro']) ? trim((string) $_GET['erro']) : '';
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -54,7 +57,10 @@
         <!-- Formulário Geral -->
         <div class="form-card">
             <!-- Aponte a action para a rota da API no seu backend -->
-            <form action="/api/empresas" method="POST">
+            <form action="/src/processar-empresa.php" method="POST">
+                <?php if ($erro !== ''): ?>
+                    <div class="form-error" role="alert"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></div>
+                <?php endif; ?>
                 
                 <!-- PASSO 1: DADOS DA EMPRESA -->
                 <div class="step-content active" id="step-1">
@@ -124,11 +130,11 @@
                         
                         <div>
                             <label class="form-label">Senha<span class="required">*</span></label>
-                            <input type="password" name="senha" class="form-input" placeholder="Mínimo 8 caracteres" required>
+                            <input type="password" name="senha" class="form-input" placeholder="Mínimo 8 caracteres" minlength="8" required>
                         </div>
                         <div>
                             <label class="form-label">Confirmar senha<span class="required">*</span></label>
-                            <input type="password" name="confirmar_senha" class="form-input" placeholder="Repita a senha" required>
+                            <input type="password" name="confirmar_senha" class="form-input" placeholder="Repita a senha" minlength="8" required>
                         </div>
                         
                         <div style="font-size: 12px; color: var(--muted-foreground); line-height: 1.5;">
@@ -152,7 +158,7 @@
 
     <!-- Script de transição de abas (Idêntico ao do Candidato) -->
     <script src="/JS/empresa-avancar-passos.js"></script>
-    <script src="/js/tema.js"></script>
+    <script src="/JS/tema.js"></script>
 
 </body>
 </html>

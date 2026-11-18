@@ -15,6 +15,25 @@ function changeStep(direction) {
                 return; // Trava o avanço até preencher corretamente
             }
         }
+
+        if (currentStep === totalSteps) {
+            const senha = passoAtualEl.querySelector('input[name="senha"]');
+            const confirmacao = passoAtualEl.querySelector('input[name="confirmar_senha"]');
+
+            if (senha.value.length < 8) {
+                senha.setCustomValidity('A senha deve ter pelo menos 8 caracteres.');
+                senha.reportValidity();
+                senha.setCustomValidity('');
+                return;
+            }
+
+            if (senha.value !== confirmacao.value) {
+                confirmacao.setCustomValidity('As senhas não conferem.');
+                confirmacao.reportValidity();
+                confirmacao.setCustomValidity('');
+                return;
+            }
+        }
     }
 
     // Esconde o passo atual
@@ -67,4 +86,27 @@ function toggleRegime(btnElement, valor) {
     }
 
     document.getElementById('regime_input').value = regimesSelecionados.join(',');
+}
+
+const formularioCandidato = document.querySelector('form[action="/src/processar-candidato.php"]');
+if (formularioCandidato) {
+    formularioCandidato.addEventListener('submit', function (evento) {
+        const senha = formularioCandidato.querySelector('input[name="senha"]');
+        const confirmacao = formularioCandidato.querySelector('input[name="confirmar_senha"]');
+
+        if (senha.value.length < 8) {
+            evento.preventDefault();
+            senha.setCustomValidity('A senha deve ter pelo menos 8 caracteres.');
+            senha.reportValidity();
+            senha.setCustomValidity('');
+            return;
+        }
+
+        if (senha.value !== confirmacao.value) {
+            evento.preventDefault();
+            confirmacao.setCustomValidity('As senhas não conferem.');
+            confirmacao.reportValidity();
+            confirmacao.setCustomValidity('');
+        }
+    });
 }

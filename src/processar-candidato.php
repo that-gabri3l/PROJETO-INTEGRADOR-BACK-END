@@ -1,84 +1,141 @@
 <?php
-require_once 'conexao.php';
+require_once __DIR__ . '/conexao.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    
-    // 1. Receber os campos do formulário
-    $nome = trim($_POST['nome']);
-    $email = trim($_POST['email']);
-    $cidade = trim($_POST['cidade']);
-    $senha = $_POST['senha']; // A senha também é obrigatória para ele conseguir fazer login depois
-    
-    // Campos Opcionais (Se o usuário não preencher, o PHP salva como nulo)
-    $telefone = $_POST['telefone'] ?? null;
-    $data_nascimento = $_POST['data_nascimento'] ?? null;
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: /candidato/cadastro.php');
+    exit;
+}
 
-    // 2. Validação: Verifica se os campos obrigatórios estão preenchidos
-    if (empty($nome) || empty($email) || empty($cidade) || empty($senha)) {
-        die("<script>
-                alert('Erro: Nome, E-mail, Senha e Cidade são obrigatórios!');
-                window.history.back();
-            </script>");
+function voltarComErro(string $mensagem): void
+{
+    header('Location: /candidato/cadastro.php?erro=' . urlencode($mensagem));
+    exit;
+}
+
+$nome = trim($_POST['nome'] ?? '');
+$email = strtolower(trim($_POST['email'] ?? ''));
+$telefone = trim($_POST['telefone'] ?? '');
+$cidade = trim($_POST['cidade'] ?? '');
+$dataNascimento = trim($_POST['data_nascimento'] ?? '');
+$senha = $_POST['senha'] ?? '';
+$confirmarSenha = $_POST['confirmar_senha'] ?? '';
+$cargo = trim($_POST['cargo'] ?? '');
+$area = trim($_POST['area'] ?? '');
+$experiencia = trim($_POST['experiencia'] ?? '');
+$escolaridade = trim($_POST['escolaridade'] ?? '');
+$regimePreferido = trim($_POST['regime_preferido'] ?? '');
+$linkedin = trim($_POST['linkedin'] ?? '');
+$sobre = trim($_POST['sobre'] ?? '');
+$notificacoes = isset($_POST['notificacoes']) ? 1 : 0;
+
+if ($nome === '' || $email === '' || $cidade === '' || $senha === '' || $confirmarSenha === '' || $cargo === '' || $area === '' || $experiencia === '') {
+    voltarComErro('Preencha todos os campos obrigatórios.');
+}
+
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    voltarComErro('Informe um e-mail válido.');
+}
+
+if (strlen($senha) < 8) {
+    voltarComErro('A senha deve ter pelo menos 8 caracteres.');
+}
+
+if (!hash_equals($senha, $confirmarSenha)) {
+    voltarComErro('As senhas não conferem.');
+}
+
+if ($linkedin !== '' && !filter_var($linkedin, FILTER_VALIDATE_URL)) {
+    voltarComErro('Informe uma URL válida para o LinkedIn.');
+}
+
+$caminhoFoto = null;
+if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] !== UPLOAD_ERR_NO_FILE) {
+    $arquivo = $_FILES['foto_perfil'];
+
+    if ($arquivo['error'] !== UPLOAD_ERR_OK) {
+        voltarComErro('Não foi possível enviar a foto de perfil.');
     }
 
-    // Criptografa a senha para segurança
-    $senha_criptografada = password_hash($senha, PASSWORD_DEFAULT);
-
-    // 3. Lógica para Upload da Foto de Perfil (Opcional)
-    $caminho_foto = null; // Fica nulo se ele não enviar foto
-    
-    if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] == 0) {
-        $pasta_destino = 'uploads/fotos_perfil/';
-        
-        // Se a pasta 'uploads' não existir no seu projeto, o PHP cria ela agora
-        if (!is_dir($pasta_destino)) {
-            mkdir($pasta_destino, 0777, true);
-        }
-        
-        // Cria um nome único para a foto (evita que duas fotos com nome 'perfil.jpg' se substituam)
-        $nome_arquivo = time() . '_' . $_FILES['foto_perfil']['name'];
-        $caminho_completo = $pasta_destino . $nome_arquivo;
-        
-        // Move a foto da memória temporária para a pasta do seu projeto
-        if (move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $caminho_completo)) {
-            $caminho_foto = $caminho_completo; // Salva o caminho para colocar no MySQL
-        }
+    if ($arquivo['size'] > 2 * 1024 * 1024) {
+        voltarComErro('A foto deve ter no máximo 2 MB.');
     }
 
-    try {
-        // 4. Inserir no Banco de Dados
-        $sql = "INSERT INTO candidatos (nome, email, senha, cidade, telefone, data_nascimento, foto_perfil) 
-                VALUES (:nome, :email, :senha, :cidade, :telefone, :data_nascimento, :foto_perfil)";
-        
-        $stmt = $pdo->prepare($sql);
-        
-        $stmt->bindParam(':nome', $nome);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':senha', $senha_criptografada);
-        $stmt->bindParam(':cidade', $cidade);
-        $stmt->bindParam(':telefone', $telefone);
-        $stmt->bindParam(':data_nascimento', $data_nascimento);
-        $stmt->bindParam(':foto_perfil', $caminho_foto);
-        
-        $stmt->execute();
-        
-        echo "<script>
-                alert('Cadastro concluído com sucesso!');
-                window.location.href = 'login.html';
-            </script>";
-            
-    } catch (PDOException $e) {
-        if ($e->getCode() == 23000) { // Código de e-mail duplicado
-            echo "<script>
-                    alert('Erro: Este e-mail já está cadastrado no sistema!');
-                    window.history.back();
-                </script>";
-        } else {
-            echo "Erro no banco de dados: " . $e->getMessage();
-        }
+    $tiposPermitidos = [
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+    ];
+
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $tipoReal = $finfo->file($_FILES['foto_perfil']['tmp_name']);
+
+    if (!isset($tiposPermitidos[$tipoReal])) {
+        voltarComErro('Envie uma imagem JPG ou PNG.');
     }
-} else {
-    header("Location: cadastro-candidato.html");
-    exit();
+
+    $pastaDestino = __DIR__ . '/uploads/fotos_perfil/';
+    if (!is_dir($pastaDestino) && !mkdir($pastaDestino, 0755, true)) {
+        voltarComErro('Não foi possível preparar o armazenamento da foto.');
+    }
+
+    $nomeArquivo = bin2hex(random_bytes(16)) . '.' . $tiposPermitidos[$tipoReal];
+    $caminhoCompleto = $pastaDestino . $nomeArquivo;
+
+    if (!move_uploaded_file($arquivo['tmp_name'], $caminhoCompleto)) {
+        voltarComErro('Não foi possível salvar a foto de perfil.');
+    }
+
+    $caminhoFoto = '/src/uploads/fotos_perfil/' . $nomeArquivo;
+}
+
+$senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+
+try {
+    $pdo->beginTransaction();
+
+    $stmtUsuario = $pdo->prepare('INSERT INTO usuarios (tipo, email, senha) VALUES (\'candidato\', :email, :senha)');
+    $stmtUsuario->execute(['email' => $email, 'senha' => $senhaHash]);
+    $usuarioId = (int) $pdo->lastInsertId();
+
+    $stmt = $pdo->prepare(
+        'INSERT INTO candidatos
+            (usuario_id, nome, email, senha, telefone, cidade, data_nascimento, foto_perfil,
+             cargo, area, experiencia, escolaridade, regime_preferido, linkedin, sobre, notificacoes)
+         VALUES
+            (:usuario_id, :nome, :email, :senha, :telefone, :cidade, :data_nascimento, :foto_perfil,
+             :cargo, :area, :experiencia, :escolaridade, :regime_preferido, :linkedin, :sobre, :notificacoes)' 
+    );
+
+    $stmt->execute([
+        'usuario_id' => $usuarioId,
+        'nome' => $nome,
+        'email' => $email,
+        'senha' => $senhaHash,
+        'telefone' => $telefone !== '' ? $telefone : null,
+        'cidade' => $cidade,
+        'data_nascimento' => $dataNascimento !== '' ? $dataNascimento : null,
+        'foto_perfil' => $caminhoFoto,
+        'cargo' => $cargo,
+        'area' => $area,
+        'experiencia' => $experiencia,
+        'escolaridade' => $escolaridade !== '' ? $escolaridade : null,
+        'regime_preferido' => $regimePreferido !== '' ? $regimePreferido : null,
+        'linkedin' => $linkedin !== '' ? $linkedin : null,
+        'sobre' => $sobre !== '' ? $sobre : null,
+        'notificacoes' => $notificacoes,
+    ]);
+
+    $pdo->commit();
+    header('Location: /cadastro/login.php?cadastro=sucesso');
+    exit;
+} catch (PDOException $e) {
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+
+    if ((int) $e->getCode() === 23000) {
+        voltarComErro('Este e-mail já está cadastrado no sistema.');
+    }
+
+    voltarComErro('Não foi possível concluir o cadastro. Tente novamente.');
 }
 ?>

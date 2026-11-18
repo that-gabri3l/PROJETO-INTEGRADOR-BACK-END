@@ -1,4 +1,4 @@
-  /* Modo Claro */
+/* Modo Claro */
         :root {
             --background: #FFFFFF;
             --foreground: #000000;
@@ -156,6 +156,40 @@
             font-weight: 600;
         }
         .register-link a:hover { text-decoration: underline; }
+
+        /* Estilos para Mensagens de Erro e Sucesso */
+        .form-error,
+        .form-success {
+            margin-bottom: 16px;
+            padding: 12px 14px;
+            border: 1px solid;
+            border-radius: var(--radius);
+            font-size: 13px;
+        }
+
+        .form-error {
+            color: #991B1B;
+            background-color: #FEF2F2;
+            border-color: #FECACA;
+        }
+
+        .form-success {
+            color: #166534;
+            background-color: #F0FDF4;
+            border-color: #BBF7D0;
+        }
+
+        [data-theme="dark"] .form-error {
+            color: #FCA5A5;
+            background-color: #450A0A;
+            border-color: #7F1D1D;
+        }
+
+        [data-theme="dark"] .form-success {
+            color: #86EFAC;
+            background-color: #14532D;
+            border-color: #166534;
+        }
 
         /* Responsividade */
         @media (max-width: 480px) {

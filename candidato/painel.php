@@ -1,3 +1,10 @@
+<?php
+require_once __DIR__ . '/../src/sessao.php';
+exigirTipo('candidato');
+
+$nomeUsuario = $_SESSION['usuario_nome'] ?? 'Candidato';
+$cidadeUsuario = $_SESSION['cidade'] ?? '';
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -19,16 +26,17 @@
             <img src="/images/logo-infodin.png" alt="Logo do site" class="logo-dark"
                 style="height: 40px; width: auto; object-fit: contain;"></a>
         <button id="theme-toggle" class="theme-toggle" title="Mudar tema">🌗</button>
+        <a href="/src/logout.php" class="theme-toggle" title="Sair">Sair</a>
     </nav>
 
     <!-- Header do Painel -->
     <header class="dashboard-header">
         <div class="header-content">
-            <div class="avatar-large">M</div>
+            <div class="avatar-large"><?= htmlspecialchars(strtoupper(substr($nomeUsuario, 0, 1)), ENT_QUOTES, 'UTF-8') ?></div>
             <div class="header-info">
                 <span class="eyebrow">Perfil do candidato</span>
-                <h1 class="user-name">Maria Silva</h1>
-                <div class="user-meta">Desenvolvedora Frontend · São Paulo, SP</div>
+                <h1 class="user-name"><?= htmlspecialchars($nomeUsuario, ENT_QUOTES, 'UTF-8') ?></h1>
+                <div class="user-meta"><?= $cidadeUsuario !== '' ? htmlspecialchars($cidadeUsuario, ENT_QUOTES, 'UTF-8') : 'Complete seu perfil profissional' ?></div>
             </div>
             <div class="profile-progress">
                 <div class="progress-title">Perfil completo</div>

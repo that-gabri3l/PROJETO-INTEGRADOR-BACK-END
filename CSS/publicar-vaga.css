@@ -1,5 +1,4 @@
-
-        :root {
+:root {
     --background: #FFFFFF;
     --foreground: #000000;
     --card: #FAFAFA;
@@ -247,4 +246,14 @@
             transition: background-color 0.2s;
         }
         .btn-secondary:hover { background-color: var(--secondary); }
-    
+
+        /* Estilo para mensagens de erro */
+        .form-error {
+            margin-bottom: 20px;
+            padding: 12px 14px;
+            border: 1px solid #FECACA;
+            border-radius: var(--radius);
+            background-color: #FEF2F2;
+            color: #991B1B;
+            font-size: 13px;
+        }

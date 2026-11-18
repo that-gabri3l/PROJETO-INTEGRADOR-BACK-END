@@ -1,3 +1,9 @@
+<?php
+require_once __DIR__ . '/../src/sessao.php';
+exigirTipo('empresa');
+
+$nomeEmpresa = $_SESSION['usuario_nome'] ?? 'Empresa';
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -22,6 +28,7 @@
                 style="height: 40px; width: auto; object-fit: contain;">
                 </a>
         <button id="theme-toggle" class="theme-toggle" title="Mudar tema">🌗</button>
+        <a href="/src/logout.php" class="theme-toggle" title="Sair">Sair</a>
     </nav>
 
     <!-- Dashboard Header -->
@@ -29,7 +36,7 @@
         <div class="header-content">
             <div>
                 <span class="eyebrow">Painel da empresa</span>
-                <h1 class="company-title">Acme Tecnologia LTDA</h1>
+                <h1 class="company-title"><?= htmlspecialchars($nomeEmpresa, ENT_QUOTES, 'UTF-8') ?></h1>
             </div>
             <a href="/vagas/publicar.php" class="btn-publish">+ Publicar nova vaga</a>
         </div>

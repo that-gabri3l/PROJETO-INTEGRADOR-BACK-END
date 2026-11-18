@@ -1,3 +1,41 @@
+<?php
+require_once __DIR__ . '/../src/conexao.php';
+
+$q = trim($_GET['q'] ?? '');
+$area = trim($_GET['area'] ?? '');
+$regime = trim($_GET['regime'] ?? '');
+$ordem = $_GET['ordem'] ?? 'recente';
+
+$where = ['v.status = :status'];
+$params = ['status' => 'ativa'];
+
+if ($q !== '') {
+    $where[] = '(v.titulo LIKE :q OR v.area LIKE :q OR v.localizacao LIKE :q OR e.nome LIKE :q)';
+    $params['q'] = '%' . $q . '%';
+}
+if (in_array($area, ['Tecnologia', 'Design', 'Marketing', 'Dados', 'Gestão', 'Vendas', 'Jurídico', 'Financeiro', 'RH'], true)) {
+    $where[] = 'v.area = :area';
+    $params['area'] = $area;
+}
+if (in_array($regime, ['Remoto', 'Híbrido', 'Presencial'], true)) {
+    $where[] = 'v.regime = :regime';
+    $params['regime'] = $regime;
+}
+
+$orderBy = 'v.criado_em DESC';
+if ($ordem === 'salario') {
+    $orderBy = 'v.salario_max DESC';
+}
+
+$sql = 'SELECT v.*, e.nome AS empresa_nome
+        FROM vagas v
+        INNER JOIN empresas e ON e.id = v.empresa_id
+        WHERE ' . implode(' AND ', $where) . '
+        ORDER BY ' . $orderBy;
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
+$vagas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -47,103 +85,86 @@
     <div class="page-header">
         <div class="header-container">
             <span class="eyebrow-text">Explorar vagas</span>
-            <h1 class="page-title">4 vagas disponíveis</h1>
+            <h1 class="page-title"><?= count($vagas) ?> vaga<?= count($vagas) === 1 ? '' : 's' ?> disponível<?= count($vagas) === 1 ? '' : 'is' ?></h1>
 
-            <div class="search-bar">
-                <input type="text" placeholder="Buscar por cargo, empresa ou habilidade...">
-                <button>Buscar</button>
-            </div>
+            <form class="search-bar" action="/vagas/index.php" method="GET">
+                <input type="text" name="q" value="<?= htmlspecialchars($q, ENT_QUOTES, 'UTF-8') ?>" placeholder="Buscar por cargo, empresa ou habilidade...">
+                <?php if ($area !== ''): ?><input type="hidden" name="area" value="<?= htmlspecialchars($area, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
+                <?php if ($regime !== ''): ?><input type="hidden" name="regime" value="<?= htmlspecialchars($regime, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
+                <button type="submit">Buscar</button>
+            </form>
         </div>
     </div>
 
     <div class="main-layout">
         <!-- Sidebar Filters -->
         <aside class="sidebar">
-            <div class="filter-section">
-                <div class="filter-title">Área</div>
-                <div class="filter-list">
-                    <button class="filter-btn active-primary">Todos</button>
-                    <button class="filter-btn">Tecnologia</button>
-                    <button class="filter-btn">Design</button>
-                    <button class="filter-btn">Marketing</button>
-                    <button class="filter-btn">Dados</button>
-                    <button class="filter-btn">Gestão</button>
+            <form action="/vagas/index.php" method="GET">
+                <?php if ($q !== ''): ?><input type="hidden" name="q" value="<?= htmlspecialchars($q, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
+                <div class="filter-section">
+                    <div class="filter-title">Área</div>
+                    <div class="filter-list">
+                        <?php foreach (['' => 'Todos', 'Tecnologia' => 'Tecnologia', 'Design' => 'Design', 'Marketing' => 'Marketing', 'Dados' => 'Dados', 'Gestão' => 'Gestão'] as $valor => $rotulo): ?>
+                            <button type="submit" name="area" value="<?= htmlspecialchars($valor, ENT_QUOTES, 'UTF-8') ?>" class="filter-btn <?= $area === $valor || ($area === '' && $valor === '') ? 'active-primary' : '' ?>"><?= htmlspecialchars($rotulo, ENT_QUOTES, 'UTF-8') ?></button>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
-            </div>
 
-            <div class="divider"></div>
+                <div class="divider"></div>
 
-            <div class="filter-section">
-                <div class="filter-title">Regime</div>
-                <div class="filter-list">
-                    <button class="filter-btn active-primary">Todos</button>
-                    <button class="filter-btn">Remoto</button>
-                    <button class="filter-btn">Híbrido</button>
-                    <button class="filter-btn">Presencial</button>
+                <div class="filter-section">
+                    <div class="filter-title">Regime</div>
+                    <div class="filter-list">
+                        <?php foreach (['' => 'Todos', 'Remoto' => 'Remoto', 'Híbrido' => 'Híbrido', 'Presencial' => 'Presencial'] as $valor => $rotulo): ?>
+                            <button type="submit" name="regime" value="<?= htmlspecialchars($valor, ENT_QUOTES, 'UTF-8') ?>" class="filter-btn <?= $regime === $valor || ($regime === '' && $valor === '') ? 'active-primary' : '' ?>"><?= htmlspecialchars($rotulo, ENT_QUOTES, 'UTF-8') ?></button>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
-            </div>
 
-            <div class="divider"></div>
+                <div class="divider"></div>
 
-            <div class="filter-section">
-                <div class="filter-title">Ordenar por</div>
-                <div class="filter-list">
-                    <button class="filter-btn active-secondary">Mais recente</button>
-                    <button class="filter-btn">Maior salário</button>
-                    <button class="filter-btn">Relevância</button>
+                <div class="filter-section">
+                    <div class="filter-title">Ordenar por</div>
+                    <div class="filter-list">
+                        <button type="submit" name="ordem" value="recente" class="filter-btn <?= $ordem !== 'salario' ? 'active-secondary' : '' ?>">Mais recente</button>
+                        <button type="submit" name="ordem" value="salario" class="filter-btn <?= $ordem === 'salario' ? 'active-secondary' : '' ?>">Maior salário</button>
+                    </div>
                 </div>
-            </div>
+            </form>
         </aside>
 
         <!-- Job List -->
         <div class="jobs-grid">
-            <!-- Vaga 1 -->
-            <div class="job-card">
-                <div class="job-company">Tech Solutions Ltda.</div>
-                <h3 class="job-title">Desenvolvedor Back-End Node.js</h3>
-                <div class="job-meta">Tecnologia • Remoto</div>
-                <div class="job-footer">
-                    <span class="job-salary">R$ 5.000</span>
-                    <a href="/vagas/detalhes.php" class="btn-apply">Ver vaga</a>
+            <?php if (!$vagas): ?>
+                <div class="job-card">
+                    <h3 class="job-title">Nenhuma vaga encontrada</h3>
+                    <div class="job-meta">Tente alterar os filtros ou buscar outro termo.</div>
+                    <div class="job-footer"><a href="/vagas/index.php" class="btn-apply">Limpar filtros</a></div>
                 </div>
-            </div>
-
-            <!-- Vaga 2 -->
-            <div class="job-card">
-                <div class="job-company">Agência Web Brasil</div>
-                <h3 class="job-title">UX/UI Designer</h3>
-                <div class="job-meta">Design • Híbrido</div>
-                <div class="job-footer">
-                    <span class="job-salary">R$ 4.200</span>
-                    <a href="#" class="btn-apply">Ver vaga</a>
-                </div>
-            </div>
-
-            <!-- Vaga 3 -->
-            <div class="job-card">
-                <div class="job-company">Fintech Startup</div>
-                <h3 class="job-title">Engenheiro de Dados</h3>
-                <div class="job-meta">Dados • Remoto</div>
-                <div class="job-footer">
-                    <span class="job-salary">R$ 9.500</span>
-                    <a href="#" class="btn-apply">Ver vaga</a>
-                </div>
-            </div>
-
-            <!-- Vaga 4 -->
-            <div class="job-card">
-                <div class="job-company">Marketing Co.</div>
-                <h3 class="job-title">Analista de Marketing</h3>
-                <div class="job-meta">Marketing • Presencial</div>
-                <div class="job-footer">
-                    <span class="job-salary">R$ 3.800</span>
-                    <a href="#" class="btn-apply">Ver vaga</a>
-                </div>
-            </div>
+            <?php else: ?>
+                <?php foreach ($vagas as $vaga): ?>
+                    <div class="job-card">
+                        <div class="job-company"><?= htmlspecialchars($vaga['empresa_nome'], ENT_QUOTES, 'UTF-8') ?></div>
+                        <h3 class="job-title"><?= htmlspecialchars($vaga['titulo'], ENT_QUOTES, 'UTF-8') ?></h3>
+                        <div class="job-meta"><?= htmlspecialchars($vaga['area'], ENT_QUOTES, 'UTF-8') ?> • <?= htmlspecialchars($vaga['regime'], ENT_QUOTES, 'UTF-8') ?></div>
+                        <div class="job-footer">
+                            <span class="job-salary">
+                                <?php if ($vaga['exibir_salario'] && $vaga['salario_min'] !== null): ?>
+                                    R$ <?= number_format((float) $vaga['salario_min'], 2, ',', '.') ?>
+                                    <?= $vaga['salario_max'] !== null ? ' – R$ ' . number_format((float) $vaga['salario_max'], 2, ',', '.') : '' ?>
+                                <?php else: ?>
+                                    A combinar
+                                <?php endif; ?>
+                            </span>
+                            <a href="/vagas/detalhes.php?id=<?= (int) $vaga['id'] ?>" class="btn-apply">Ver vaga</a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </div>
 
-        <script src="/js/tema.js"></script>
+        <script src="/JS/tema.js"></script>
 
 
 </body>

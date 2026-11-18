@@ -49,7 +49,7 @@ O projeto espera um banco MySQL/MariaDB chamado `infodin`, com conexão configur
 - Charset: `utf8`
 - PDO em modo de exceção
 
-O cadastro de candidato espera uma tabela `infodin.candidatos`. Não existe `database.sql`, migrations, seeds ou criação automática da tabela no estado atual.
+O cadastro de candidato espera uma tabela `infodin.candidatos`. O modelo completo está versionado em `database.sql` e inclui também usuários, empresas, vagas, candidaturas e vagas salvas.
 
 Campos persistidos pelo processador atual:
 
@@ -61,7 +61,7 @@ Campos persistidos pelo processador atual:
 - `data_nascimento`
 - `foto_perfil`
 
-Campos adicionais exibidos no cadastro de candidato ainda não são persistidos. Candidaturas, empresas, vagas e usuários não possuem tabelas implementadas neste repositório.
+Campos adicionais exibidos no cadastro de candidato ainda não são persistidos pelo processador atual. O modelo SQL para candidaturas, empresas, vagas, usuários e vagas salvas já está criado em `database.sql`, mas os respectivos processadores PHP ainda não foram implementados.
 
 ## Sessões e autenticação
 

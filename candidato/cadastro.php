@@ -1,3 +1,6 @@
+<?php
+$erro = isset($_GET['erro']) ? trim((string) $_GET['erro']) : '';
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -57,7 +60,10 @@
         <!-- Formulário (Tudo em um único form para enviar via POST) -->
         <div class="form-card">
             <!-- Aponte o action para a sua rota do back-end e adicione o enctype -->
-            <form id="registerForm" action="src/processar-candidato.php" method="POST" enctype="multipart/form-data">
+            <form id="registerForm" action="/src/processar-candidato.php" method="POST" enctype="multipart/form-data">
+                <?php if ($erro !== ''): ?>
+                    <div class="form-error" role="alert"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></div>
+                <?php endif; ?>
 
                 <!-- PASSO 1 -->
                 <div class="step-content active" id="step-1">
@@ -90,10 +96,9 @@
                             </div>
                         </div>
 
-                        <!-- Campo de Senha Obrigatório para o Login -->
-                        <div style="margin-bottom: 16px;">
-                            <label class="form-label">Crie uma Senha<span class="required">*</span></label>
-                            <input type="password" name="senha" class="form-input" placeholder="••••••••" required>
+                        <!-- Senha única: solicitada no terceiro passo -->
+                        <div style="display: none;">
+                            <input type="password" name="senha_passo_inicial">
                         </div>
 
                         <div>
@@ -188,11 +193,11 @@
 
                         <div>
                             <label class="form-label">Senha<span class="required">*</span></label>
-                            <input type="password" name="senha" class="form-input" placeholder="Mínimo 8 caracteres" required>
+                            <input type="password" name="senha" class="form-input" placeholder="Mínimo 8 caracteres" minlength="8" required>
                         </div>
                         <div>
                             <label class="form-label">Confirmar senha<span class="required">*</span></label>
-                            <input type="password" name="confirmar_senha" class="form-input" placeholder="Repita a senha" required>
+                            <input type="password" name="confirmar_senha" class="form-input" placeholder="Repita a senha" minlength="8" required>
                         </div>
 
                         <!-- Checkbox customizado -->
@@ -219,7 +224,7 @@
     <!-- Script Simples para Alternar os Passos -->
     <script src="/JS/candidato-avancar-passos.js"></script>
 
-    <script src="/js/tema.js"></script>
+    <script src="/JS/tema.js"></script>
 </body>
 
 </html>

@@ -1,5 +1,4 @@
-
-        :root {
+:root {
     --background: #FFFFFF;
     --foreground: #000000;
     --card: #FAFAFA;
@@ -218,4 +217,13 @@
         .step-content { display: none; }
         .step-content.active { display: block; }
 
-    
+        .form-error {
+            margin-bottom: 20px;
+            padding: 12px 14px;
+            border: 1px solid #FECACA;
+            border-radius: var(--radius);
+            background-color: #FEF2F2;
+            color: #991B1B;
+            font-size: 13px;
+        }
+

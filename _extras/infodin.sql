@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Tempo de geração: 09/11/2026 às 14:06
--- Versão do servidor: 8.4.8
--- Versão do PHP: 8.5.12
+-- Generation Time: Nov 18, 2026 at 09:47 AM
+-- Server version: 8.4.8
+-- PHP Version: 8.5.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,31 +18,30 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Banco de dados: `infodin`
+-- Database: `infodin`
 --
 
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `candidatura`
+-- Table structure for table `candidaturas`
 --
 
-CREATE TABLE `candidatura` (
+CREATE TABLE `candidaturas` (
   `id` int NOT NULL,
-  `id_usuarios` int NOT NULL,
-  `id_vagas` int NOT NULL,
+  `id_usuario` int NOT NULL,
+  `id_vaga` int NOT NULL,
   `data_candidatura` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `status` enum('novo','em_analise','entrevista','rejeitado') DEFAULT 'novo',
-  `requisitos` varchar(150) DEFAULT NULL
+  `status` enum('novo','em_analise','entrevista','rejeitado') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'novo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `empresa`
+-- Table structure for table `empresas`
 --
 
-CREATE TABLE `empresa` (
+CREATE TABLE `empresas` (
   `id_empresa` int NOT NULL,
   `nome` varchar(100) DEFAULT NULL,
   `setor` varchar(50) DEFAULT NULL,
@@ -58,7 +57,7 @@ CREATE TABLE `empresa` (
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `usuarios`
+-- Table structure for table `usuarios`
 --
 
 CREATE TABLE `usuarios` (
@@ -83,90 +82,92 @@ CREATE TABLE `usuarios` (
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `vagas`
+-- Table structure for table `vagas`
 --
 
 CREATE TABLE `vagas` (
   `id` int NOT NULL,
   `titulo` varchar(150) NOT NULL,
   `descricao` text NOT NULL,
-  `requisitos` text NOT NULL,
+  `requisito` text NOT NULL,
   `salario_min` decimal(10,2) DEFAULT NULL,
   `salario_max` decimal(10,2) DEFAULT NULL,
   `exibir_salario` enum('sim','nao','combinar') DEFAULT 'sim',
   `localizacao` varchar(100) DEFAULT NULL,
   `regime` enum('presencial','hibrido','remoto') DEFAULT NULL,
-  `beneficios` text
+  `beneficio` text,
+  `data_publicacao` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` enum('aberta','pausada','encerrada') DEFAULT 'aberta'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Índices para tabelas despejadas
+-- Indexes for dumped tables
 --
 
 --
--- Índices de tabela `candidatura`
+-- Indexes for table `candidaturas`
 --
-ALTER TABLE `candidatura`
+ALTER TABLE `candidaturas`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `id_usuarios` (`id_usuarios`),
-  ADD KEY `id_vagas` (`id_vagas`);
+  ADD KEY `id_usuario` (`id_usuario`),
+  ADD KEY `id_vaga` (`id_vaga`);
 
 --
--- Índices de tabela `empresa`
+-- Indexes for table `empresas`
 --
-ALTER TABLE `empresa`
+ALTER TABLE `empresas`
   ADD PRIMARY KEY (`id_empresa`);
 
 --
--- Índices de tabela `usuarios`
+-- Indexes for table `usuarios`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`);
 
 --
--- Índices de tabela `vagas`
+-- Indexes for table `vagas`
 --
 ALTER TABLE `vagas`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT para tabelas despejadas
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT de tabela `candidatura`
+-- AUTO_INCREMENT for table `candidaturas`
 --
-ALTER TABLE `candidatura`
+ALTER TABLE `candidaturas`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de tabela `empresa`
+-- AUTO_INCREMENT for table `empresas`
 --
-ALTER TABLE `empresa`
+ALTER TABLE `empresas`
   MODIFY `id_empresa` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de tabela `usuarios`
+-- AUTO_INCREMENT for table `usuarios`
 --
 ALTER TABLE `usuarios`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de tabela `vagas`
+-- AUTO_INCREMENT for table `vagas`
 --
 ALTER TABLE `vagas`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- Restrições para tabelas despejadas
+-- Constraints for dumped tables
 --
 
 --
--- Restrições para tabela `candidatura`
+-- Constraints for table `candidaturas`
 --
-ALTER TABLE `candidatura`
-  ADD CONSTRAINT `candidatura_ibfk_1` FOREIGN KEY (`id_usuarios`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `candidatura_ibfk_2` FOREIGN KEY (`id_vagas`) REFERENCES `vagas` (`id`) ON DELETE CASCADE;
+ALTER TABLE `candidaturas`
+  ADD CONSTRAINT `candidaturas_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `candidaturas_ibfk_2` FOREIGN KEY (`id_vaga`) REFERENCES `vagas` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

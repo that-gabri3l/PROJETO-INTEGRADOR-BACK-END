@@ -6,12 +6,22 @@ $nomeEmpresa = $_SESSION['usuario_nome'] ?? 'Empresa';
 require_once __DIR__ . '/../src/conexao.php';
 
 $empresaId = $_SESSION['perfil_id'] ?? null;
+$logoEmpresa = null;
 $vagas = [];
 $candidatosRecentes = [];
 $totalVagas = 0;
 $totalCandidatos = 0;
 
 if ($empresaId) {
+    $stmtEmpresa = $pdo->prepare('SELECT nome, logo FROM empresas WHERE id = :id LIMIT 1');
+    $stmtEmpresa->execute(['id' => $empresaId]);
+    $perfilEmpresa = $stmtEmpresa->fetch(PDO::FETCH_ASSOC);
+    if ($perfilEmpresa) {
+        $nomeEmpresa = $perfilEmpresa['nome'];
+        $logoEmpresa = $perfilEmpresa['logo'];
+        $_SESSION['usuario_nome'] = $nomeEmpresa;
+    }
+
     $stmt = $pdo->prepare(
         'SELECT v.*, COUNT(c.id) AS total_candidatos
          FROM vagas v
@@ -68,9 +78,15 @@ if ($empresaId) {
     <!-- Dashboard Header -->
     <header class="dashboard-header">
         <div class="header-content">
-            <div>
-                <span class="eyebrow">Painel da empresa</span>
-                <h1 class="company-title"><?= htmlspecialchars($nomeEmpresa, ENT_QUOTES, 'UTF-8') ?></h1>
+            <div class="company-profile-heading">
+                <?php if ($logoEmpresa): ?>
+                    <img class="company-profile-logo" src="<?= htmlspecialchars($logoEmpresa, ENT_QUOTES, 'UTF-8') ?>" alt="Logo de <?= htmlspecialchars($nomeEmpresa, ENT_QUOTES, 'UTF-8') ?>">
+                <?php endif; ?>
+                <div>
+                    <span class="eyebrow">Painel da empresa</span>
+                    <h1 class="company-title"><?= htmlspecialchars($nomeEmpresa, ENT_QUOTES, 'UTF-8') ?></h1>
+                    <a class="btn-edit-company" href="/empresa/editar-perfil.php">Editar perfil</a>
+                </div>
             </div>
             <a href="/vagas/publicar.php" class="btn-publish">+ Publicar nova vaga</a>
         </div>

@@ -1,11 +1,22 @@
 <?php
-require_once __DIR__ . '/../src/conexao.php';
 require_once __DIR__ . '/../src/sessao.php';
+require_once __DIR__ . '/../src/conexao.php';
+
+$usuarioLogado = usuarioEstaLogado();
+$usuarioTipo = $_SESSION['usuario_tipo'] ?? null;
+$usuarioNome = $_SESSION['usuario_nome'] ?? '';
 
 $q = trim($_GET['q'] ?? '');
 $area = trim($_GET['area'] ?? '');
 $regime = trim($_GET['regime'] ?? '');
 $ordem = $_GET['ordem'] ?? 'recente';
+
+$areasDisponiveis = $pdo->query(
+    "SELECT DISTINCT area FROM vagas WHERE status = 'ativa' AND area IS NOT NULL AND area <> '' ORDER BY area"
+)->fetchAll(PDO::FETCH_COLUMN);
+$regimesDisponiveis = $pdo->query(
+    "SELECT DISTINCT regime FROM vagas WHERE status = 'ativa' AND regime IS NOT NULL AND regime <> '' ORDER BY regime"
+)->fetchAll(PDO::FETCH_COLUMN);
 
 $where = ['v.status = :status'];
 $params = ['status' => 'ativa'];
@@ -14,19 +25,37 @@ if ($q !== '') {
     $where[] = '(v.titulo LIKE :q OR v.area LIKE :q OR v.localizacao LIKE :q OR e.nome LIKE :q)';
     $params['q'] = '%' . $q . '%';
 }
-if (in_array($area, ['Tecnologia', 'Design', 'Marketing', 'Dados', 'Gestão', 'Vendas', 'Jurídico', 'Financeiro', 'RH'], true)) {
+if (in_array($area, $areasDisponiveis, true)) {
     $where[] = 'v.area = :area';
     $params['area'] = $area;
+} else {
+    $area = '';
 }
-if (in_array($regime, ['Remoto', 'Híbrido', 'Presencial'], true)) {
+if (in_array($regime, $regimesDisponiveis, true)) {
     $where[] = 'v.regime = :regime';
     $params['regime'] = $regime;
+} else {
+    $regime = '';
 }
 
 $orderBy = 'v.criado_em DESC';
 if ($ordem === 'salario') {
-    $orderBy = 'v.salario_max DESC';
+    $orderBy = 'CASE WHEN v.exibir_salario = 1 THEN COALESCE(v.salario_max, v.salario_min) ELSE NULL END DESC, v.criado_em DESC';
+} else {
+    $ordem = 'recente';
 }
+
+$urlComFiltros = static function (array $alteracoes) use ($q, $area, $regime, $ordem): string {
+    $filtros = array_merge([
+        'q' => $q,
+        'area' => $area,
+        'regime' => $regime,
+        'ordem' => $ordem,
+    ], $alteracoes);
+    $filtros = array_filter($filtros, static fn($valor): bool => $valor !== null && $valor !== '');
+
+    return '/vagas/index.php?' . http_build_query($filtros);
+};
 
 $sql = 'SELECT v.*, e.nome AS empresa_nome
         FROM vagas v
@@ -74,11 +103,16 @@ $vagas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
         <div class="menu-links">
-            <a href="/empresa/cadastro.php" class="nav-link"
-                style="text-decoration: none; color: var(--foreground); font-weight: 500; margin-right: 20px;">Para
-                Empresas</a>
-            <a href="/candidato/cadastro.php" class="nav-btn"
-                style="text-decoration: none; color: var(--primary); font-weight: 600;">Entrar</a>
+            <?php if (!$usuarioLogado): ?>
+                <a href="/empresa/cadastro.php" class="nav-link">Para Empresas</a>
+                <a href="/cadastro/escolha.php" class="nav-link">Cadastrar</a>
+                <a href="/cadastro/login.php" class="nav-btn">Entrar</a>
+            <?php else: ?>
+                <a href="<?= $usuarioTipo === 'empresa' ? '/empresa/painel.php' : '/candidato/painel.php' ?>" class="nav-btn">
+                    <?= htmlspecialchars($usuarioNome !== '' ? $usuarioNome : 'Meu painel', ENT_QUOTES, 'UTF-8') ?>
+                </a>
+                <a href="/src/logout.php" class="nav-link">Sair</a>
+            <?php endif; ?>
             <button id="theme-toggle" class="theme-toggle" title="Mudar tema">🌗</button>
         </div>
     </nav>
@@ -86,12 +120,13 @@ $vagas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="page-header">
         <div class="header-container">
             <span class="eyebrow-text">Explorar vagas</span>
-            <h1 class="page-title"><?= count($vagas) ?> vaga<?= count($vagas) === 1 ? '' : 's' ?> disponível<?= count($vagas) === 1 ? '' : 's' ?></h1>
+            <h1 class="page-title"><?= count($vagas) ?> <?= count($vagas) === 1 ? 'vaga disponível' : 'vagas disponíveis' ?></h1>
 
             <form class="search-bar" action="/vagas/index.php" method="GET">
                 <input type="text" name="q" value="<?= htmlspecialchars($q, ENT_QUOTES, 'UTF-8') ?>" placeholder="Buscar por cargo, empresa ou habilidade...">
                 <?php if ($area !== ''): ?><input type="hidden" name="area" value="<?= htmlspecialchars($area, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
                 <?php if ($regime !== ''): ?><input type="hidden" name="regime" value="<?= htmlspecialchars($regime, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
+                <?php if ($ordem !== 'recente'): ?><input type="hidden" name="ordem" value="<?= htmlspecialchars($ordem, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
                 <button type="submit">Buscar</button>
             </form>
         </div>
@@ -100,38 +135,37 @@ $vagas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="main-layout">
         <!-- Sidebar Filters -->
         <aside class="sidebar">
-            <form action="/vagas/index.php" method="GET">
-                <?php if ($q !== ''): ?><input type="hidden" name="q" value="<?= htmlspecialchars($q, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
-                <div class="filter-section">
-                    <div class="filter-title">Área</div>
-                    <div class="filter-list">
-                        <?php foreach (['' => 'Todos', 'Tecnologia' => 'Tecnologia', 'Design' => 'Design', 'Marketing' => 'Marketing', 'Dados' => 'Dados', 'Gestão' => 'Gestão'] as $valor => $rotulo): ?>
-                            <button type="submit" name="area" value="<?= htmlspecialchars($valor, ENT_QUOTES, 'UTF-8') ?>" class="filter-btn <?= $area === $valor || ($area === '' && $valor === '') ? 'active-primary' : '' ?>"><?= htmlspecialchars($rotulo, ENT_QUOTES, 'UTF-8') ?></button>
-                        <?php endforeach; ?>
-                    </div>
+            <div class="filter-section">
+                <div class="filter-title">Área</div>
+                <div class="filter-list">
+                    <a href="<?= htmlspecialchars($urlComFiltros(['area' => null]), ENT_QUOTES, 'UTF-8') ?>" class="filter-btn <?= $area === '' ? 'active-primary' : '' ?>">Todas</a>
+                    <?php foreach ($areasDisponiveis as $areaDisponivel): ?>
+                        <a href="<?= htmlspecialchars($urlComFiltros(['area' => $areaDisponivel]), ENT_QUOTES, 'UTF-8') ?>" class="filter-btn <?= $area === $areaDisponivel ? 'active-primary' : '' ?>"><?= htmlspecialchars($areaDisponivel, ENT_QUOTES, 'UTF-8') ?></a>
+                    <?php endforeach; ?>
                 </div>
+            </div>
 
-                <div class="divider"></div>
+            <div class="divider"></div>
 
-                <div class="filter-section">
-                    <div class="filter-title">Regime</div>
-                    <div class="filter-list">
-                        <?php foreach (['' => 'Todos', 'Remoto' => 'Remoto', 'Híbrido' => 'Híbrido', 'Presencial' => 'Presencial'] as $valor => $rotulo): ?>
-                            <button type="submit" name="regime" value="<?= htmlspecialchars($valor, ENT_QUOTES, 'UTF-8') ?>" class="filter-btn <?= $regime === $valor || ($regime === '' && $valor === '') ? 'active-primary' : '' ?>"><?= htmlspecialchars($rotulo, ENT_QUOTES, 'UTF-8') ?></button>
-                        <?php endforeach; ?>
-                    </div>
+            <div class="filter-section">
+                <div class="filter-title">Regime</div>
+                <div class="filter-list">
+                    <a href="<?= htmlspecialchars($urlComFiltros(['regime' => null]), ENT_QUOTES, 'UTF-8') ?>" class="filter-btn <?= $regime === '' ? 'active-primary' : '' ?>">Todos</a>
+                    <?php foreach ($regimesDisponiveis as $regimeDisponivel): ?>
+                        <a href="<?= htmlspecialchars($urlComFiltros(['regime' => $regimeDisponivel]), ENT_QUOTES, 'UTF-8') ?>" class="filter-btn <?= $regime === $regimeDisponivel ? 'active-primary' : '' ?>"><?= htmlspecialchars($regimeDisponivel, ENT_QUOTES, 'UTF-8') ?></a>
+                    <?php endforeach; ?>
                 </div>
+            </div>
 
-                <div class="divider"></div>
+            <div class="divider"></div>
 
-                <div class="filter-section">
-                    <div class="filter-title">Ordenar por</div>
-                    <div class="filter-list">
-                        <button type="submit" name="ordem" value="recente" class="filter-btn <?= $ordem !== 'salario' ? 'active-secondary' : '' ?>">Mais recente</button>
-                        <button type="submit" name="ordem" value="salario" class="filter-btn <?= $ordem === 'salario' ? 'active-secondary' : '' ?>">Maior salário</button>
-                    </div>
+            <div class="filter-section">
+                <div class="filter-title">Ordenar por</div>
+                <div class="filter-list">
+                    <a href="<?= htmlspecialchars($urlComFiltros(['ordem' => 'recente']), ENT_QUOTES, 'UTF-8') ?>" class="filter-btn <?= $ordem === 'recente' ? 'active-secondary' : '' ?>">Mais recente</a>
+                    <a href="<?= htmlspecialchars($urlComFiltros(['ordem' => 'salario']), ENT_QUOTES, 'UTF-8') ?>" class="filter-btn <?= $ordem === 'salario' ? 'active-secondary' : '' ?>">Maior salário</a>
                 </div>
-            </form>
+            </div>
         </aside>
 
         <!-- Job List -->

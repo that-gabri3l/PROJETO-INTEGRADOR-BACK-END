@@ -187,6 +187,25 @@
             border-radius: var(--radius); cursor: pointer; background-color: var(--background);
             display: flex; align-items: center; justify-content: center; gap: 16px;
         }
+        .upload-feedback {
+            margin-top: 6px;
+            color: var(--muted-foreground);
+            font-size: 12px;
+        }
+        .upload-preview {
+            display: block;
+            width: 88px;
+            height: 88px;
+            margin-top: 12px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .upload-preview[hidden] { display: none; }
+        .btn-back {
+            display: inline-block;
+            text-decoration: none;
+        }
 
         /* Checkbox tipo botão (Regime) */
         .btn-checkbox {

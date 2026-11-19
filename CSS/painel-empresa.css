@@ -137,6 +137,38 @@
             margin: 8px 0 0;
             letter-spacing: -0.5px;
         }
+        .company-profile-heading {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            min-width: 0;
+        }
+        .company-profile-logo {
+            width: 56px;
+            height: 56px;
+            flex: 0 0 56px;
+            object-fit: contain;
+            padding: 5px;
+            border: 1px solid rgba(242,237,229,0.3);
+            border-radius: var(--radius);
+            background-color: #FFFFFF;
+        }
+        .btn-edit-company {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 6px 10px;
+            border: 1px solid rgba(242,237,229,0.35);
+            border-radius: var(--radius);
+            color: #F2EDE5;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .btn-edit-company:hover,
+        .btn-edit-company:focus-visible {
+            background-color: rgba(242,237,229,0.12);
+            border-color: rgba(242,237,229,0.7);
+        }
         .btn-publish {
             padding: 12px 24px;
             background-color: var(--accent);

@@ -7,6 +7,8 @@ $cidadeUsuario = $_SESSION['cidade'] ?? '';
 require_once __DIR__ . '/../src/conexao.php';
 
 $candidatoId = $_SESSION['perfil_id'] ?? null;
+$fotoUsuario = null;
+$perfil = null;
 $candidaturas = [];
 $vagasSalvas = [];
 $candidaturasTotal = 0;
@@ -14,6 +16,15 @@ $entrevistas = 0;
 $vagasDisponiveis = 0;
 
 if ($candidatoId) {
+    $stmtPerfil = $pdo->prepare('SELECT * FROM candidatos WHERE id = :id LIMIT 1');
+    $stmtPerfil->execute(['id' => $candidatoId]);
+    $perfil = $stmtPerfil->fetch(PDO::FETCH_ASSOC);
+    if ($perfil) {
+        $nomeUsuario = $perfil['nome'];
+        $cidadeUsuario = $perfil['cidade'] ?? '';
+        $fotoUsuario = $perfil['foto_perfil'] ?: null;
+    }
+
     $stmt = $pdo->prepare(
         'SELECT c.status, c.criado_em, v.id AS vaga_id, v.titulo, e.nome AS empresa_nome
          FROM candidaturas c
@@ -38,6 +49,22 @@ if ($candidatoId) {
     $stmt->execute(['candidato_id' => $candidatoId]);
     $vagasSalvas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+$itensPerfil = [
+    ['titulo' => 'Dados básicos', 'pontos' => 20, 'concluido' => !empty($perfil['nome']) && !empty($perfil['email']) && !empty($perfil['cidade'])],
+    ['titulo' => 'Adicionar telefone', 'pontos' => 5, 'concluido' => !empty($perfil['telefone'])],
+    ['titulo' => 'Adicionar foto', 'pontos' => 10, 'concluido' => !empty($perfil['foto_perfil'])],
+    ['titulo' => 'Informar cargo e área', 'pontos' => 20, 'concluido' => !empty($perfil['cargo']) && !empty($perfil['area'])],
+    ['titulo' => 'Informar experiência', 'pontos' => 10, 'concluido' => !empty($perfil['experiencia'])],
+    ['titulo' => 'Informar escolaridade', 'pontos' => 10, 'concluido' => !empty($perfil['escolaridade'])],
+    ['titulo' => 'Escolher regime de trabalho', 'pontos' => 10, 'concluido' => !empty($perfil['regime_preferido'])],
+    ['titulo' => 'Adicionar LinkedIn', 'pontos' => 5, 'concluido' => !empty($perfil['linkedin'])],
+    ['titulo' => 'Preencher resumo profissional', 'pontos' => 10, 'concluido' => !empty($perfil['sobre'])],
+];
+$percentualPerfil = array_sum(array_map(
+    static fn(array $item): int => $item['concluido'] ? $item['pontos'] : 0,
+    $itensPerfil
+));
 
 $stmtVagasDisponiveis = $pdo->query('SELECT COUNT(*) FROM vagas WHERE status = "ativa"');
 $vagasDisponiveis = (int) $stmtVagasDisponiveis->fetchColumn();
@@ -69,21 +96,30 @@ $vagasDisponiveis = (int) $stmtVagasDisponiveis->fetchColumn();
     <!-- Header do Painel -->
     <header class="dashboard-header">
         <div class="header-content">
-            <div class="avatar-large"><?= htmlspecialchars(strtoupper(substr($nomeUsuario, 0, 1)), ENT_QUOTES, 'UTF-8') ?></div>
+            <div class="avatar-large">
+                <?php if ($fotoUsuario): ?>
+                    <img src="<?= htmlspecialchars($fotoUsuario, ENT_QUOTES, 'UTF-8') ?>" alt="Foto de <?= htmlspecialchars($nomeUsuario, ENT_QUOTES, 'UTF-8') ?>">
+                <?php else: ?>
+                    <?= htmlspecialchars(strtoupper(substr($nomeUsuario, 0, 1)), ENT_QUOTES, 'UTF-8') ?>
+                <?php endif; ?>
+            </div>
             <div class="header-info">
                 <span class="eyebrow">Perfil do candidato</span>
                 <h1 class="user-name"><?= htmlspecialchars($nomeUsuario, ENT_QUOTES, 'UTF-8') ?></h1>
                 <div class="user-meta"><?= $cidadeUsuario !== '' ? htmlspecialchars($cidadeUsuario, ENT_QUOTES, 'UTF-8') : 'Complete seu perfil profissional' ?></div>
+                <a class="btn-edit-profile" href="/candidato/editar-perfil.php">Editar perfil</a>
             </div>
             <div class="profile-progress">
                 <div class="progress-title">Perfil completo</div>
                 <div class="progress-bar-container">
-                    <div class="progress-track">
-                        <div class="progress-fill"></div>
+                    <div class="progress-track" role="progressbar" aria-label="Completude do perfil" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?= $percentualPerfil ?>">
+                        <div class="progress-fill" style="width: <?= $percentualPerfil ?>%;"></div>
                     </div>
-                    <span class="progress-percentage">72%</span>
+                    <span class="progress-percentage"><?= $percentualPerfil ?>%</span>
                 </div>
-                <div style="font-size: 11px; color: rgba(242,237,229,0.5); margin-top: 6px;">Adicione currículo para completar</div>
+                <div style="font-size: 11px; color: rgba(242,237,229,0.7); margin-top: 6px;">
+                    <?= $percentualPerfil === 100 ? 'Seu perfil está completo.' : 'Complete os itens indicados abaixo.' ?>
+                </div>
             </div>
         </div>
     </header>
@@ -146,7 +182,7 @@ $vagasDisponiveis = (int) $stmtVagasDisponiveis->fetchColumn();
                     </div>
                     <div class="list-container">
                         <?php foreach ($vagasSalvas as $vaga): ?>
-                        <div class="list-item">
+                        <a class="list-item saved-job-link" href="/vagas/detalhes.php?id=<?= (int) $vaga['id'] ?>" aria-label="Ver detalhes de <?= htmlspecialchars($vaga['titulo'], ENT_QUOTES, 'UTF-8') ?>">
                             <div class="item-details">
                                 <div class="item-title"><?= htmlspecialchars($vaga['titulo'], ENT_QUOTES, 'UTF-8') ?></div>
                                 <div class="item-meta"><?= htmlspecialchars($vaga['empresa_nome'], ENT_QUOTES, 'UTF-8') ?> · <?= htmlspecialchars($vaga['localizacao'], ENT_QUOTES, 'UTF-8') ?> · <?= htmlspecialchars($vaga['regime'], ENT_QUOTES, 'UTF-8') ?></div>
@@ -154,8 +190,8 @@ $vagasDisponiveis = (int) $stmtVagasDisponiveis->fetchColumn();
                                     R$ <?= number_format($vaga['salario_min'], 0, ',', '.') ?> – R$ <?= number_format($vaga['salario_max'], 0, ',', '.') ?>
                                 </div>
                             </div>
-                            <span style="font-size: 14px; color: var(--muted-foreground);">→</span>
-                        </div>
+                            <span aria-hidden="true" style="font-size: 14px; color: var(--muted-foreground);">→</span>
+                        </a>
                         <?php endforeach; ?>
                         <?php if (!$vagasSalvas): ?>
                             <div class="list-item"><div class="item-details"><div class="item-title">Nenhuma vaga salva</div><div class="item-meta">Use o botão salvar na página de vagas.</div></div></div>
@@ -170,31 +206,20 @@ $vagasDisponiveis = (int) $stmtVagasDisponiveis->fetchColumn();
                         <h2 class="section-title">Complete seu perfil</h2>
                     </div>
                     <div class="list-container">
-                        <div class="checklist-item checklist-pending">
-                            <div class="checklist-circle"></div>
-                            <span class="checklist-label">Adicionar currículo</span>
-                            <span class="checklist-points">+15%</span>
-                        </div>
-                        <div class="checklist-item checklist-done">
-                            <div class="checklist-circle"><span class="check-mark">✓</span></div>
-                            <span class="checklist-label">Confirmar e-mail</span>
-                            <span class="checklist-points">+10%</span>
-                        </div>
-                        <div class="checklist-item checklist-pending">
-                            <div class="checklist-circle"></div>
-                            <span class="checklist-label">Adicionar foto</span>
-                            <span class="checklist-points">+8%</span>
-                        </div>
-                        <div class="checklist-item checklist-done">
-                            <div class="checklist-circle"><span class="check-mark">✓</span></div>
-                            <span class="checklist-label">Preencher "Sobre mim"</span>
-                            <span class="checklist-points">+12%</span>
-                        </div>
-                        <div class="checklist-item checklist-pending">
-                            <div class="checklist-circle"></div>
-                            <span class="checklist-label">Adicionar LinkedIn</span>
-                            <span class="checklist-points">+5%</span>
-                        </div>
+                        <?php foreach ($itensPerfil as $item): ?>
+                            <div class="checklist-item <?= $item['concluido'] ? 'checklist-done' : 'checklist-pending' ?>">
+                                <div class="checklist-circle">
+                                    <?php if ($item['concluido']): ?><span class="check-mark">✓</span><?php endif; ?>
+                                </div>
+                                <?php if ($item['concluido']): ?>
+                                    <span class="checklist-label"><?= htmlspecialchars($item['titulo'], ENT_QUOTES, 'UTF-8') ?></span>
+                                    <span class="checklist-points">Concluído</span>
+                                <?php else: ?>
+                                    <a class="checklist-label" href="/candidato/editar-perfil.php"><?= htmlspecialchars($item['titulo'], ENT_QUOTES, 'UTF-8') ?></a>
+                                    <a class="checklist-points checklist-edit-link" href="/candidato/editar-perfil.php">+<?= $item['pontos'] ?>%</a>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>

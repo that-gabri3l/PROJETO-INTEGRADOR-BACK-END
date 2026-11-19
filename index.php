@@ -1,9 +1,55 @@
 <?php
 require_once __DIR__ . '/src/sessao.php';
+require_once __DIR__ . '/src/conexao.php';
 
 $usuarioLogado = usuarioEstaLogado();
 $usuarioTipo = $_SESSION['usuario_tipo'] ?? null;
 $usuarioNome = $_SESSION['usuario_nome'] ?? '';
+
+$areasDestaque = ['Tecnologia', 'Design', 'Marketing', 'Dados', 'Gestão', 'Vendas', 'Jurídico', 'Financeiro', 'RH'];
+$areaSelecionada = trim($_GET['area'] ?? '');
+if (!in_array($areaSelecionada, $areasDestaque, true)) {
+    $areaSelecionada = '';
+}
+
+$sqlDestaques = 'SELECT v.id, v.titulo, v.area, v.regime, v.localizacao, v.salario_min, v.salario_max,
+                        v.exibir_salario, e.nome AS empresa_nome
+                FROM vagas v
+                INNER JOIN empresas e ON e.id = v.empresa_id
+                
+                WHERE v.status = :status';
+$parametrosDestaques = ['status' => 'ativa'];
+
+if ($areaSelecionada !== '') {
+    $sqlDestaques .= ' AND v.area = :area';
+    $parametrosDestaques['area'] = $areaSelecionada;
+}
+
+$sqlDestaques .= ' ORDER BY v.criado_em DESC LIMIT 3';
+$stmtDestaques = $pdo->prepare($sqlDestaques);
+$stmtDestaques->execute($parametrosDestaques);
+$vagasDestaque = $stmtDestaques->fetchAll();
+
+$estatisticas = $pdo->query(
+    "SELECT
+        (SELECT COUNT(*) FROM vagas WHERE status = 'ativa') AS vagas_ativas,
+        (SELECT COUNT(*) FROM empresas) AS empresas_cadastradas,
+        (SELECT COUNT(*) FROM candidatos) AS candidatos_cadastrados,
+        (SELECT COUNT(*) FROM candidaturas) AS candidaturas_total,
+        (SELECT COUNT(*) FROM candidaturas WHERE status <> 'recebida') AS candidaturas_respondidas"
+)->fetch();
+$taxaResposta = (int) $estatisticas['candidaturas_total'] > 0
+    ? round(((int) $estatisticas['candidaturas_respondidas'] / (int) $estatisticas['candidaturas_total']) * 100)
+    : null;
+
+$empresasDestaque = $pdo->query(
+    "SELECT e.nome, e.setor, COUNT(v.id) AS vagas_ativas
+     FROM empresas e
+     INNER JOIN vagas v ON v.empresa_id = e.id AND v.status = 'ativa'
+     GROUP BY e.id, e.nome, e.setor
+     ORDER BY vagas_ativas DESC, e.nome ASC
+     LIMIT 6"
+)->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -66,10 +112,8 @@ $usuarioNome = $_SESSION['usuario_nome'] ?? '';
                     <span class="hero-label-text">Plataforma de empregos</span>
                 </div>
                 <h1 class="hero-title">Encontre a vaga<br><em>certa para você</em></h1>
-                <p class="hero-desc">Conectamos profissionais talentosos às melhores empresas do Brasil. Mais de 4.800
-                    vagas em aberto em todas as áreas.</p>
+                <p class="hero-desc">Conectamos profissionais talentosos às empresas e oportunidades disponíveis em diversas áreas.</p>
 
-                <!-- Aponte o action para a rota de busca no seu backend -->
                 <form class="search-bar" action="/vagas/index.php" method="GET">
                     <input type="text" name="q" placeholder="Cargo, empresa ou palavra-chave...">
                     <button type="submit">Buscar Vagas</button>
@@ -82,20 +126,20 @@ $usuarioNome = $_SESSION['usuario_nome'] ?? '';
     <div class="stats-bar">
         <div class="stats-grid">
             <div class="stat-item">
-                <div class="stat-value">4.800+</div>
+                <div class="stat-value"><?= number_format((int) $estatisticas['vagas_ativas'], 0, ',', '.') ?></div>
                 <div class="stat-label">Vagas ativas</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value">1.200+</div>
+                <div class="stat-value"><?= number_format((int) $estatisticas['empresas_cadastradas'], 0, ',', '.') ?></div>
                 <div class="stat-label">Empresas cadastradas</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value">180 mil</div>
+                <div class="stat-value"><?= number_format((int) $estatisticas['candidatos_cadastrados'], 0, ',', '.') ?></div>
                 <div class="stat-label">Candidatos registrados</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value">92%</div>
-                <div class="stat-label">Taxa de resposta</div>
+                <div class="stat-value"><?= $taxaResposta === null ? '—' : $taxaResposta . '%' ?></div>
+                <div class="stat-label">Candidaturas respondidas</div>
             </div>
         </div>
     </div>
@@ -108,81 +152,49 @@ $usuarioNome = $_SESSION['usuario_nome'] ?? '';
                 <h2 class="section-title">Vagas em destaque</h2>
             </div>
             <div class="filter-tags">
-                <button class="filter-tag active">Todos</button>
-                <button class="filter-tag">Tecnologia</button>
-                <button class="filter-tag">Design</button>
-                <button class="filter-tag">Marketing</button>
-                <button class="filter-tag">Dados</button>
-                <button class="filter-tag">Gestão</button>
+                <a class="filter-tag <?= $areaSelecionada === '' ? 'active' : '' ?>" href="/index.php">Todos</a>
+                <?php foreach ($areasDestaque as $area): ?>
+                    <a class="filter-tag <?= $areaSelecionada === $area ? 'active' : '' ?>" href="/index.php?area=<?= urlencode($area) ?>"><?= htmlspecialchars($area, ENT_QUOTES, 'UTF-8') ?></a>
+                <?php endforeach; ?>
             </div>
         </div>
 
         <div class="job-grid">
-            <!-- Vaga 1 -->
-            <a href="/vagas/index.php" class="job-card"
-                style="display: block; text-decoration: none; color: inherit;">
-                <div
-                    style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                    <div>
-                        <div
-                            style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 2px;">
-                            Engenheiro de Software Sênior</div>
-                        <div style="font-size: 12px; color: var(--muted-foreground);">Nubank</div>
-                    </div>
-                    <div class="company-logo"
-                        style="width: 36px; height: 36px; font-size: 14px; background-color: #6B21A8;">N</div>
+            <?php if (!$vagasDestaque): ?>
+                <div class="job-card">
+                    <h3>Nenhuma vaga encontrada</h3>
+                    <p><?= $areaSelecionada === '' ? 'Ainda não há vagas ativas.' : 'Não há vagas ativas nesta área.' ?></p>
                 </div>
-                <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px;">São Paulo, SP ·
-                    Híbrido</div>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 13px; font-weight: 600; color: var(--primary);">R$ 15.000</span>
-                    <span style="font-size: 12px; color: var(--accent); font-weight: 600;">Ver vaga →</span>
-                </div>
-            </a>
-
-            <!-- Vaga 2 -->
-            <a href="/vagas/index.php" class="job-card"
-                style="display: block; text-decoration: none; color: inherit;">
-                <div
-                    style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                    <div>
-                        <div
-                            style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 2px;">
-                            Designer de Produto (UX/UI)</div>
-                        <div style="font-size: 12px; color: var(--muted-foreground);">Stone</div>
-                    </div>
-                    <div class="company-logo"
-                        style="width: 36px; height: 36px; font-size: 14px; background-color: #15803D;">S</div>
-                </div>
-                <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px;">Remoto · Integral
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 13px; font-weight: 600; color: var(--primary);">R$ 9.500</span>
-                    <span style="font-size: 12px; color: var(--accent); font-weight: 600;">Ver vaga →</span>
-                </div>
-            </a>
-
-            <!-- Vaga 3 -->
-            <a href="/vagas/index.php" class="job-card"
-                style="display: block; text-decoration: none; color: inherit;">
-                <div
-                    style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                    <div>
-                        <div
-                            style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 2px;">
-                            Cientista de Dados</div>
-                        <div style="font-size: 12px; color: var(--muted-foreground);">iFood</div>
-                    </div>
-                    <div class="company-logo"
-                        style="width: 36px; height: 36px; font-size: 14px; background-color: #C2410C;">i</div>
-                </div>
-                <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px;">Campinas, SP ·
-                    Híbrido</div>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 13px; font-weight: 600; color: var(--primary);">R$ 14.000</span>
-                    <span style="font-size: 12px; color: var(--accent); font-weight: 600;">Ver vaga →</span>
-                </div>
-            </a>
+            <?php else: ?>
+                <?php foreach ($vagasDestaque as $vaga): ?>
+                    <a href="/vagas/detalhes.php?id=<?= (int) $vaga['id'] ?>" class="job-card"
+                        style="display: block; text-decoration: none; color: inherit;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                            <div>
+                                <div style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 2px;">
+                                    <?= htmlspecialchars($vaga['titulo'], ENT_QUOTES, 'UTF-8') ?></div>
+                                <div style="font-size: 12px; color: var(--muted-foreground);">
+                                    <?= htmlspecialchars($vaga['empresa_nome'], ENT_QUOTES, 'UTF-8') ?></div>
+                            </div>
+                            <div class="company-logo" style="width: 36px; height: 36px; font-size: 14px;">
+                                <?= htmlspecialchars(strtoupper(substr($vaga['empresa_nome'], 0, 1)), ENT_QUOTES, 'UTF-8') ?></div>
+                        </div>
+                        <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px;">
+                            <?= htmlspecialchars($vaga['localizacao'] ?? 'Localização não informada', ENT_QUOTES, 'UTF-8') ?> ·
+                            <?= htmlspecialchars($vaga['regime'], ENT_QUOTES, 'UTF-8') ?></div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 13px; font-weight: 600; color: var(--primary);">
+                                <?php if ($vaga['exibir_salario'] && $vaga['salario_min'] !== null): ?>
+                                    R$ <?= number_format((float) $vaga['salario_min'], 2, ',', '.') ?><?= $vaga['salario_max'] !== null ? ' – R$ ' . number_format((float) $vaga['salario_max'], 2, ',', '.') : '' ?>
+                                <?php else: ?>
+                                    A combinar
+                                <?php endif; ?>
+                            </span>
+                            <span style="font-size: 12px; color: var(--accent); font-weight: 600;">Ver vaga →</span>
+                        </div>
+                    </a>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
 
         <div style="text-align: center;">
@@ -204,60 +216,22 @@ $usuarioNome = $_SESSION['usuario_nome'] ?? '';
         </div>
 
         <div class="companies-grid">
-            <div class="company-card">
-                <div class="company-logo" style="background-color: #6B21A8;">N</div>
-                <div>
-                    <div style="font-weight: 600; font-size: 15px;">Nubank</div>
-                    <div style="font-size: 12px; color: var(--muted-foreground);">Fintech</div>
-                    <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">34 vagas
-                        abertas</div>
-                </div>
-            </div>
-            <div class="company-card">
-                <div class="company-logo" style="background-color: #15803D;">S</div>
-                <div>
-                    <div style="font-weight: 600; font-size: 15px;">Stone</div>
-                    <div style="font-size: 12px; color: var(--muted-foreground);">Pagamentos</div>
-                    <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">18 vagas
-                        abertas</div>
-                </div>
-            </div>
-            <div class="company-card">
-                <div class="company-logo" style="background-color: #C2410C;">i</div>
-                <div>
-                    <div style="font-weight: 600; font-size: 15px;">iFood</div>
-                    <div style="font-size: 12px; color: var(--muted-foreground);">Delivery</div>
-                    <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">27 vagas
-                        abertas</div>
-                </div>
-            </div>
-            <div class="company-card">
-                <div class="company-logo" style="background-color: #1B3557;">H</div>
-                <div>
-                    <div style="font-weight: 600; font-size: 15px;">Hotmart</div>
-                    <div style="font-size: 12px; color: var(--muted-foreground);">Ed-tech</div>
-                    <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">15 vagas
-                        abertas</div>
-                </div>
-            </div>
-            <div class="company-card">
-                <div class="company-logo" style="background-color: #1B5757;">T</div>
-                <div>
-                    <div style="font-weight: 600; font-size: 15px;">Totvs</div>
-                    <div style="font-size: 12px; color: var(--muted-foreground);">ERP / SaaS</div>
-                    <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">22 vagas
-                        abertas</div>
-                </div>
-            </div>
-            <div class="company-card">
-                <div class="company-logo" style="background-color: #8B6914;">R</div>
-                <div>
-                    <div style="font-weight: 600; font-size: 15px;">RD Station</div>
-                    <div style="font-size: 12px; color: var(--muted-foreground);">MarTech</div>
-                    <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">11 vagas
-                        abertas</div>
-                </div>
-            </div>
+            <?php if (!$empresasDestaque): ?>
+                <p>Nenhuma empresa tem vagas ativas no momento.</p>
+            <?php else: ?>
+                <?php foreach ($empresasDestaque as $empresa): ?>
+                    <div class="company-card">
+                        <div class="company-logo"><?= htmlspecialchars(strtoupper(substr($empresa['nome'], 0, 1)), ENT_QUOTES, 'UTF-8') ?></div>
+                        <div>
+                            <div style="font-weight: 600; font-size: 15px;"><?= htmlspecialchars($empresa['nome'], ENT_QUOTES, 'UTF-8') ?></div>
+                            <div style="font-size: 12px; color: var(--muted-foreground);"><?= htmlspecialchars($empresa['setor'] ?: 'Empresa cadastrada', ENT_QUOTES, 'UTF-8') ?></div>
+                            <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">
+                                <?= (int) $empresa['vagas_ativas'] ?> vaga<?= (int) $empresa['vagas_ativas'] === 1 ? '' : 's' ?> aberta<?= (int) $empresa['vagas_ativas'] === 1 ? '' : 's' ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </section>
 

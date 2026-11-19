@@ -39,7 +39,7 @@ try {
 
     $stmt = $pdo->prepare(
         'INSERT INTO candidaturas (candidato_id, vaga_id, portifolio, status)
-         VALUES (:candidato_id, :vaga_id, :portifolio, "recebida")'
+        VALUES (:candidato_id, :vaga_id, :portifolio, "recebida")'
     );
     $stmt->execute([
         'candidato_id' => $candidatoId,

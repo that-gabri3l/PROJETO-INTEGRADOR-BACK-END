@@ -1,6 +1,7 @@
 'use strict'
 
-let currentStep = 1;
+const formularioEmpresa = document.querySelector('form[action="/src/processar-empresa.php"]');
+let currentStep = formularioEmpresa ? Number(formularioEmpresa.dataset.currentStep || 1) : 1;
 const totalSteps = 3;
 
 function changeStep(direction) {
@@ -67,11 +68,10 @@ function changeStep(direction) {
     }
 }
 
-const formulario = document.querySelector('form[action="/src/processar-empresa.php"]');
-if (formulario) {
-    formulario.addEventListener('submit', function (evento) {
-        const senha = formulario.querySelector('input[name="senha"]');
-        const confirmacao = formulario.querySelector('input[name="confirmar_senha"]');
+if (formularioEmpresa) {
+    formularioEmpresa.addEventListener('submit', function (evento) {
+        const senha = formularioEmpresa.querySelector('input[name="senha"]');
+        const confirmacao = formularioEmpresa.querySelector('input[name="confirmar_senha"]');
 
         if (senha.value.length < 8) {
             evento.preventDefault();
@@ -86,6 +86,11 @@ if (formulario) {
             confirmacao.setCustomValidity('As senhas não conferem.');
             confirmacao.reportValidity();
             confirmacao.setCustomValidity('');
+            return;
         }
+
+        const botaoEnvio = formularioEmpresa.querySelector('#btnSubmit');
+        botaoEnvio.disabled = true;
+        botaoEnvio.textContent = 'Criando conta...';
     });
 }

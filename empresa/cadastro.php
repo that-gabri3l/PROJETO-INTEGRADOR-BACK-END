@@ -1,6 +1,10 @@
 <?php
 require_once __DIR__ . '/../src/sessao.php';
 $erro = isset($_GET['erro']) ? trim((string) $_GET['erro']) : '';
+$dadosFormulario = $_SESSION['cadastro_empresa_dados'] ?? [];
+unset($_SESSION['cadastro_empresa_dados']);
+$etapaInicial = max(1, min(3, (int) ($_GET['etapa'] ?? 1)));
+$valorCampo = static fn(string $campo): string => htmlspecialchars((string) ($dadosFormulario[$campo] ?? ''), ENT_QUOTES, 'UTF-8');
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -37,19 +41,19 @@ $erro = isset($_GET['erro']) ? trim((string) $_GET['erro']) : '';
 
         <!-- Indicadores de Progresso -->
         <div class="step-container">
-            <div class="step-item step-active" id="indicator-1">
-                <div class="step-circle">1</div>
+            <div class="step-item <?= $etapaInicial === 1 ? 'step-active' : 'step-done' ?>" id="indicator-1">
+                <div class="step-circle"><?= $etapaInicial > 1 ? '✓' : '1' ?></div>
                 <div class="step-label">Dados da empresa</div>
             </div>
-            <div class="step-line" id="line-1"></div>
+            <div class="step-line <?= $etapaInicial > 1 ? 'step-done-line' : '' ?>" id="line-1"></div>
             
-            <div class="step-item" id="indicator-2">
-                <div class="step-circle">2</div>
+            <div class="step-item <?= $etapaInicial === 2 ? 'step-active' : ($etapaInicial > 2 ? 'step-done' : '') ?>" id="indicator-2">
+                <div class="step-circle"><?= $etapaInicial > 2 ? '✓' : '2' ?></div>
                 <div class="step-label">Contato</div>
             </div>
-            <div class="step-line" id="line-2"></div>
+            <div class="step-line <?= $etapaInicial > 2 ? 'step-done-line' : '' ?>" id="line-2"></div>
             
-            <div class="step-item" id="indicator-3">
+            <div class="step-item <?= $etapaInicial === 3 ? 'step-active' : '' ?>" id="indicator-3">
                 <div class="step-circle">3</div>
                 <div class="step-label">Acesso e senha</div>
             </div>
@@ -58,73 +62,73 @@ $erro = isset($_GET['erro']) ? trim((string) $_GET['erro']) : '';
         <!-- Formulário Geral -->
         <div class="form-card">
             <!-- Aponte a action para a rota da API no seu backend -->
-            <form action="/src/processar-empresa.php" method="POST">
+            <form data-current-step="<?= $etapaInicial ?>" action="/src/processar-empresa.php" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarTokenCsrf(), ENT_QUOTES, 'UTF-8') ?>">
                 <?php if ($erro !== ''): ?>
                     <div class="form-error" role="alert"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></div>
                 <?php endif; ?>
                 
                 <!-- PASSO 1: DADOS DA EMPRESA -->
-                <div class="step-content active" id="step-1">
+                <div class="step-content <?= $etapaInicial === 1 ? 'active' : '' ?>" id="step-1">
                     <div class="form-group">
                         <div>
                             <label class="form-label">CNPJ<span class="required">*</span></label>
-                            <input type="text" name="cnpj" class="form-input" placeholder="00.000.000/0000-00" required>
+                            <input type="text" name="cnpj" class="form-input" placeholder="00.000.000/0000-00" value="<?= $valorCampo('cnpj') ?>" required>
                         </div>
                         <div>
                             <label class="form-label">Razão social / Nome da empresa<span class="required">*</span></label>
-                            <input type="text" name="nome_empresa" class="form-input" placeholder="Ex: Acme Tecnologia LTDA" required>
+                            <input type="text" name="nome_empresa" class="form-input" placeholder="Ex: Acme Tecnologia LTDA" value="<?= $valorCampo('nome_empresa') ?>" required>
                         </div>
                         <div>
                             <label class="form-label">Setor de atuação<span class="required">*</span></label>
                             <select name="setor" class="form-input" required>
                                 <option value="">Selecione...</option>
-                                <option value="Tecnologia">Tecnologia</option>
-                                <option value="Finanças">Finanças</option>
-                                <option value="Saúde">Saúde</option>
-                                <option value="Educação">Educação</option>
-                                <option value="Varejo">Varejo</option>
-                                <option value="Logística">Logística</option>
-                                <option value="Outro">Outro</option>
+                                <option value="Tecnologia" <?= ($dadosFormulario['setor'] ?? '') === 'Tecnologia' ? 'selected' : '' ?>>Tecnologia</option>
+                                <option value="Finanças" <?= ($dadosFormulario['setor'] ?? '') === 'Finanças' ? 'selected' : '' ?>>Finanças</option>
+                                <option value="Saúde" <?= ($dadosFormulario['setor'] ?? '') === 'Saúde' ? 'selected' : '' ?>>Saúde</option>
+                                <option value="Educação" <?= ($dadosFormulario['setor'] ?? '') === 'Educação' ? 'selected' : '' ?>>Educação</option>
+                                <option value="Varejo" <?= ($dadosFormulario['setor'] ?? '') === 'Varejo' ? 'selected' : '' ?>>Varejo</option>
+                                <option value="Logística" <?= ($dadosFormulario['setor'] ?? '') === 'Logística' ? 'selected' : '' ?>>Logística</option>
+                                <option value="Outro" <?= ($dadosFormulario['setor'] ?? '') === 'Outro' ? 'selected' : '' ?>>Outro</option>
                             </select>
                         </div>
                         <div>
                             <label class="form-label">Porte da empresa<span class="required">*</span></label>
                             <select name="porte" class="form-input" required>
                                 <option value="">Selecione...</option>
-                                <option value="Microempresa">Microempresa (até 9 funcionários)</option>
-                                <option value="Pequena">Pequena (10–49)</option>
-                                <option value="Média">Média (50–249)</option>
-                                <option value="Grande">Grande (250+)</option>
+                                <option value="Microempresa" <?= ($dadosFormulario['porte'] ?? '') === 'Microempresa' ? 'selected' : '' ?>>Microempresa (até 9 funcionários)</option>
+                                <option value="Pequena" <?= ($dadosFormulario['porte'] ?? '') === 'Pequena' ? 'selected' : '' ?>>Pequena (10–49)</option>
+                                <option value="Média" <?= ($dadosFormulario['porte'] ?? '') === 'Média' ? 'selected' : '' ?>>Média (50–249)</option>
+                                <option value="Grande" <?= ($dadosFormulario['porte'] ?? '') === 'Grande' ? 'selected' : '' ?>>Grande (250+)</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
                 <!-- PASSO 2: CONTATO -->
-                <div class="step-content" id="step-2">
+                <div class="step-content <?= $etapaInicial === 2 ? 'active' : '' ?>" id="step-2">
                     <div class="form-group">
                         <div>
                             <label class="form-label">E-mail corporativo<span class="required">*</span></label>
-                            <input type="email" name="email_corporativo" class="form-input" placeholder="rh@empresa.com.br" required>
+                            <input type="email" name="email_corporativo" class="form-input" placeholder="rh@empresa.com.br" value="<?= $valorCampo('email_corporativo') ?>" required>
                         </div>
                         <div>
                             <label class="form-label">Telefone</label>
-                            <input type="text" name="telefone_empresa" class="form-input" placeholder="(11) 99999-9999">
+                            <input type="text" name="telefone_empresa" class="form-input" placeholder="(11) 99999-9999" value="<?= $valorCampo('telefone_empresa') ?>">
                         </div>
                         <div>
                             <label class="form-label">Site da empresa</label>
-                            <input type="url" name="site" class="form-input" placeholder="https://empresa.com.br">
+                            <input type="url" name="site" class="form-input" placeholder="https://empresa.com.br" value="<?= $valorCampo('site') ?>">
                         </div>
                         <div>
                             <label class="form-label">Cidade sede<span class="required">*</span></label>
-                            <input type="text" name="cidade_sede" class="form-input" placeholder="São Paulo, SP" required>
+                            <input type="text" name="cidade_sede" class="form-input" placeholder="São Paulo, SP" value="<?= $valorCampo('cidade_sede') ?>" required>
                         </div>
                     </div>
                 </div>
 
                 <!-- PASSO 3: ACESSO -->
-                <div class="step-content" id="step-3">
+                <div class="step-content <?= $etapaInicial === 3 ? 'active' : '' ?>" id="step-3">
                     <div class="form-group">
                         <div style="padding: 14px; background-color: var(--secondary); border: 1px solid var(--border); font-size: 13px; color: var(--foreground); line-height: 1.5; border-radius: 2px;">
                             Uma senha de acesso será usada para entrar no painel da empresa e gerenciar vagas e candidatos.
@@ -150,9 +154,9 @@ $erro = isset($_GET['erro']) ? trim((string) $_GET['erro']) : '';
 
                 <!-- Botoes de Controle -->
                 <div class="form-actions">
-                    <button type="button" id="btnPrev" class="btn-secondary" style="display: none;" onclick="changeStep(-1)">← Voltar</button>
-                    <button type="button" id="btnNext" class="btn-primary" onclick="changeStep(1)">Continuar →</button>
-                    <button type="submit" id="btnSubmit" class="btn-primary" style="display: none;">Criar conta da empresa</button>
+                    <button type="button" id="btnPrev" class="btn-secondary" style="display: <?= $etapaInicial === 1 ? 'none' : 'block' ?>;" onclick="changeStep(-1)">← Voltar</button>
+                    <button type="button" id="btnNext" class="btn-primary" style="display: <?= $etapaInicial === 3 ? 'none' : 'block' ?>;" onclick="changeStep(1)">Continuar →</button>
+                    <button type="submit" id="btnSubmit" class="btn-primary" style="display: <?= $etapaInicial === 3 ? 'block' : 'none' ?>;">Criar conta da empresa</button>
                 </div>
             </form>
         </div>

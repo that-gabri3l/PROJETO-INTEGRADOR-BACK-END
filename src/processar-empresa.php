@@ -9,9 +9,20 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-function erroEmpresa(string $mensagem): void
+function erroEmpresa(string $mensagem, int $etapa = 1): void
 {
-    header('Location: /empresa/cadastro.php?erro=' . urlencode($mensagem));
+    $camposPermitidos = [
+        'cnpj', 'nome_empresa', 'setor', 'porte', 'email_corporativo',
+        'telefone_empresa', 'site', 'cidade_sede',
+    ];
+    $dados = [];
+    foreach ($camposPermitidos as $campo) {
+        $valor = $_POST[$campo] ?? '';
+        $dados[$campo] = is_string($valor) ? substr($valor, 0, 500) : '';
+    }
+    $_SESSION['cadastro_empresa_dados'] = $dados;
+
+    header('Location: /empresa/cadastro.php?erro=' . urlencode($mensagem) . '&etapa=' . max(1, min(3, $etapa)));
     exit;
 }
 
@@ -27,31 +38,32 @@ $senha = $_POST['senha'] ?? '';
 $confirmarSenha = $_POST['confirmar_senha'] ?? '';
 
 if ($cnpj === '' || $nome === '' || $setor === '' || $porte === '' || $email === '' || $cidade === '' || $senha === '' || $confirmarSenha === '') {
-    erroEmpresa('Preencha todos os campos obrigatórios.');
+    $etapaErro = $cnpj === '' || $nome === '' || $setor === '' || $porte === '' ? 1 : ($email === '' || $cidade === '' ? 2 : 3);
+    erroEmpresa('Preencha todos os campos obrigatórios.', $etapaErro);
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    erroEmpresa('Informe um e-mail corporativo válido.');
+    erroEmpresa('Informe um e-mail corporativo válido.', 2);
 }
 
 $cnpjDigitos = preg_replace('/\D/', '', $cnpj);
 if (strlen($cnpjDigitos) !== 14) {
-    erroEmpresa('Informe um CNPJ válido.');
+    erroEmpresa('Informe um CNPJ com 14 dígitos.', 1);
 }
 
 if (strlen($senha) < 8) {
-    erroEmpresa('A senha deve ter pelo menos 8 caracteres.');
+    erroEmpresa('A senha deve ter pelo menos 8 caracteres.', 3);
 }
 
 if (!hash_equals($senha, $confirmarSenha)) {
-    erroEmpresa('As senhas não conferem.');
+    erroEmpresa('As senhas não conferem.', 3);
 }
 
 if ($site !== '' && !filter_var($site, FILTER_VALIDATE_URL)) {
-    erroEmpresa('Informe uma URL válida para o site.');
+    erroEmpresa('Informe uma URL válida para o site.', 2);
 }
 
-$cnpjFormatado = substr($cnpjDigitos, 0, 2) . '.' . substr($cnpjDigitos, 2, 3) . '.' . substr($cnpjDigitos, 5, 3) . '/' . substr($cnpjDigitos, 9, 4) . '-' . substr($cnpjDigitos, 13, 2);
+$cnpjFormatado = substr($cnpjDigitos, 0, 2) . '.' . substr($cnpjDigitos, 2, 3) . '.' . substr($cnpjDigitos, 5, 3) . '/' . substr($cnpjDigitos, 8, 4) . '-' . substr($cnpjDigitos, 12, 2);
 $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
 try {
@@ -90,8 +102,9 @@ try {
     }
 
     if ((int) $e->getCode() === 23000) {
-        erroEmpresa('Este e-mail ou CNPJ já está cadastrado no sistema.');
+        erroEmpresa('Este e-mail ou CNPJ já está cadastrado no sistema. Confira os dados ou faça login.', 1);
     }
 
-    erroEmpresa('Não foi possível concluir o cadastro. Tente novamente.');
+    error_log('Cadastro de empresa falhou: ' . $e->getMessage());
+    erroEmpresa('Não foi possível concluir o cadastro. Os dados foram mantidos; tente novamente.', 3);
 }

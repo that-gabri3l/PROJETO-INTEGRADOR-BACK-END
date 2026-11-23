@@ -5,6 +5,7 @@ require_once __DIR__ . '/src/conexao.php';
 $usuarioLogado = usuarioEstaLogado();
 $usuarioTipo = $_SESSION['usuario_tipo'] ?? null;
 $usuarioNome = $_SESSION['usuario_nome'] ?? '';
+$busca = trim($_GET['q'] ?? '');
 
 $areasDestaque = ['Tecnologia', 'Design', 'Marketing', 'Dados', 'Gestão', 'Vendas', 'Jurídico', 'Financeiro', 'RH'];
 $areaSelecionada = trim($_GET['area'] ?? '');
@@ -116,8 +117,8 @@ $empresasDestaque = $pdo->query(
                 <p class="hero-desc">Conectamos profissionais talentosos às empresas e oportunidades disponíveis em diversas áreas.</p>
 
                 <form class="search-bar" action="/vagas/index.php" method="GET">
-                    <input type="text" name="q" placeholder="Cargo, empresa ou palavra-chave...">
-                    <button type="submit">Buscar Vagas</button>
+                    <input id="busca-pagina-inicial" type="search" name="q" value="<?= htmlspecialchars($busca, ENT_QUOTES, 'UTF-8') ?>" placeholder="Cargo, empresa, habilidade ou palavra-chave..." aria-label="Buscar vagas" autocomplete="on">
+                    <button type="submit" aria-label="Pesquisar vagas">Buscar Vagas</button>
                 </form>
             </div>
         </div>

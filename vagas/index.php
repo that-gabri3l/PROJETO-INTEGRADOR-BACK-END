@@ -22,7 +22,17 @@ $where = ['v.status = :status'];
 $params = ['status' => 'ativa'];
 
 if ($q !== '') {
-    $where[] = '(v.titulo LIKE :q OR v.area LIKE :q OR v.localizacao LIKE :q OR e.nome LIKE :q)';
+    $where[] = '(v.titulo LIKE :q
+                 OR v.area LIKE :q
+                 OR v.localizacao LIKE :q
+                 OR v.descricao LIKE :q
+                 OR v.requisitos LIKE :q
+                 OR v.beneficios LIKE :q
+                 OR v.regime LIKE :q
+                 OR e.nome LIKE :q
+                 OR e.razao_social LIKE :q
+                 OR e.setor LIKE :q
+                 OR e.cidade_sede LIKE :q)';
     $params['q'] = '%' . $q . '%';
 }
 if (in_array($area, $areasDisponiveis, true)) {
@@ -124,11 +134,11 @@ $vagas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <h1 class="page-title"><?= count($vagas) ?> <?= count($vagas) === 1 ? 'vaga disponível' : 'vagas disponíveis' ?></h1>
 
             <form class="search-bar" action="/vagas/index.php" method="GET">
-                <input type="text" name="q" value="<?= htmlspecialchars($q, ENT_QUOTES, 'UTF-8') ?>" placeholder="Buscar por cargo, empresa ou habilidade...">
+                <input id="busca-vagas" type="search" name="q" value="<?= htmlspecialchars($q, ENT_QUOTES, 'UTF-8') ?>" placeholder="Cargo, empresa, habilidade ou palavra-chave..." aria-label="Buscar vagas" autocomplete="on">
                 <?php if ($area !== ''): ?><input type="hidden" name="area" value="<?= htmlspecialchars($area, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
                 <?php if ($regime !== ''): ?><input type="hidden" name="regime" value="<?= htmlspecialchars($regime, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
                 <?php if ($ordem !== 'recente'): ?><input type="hidden" name="ordem" value="<?= htmlspecialchars($ordem, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
-                <button type="submit">Buscar</button>
+                <button type="submit" aria-label="Pesquisar vagas">Buscar</button>
             </form>
         </div>
     </div>

@@ -223,12 +223,6 @@
             color: #86EFAC;
         }
 
-        .upload-feedback {
-            margin-top: 6px;
-            color: var(--muted-foreground);
-            font-size: 12px;
-        }
-
         .upload-preview {
             display: block;
             width: 104px;

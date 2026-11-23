@@ -38,6 +38,18 @@ button {
     outline-offset: 3px;
 }
 
+.form-input:focus {
+    border-color: #2563EB;
+}
+
+.form-input:focus-visible {
+    outline: none;
+}
+
+[data-theme="dark"] .form-input:focus {
+    border-color: #0A84FF;
+}
+
 .navbar {
     gap: 12px;
 }
@@ -61,11 +73,18 @@ button {
 }
 
 .theme-toggle {
+    display: inline-flex;
     flex-shrink: 0;
     min-width: 44px;
     min-height: 44px;
+    align-items: center;
+    justify-content: center;
     margin-left: 0;
     color: var(--foreground);
+}
+
+.theme-toggle svg {
+    display: block;
 }
 
 .navbar .nav-btn {
@@ -135,6 +154,31 @@ input,
 select,
 textarea {
     min-width: 0;
+}
+
+input[type="file"].form-input {
+    display: block;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 0;
+}
+
+input[type="file"].form-input::file-selector-button {
+    margin-right: 12px;
+    padding: 4px 8px 4px 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--foreground);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.2;
+    cursor: pointer;
+}
+
+.form-label[aria-live="polite"] {
+    overflow-wrap: anywhere;
 }
 
 @media (max-width: 768px) {

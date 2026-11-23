@@ -37,7 +37,7 @@ $salvo = ($_GET['salvo'] ?? '') === '1';
             <img src="/images/logo-claro-infodin.png" alt="Infodin" class="logo-light" style="height:40px;width:auto;object-fit:contain;">
             <img src="/images/logo-infodin.png" alt="Infodin" class="logo-dark" style="height:40px;width:auto;object-fit:contain;">
         </a>
-        <button id="theme-toggle" class="theme-toggle" type="button" title="Mudar tema">🌗</button>
+        <button id="theme-toggle" class="theme-toggle" type="button" title="Mudar tema" aria-label="Alternar tema"><svg class="bi bi-moon-fill" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/></svg></button>
     </nav>
 
     <main class="container">
@@ -94,7 +94,7 @@ $salvo = ($_GET['salvo'] ?? '') === '1';
                             <input id="data_nascimento" type="date" name="data_nascimento" class="form-input" value="<?= htmlspecialchars($candidato['data_nascimento'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
                         </div>
                         <div>
-                            <label class="form-label" for="foto_perfil">Alterar foto (JPG/PNG, até 2 MB)</label>
+                            <label id="foto-perfil-label" class="form-label" for="foto_perfil" data-default-text="Alterar foto (JPG/PNG, até 2 MB)" aria-live="polite">Alterar foto (JPG/PNG, até 2 MB)</label>
                             <input id="foto_perfil" type="file" name="foto_perfil" class="form-input" accept="image/png,image/jpeg">
                         </div>
                     </div>
@@ -155,6 +155,7 @@ $salvo = ($_GET['salvo'] ?? '') === '1';
         </div>
     </main>
 
+    <script src="/JS/candidato-editar-perfil.js"></script>
     <script src="/JS/tema.js"></script>
 </body>
 </html>

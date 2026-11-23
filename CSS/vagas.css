@@ -188,7 +188,7 @@
             font-family: 'Work Sans', sans-serif;
             font-size: 14px;
             background-color: transparent;
-            color: var(--foreground);
+            color: #000000;
         }
 
         .search-bar button {

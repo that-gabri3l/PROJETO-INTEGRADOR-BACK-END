@@ -256,7 +256,7 @@
             font-family: 'Work Sans', sans-serif;
             font-size: 14px;
             background-color: transparent;
-            color: var(--foreground);
+            color: #000000;
         }
 
         .search-bar button {
@@ -744,8 +744,12 @@
             }
 
             .filter-tag {
+                display: inline-flex;
                 flex: 0 0 auto;
+                align-items: center;
+                justify-content: center;
                 min-height: 40px;
+                text-align: center;
             }
 
             .job-grid,

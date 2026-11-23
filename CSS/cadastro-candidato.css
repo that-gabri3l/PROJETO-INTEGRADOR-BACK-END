@@ -187,11 +187,6 @@
             border-radius: var(--radius); cursor: pointer; background-color: var(--background);
             display: flex; align-items: center; justify-content: center; gap: 16px;
         }
-        .upload-feedback {
-            margin-top: 6px;
-            color: var(--muted-foreground);
-            font-size: 12px;
-        }
         .upload-preview {
             display: block;
             width: 88px;

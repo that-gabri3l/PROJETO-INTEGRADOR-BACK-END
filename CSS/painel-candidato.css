@@ -135,6 +135,12 @@
             font-weight: 600;
             color: #FAF8F4;
         }
+        .avatar-large img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
         .header-info {
             flex: 1;
         }
@@ -159,6 +165,23 @@
             font-size: 14px;
             color: rgba(242,237,229,0.65);
             margin-top: 2px;
+        }
+        .btn-edit-profile {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 7px 12px;
+            border: 1px solid rgba(242,237,229,0.35);
+            border-radius: var(--radius);
+            color: #F2EDE5;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.15s, border-color 0.15s;
+        }
+        .btn-edit-profile:hover,
+        .btn-edit-profile:focus-visible {
+            background-color: rgba(242,237,229,0.12);
+            border-color: rgba(242,237,229,0.7);
         }
         .profile-progress {
             background-color: rgba(242,237,229,0.08);
@@ -188,10 +211,10 @@
             overflow: hidden;
         }
         .progress-fill {
-            width: 72%;
             height: 100%;
             background-color: var(--accent);
             border-radius: 3px;
+            transition: width 0.3s ease;
         }
         .progress-percentage {
             font-family: 'Fraunces', serif;
@@ -278,6 +301,16 @@
         }
         .list-item:first-child { border-top: none; }
         .list-item:hover { background-color: var(--secondary); }
+        .saved-job-link {
+            color: inherit;
+            text-decoration: none;
+        }
+        .saved-job-link:focus-visible {
+            position: relative;
+            z-index: 1;
+            outline: 2px solid var(--primary);
+            outline-offset: -2px;
+        }
         
         .company-logo {
             width: 36px;
@@ -335,6 +368,17 @@
         }
         .check-mark { font-size: 10px; color: #10B981; }
         .checklist-label { flex: 1; font-size: 13px; }
+        .checklist-item a.checklist-label,
+        .checklist-item a.checklist-points {
+            color: inherit;
+            text-decoration: none;
+        }
+        .checklist-item a.checklist-label:hover,
+        .checklist-item a.checklist-points:hover,
+        .checklist-item a.checklist-label:focus-visible,
+        .checklist-item a.checklist-points:focus-visible {
+            text-decoration: underline;
+        }
         .checklist-done .checklist-label { text-decoration: line-through; }
         .checklist-points {
             font-family: 'JetBrains Mono', monospace;

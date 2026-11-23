@@ -1,10 +1,43 @@
 'use strict'
 
-let currentStep = 1;
+const formularioEmpresa = document.querySelector('form[action="/src/processar-empresa.php"]');
+let currentStep = formularioEmpresa ? Number(formularioEmpresa.dataset.currentStep || 1) : 1;
 const totalSteps = 3;
 
 function changeStep(direction) {
-    document.getElementById(`step-${currentStep}`).classList.remove('active');
+    const passoAtualEl = document.getElementById(`step-${currentStep}`);
+
+    if (direction === 1) {
+        const inputsObrigatorios = passoAtualEl.querySelectorAll('input[required], select[required], textarea[required]');
+
+        for (let input of inputsObrigatorios) {
+            if (!input.checkValidity()) {
+                input.reportValidity();
+                return;
+            }
+        }
+
+        if (currentStep === totalSteps) {
+            const senha = passoAtualEl.querySelector('input[name="senha"]');
+            const confirmacao = passoAtualEl.querySelector('input[name="confirmar_senha"]');
+
+            if (senha.value.length < 8) {
+                senha.setCustomValidity('A senha deve ter pelo menos 8 caracteres.');
+                senha.reportValidity();
+                senha.setCustomValidity('');
+                return;
+            }
+
+            if (senha.value !== confirmacao.value) {
+                confirmacao.setCustomValidity('As senhas não conferem.');
+                confirmacao.reportValidity();
+                confirmacao.setCustomValidity('');
+                return;
+            }
+        }
+    }
+
+    passoAtualEl.classList.remove('active');
 
     if (direction === 1) {
         document.getElementById(`indicator-${currentStep}`).classList.remove('step-active');
@@ -19,9 +52,7 @@ function changeStep(direction) {
     }
 
     currentStep += direction;
-
     document.getElementById(`step-${currentStep}`).classList.add('active');
-
     document.getElementById(`indicator-${currentStep}`).classList.remove('step-done');
     document.getElementById(`indicator-${currentStep}`).classList.add('step-active');
     document.getElementById(`indicator-${currentStep}`).querySelector('.step-circle').innerHTML = currentStep;
@@ -35,4 +66,31 @@ function changeStep(direction) {
         document.getElementById('btnNext').style.display = 'block';
         document.getElementById('btnSubmit').style.display = 'none';
     }
+}
+
+if (formularioEmpresa) {
+    formularioEmpresa.addEventListener('submit', function (evento) {
+        const senha = formularioEmpresa.querySelector('input[name="senha"]');
+        const confirmacao = formularioEmpresa.querySelector('input[name="confirmar_senha"]');
+
+        if (senha.value.length < 8) {
+            evento.preventDefault();
+            senha.setCustomValidity('A senha deve ter pelo menos 8 caracteres.');
+            senha.reportValidity();
+            senha.setCustomValidity('');
+            return;
+        }
+
+        if (senha.value !== confirmacao.value) {
+            evento.preventDefault();
+            confirmacao.setCustomValidity('As senhas não conferem.');
+            confirmacao.reportValidity();
+            confirmacao.setCustomValidity('');
+            return;
+        }
+
+        const botaoEnvio = formularioEmpresa.querySelector('#btnSubmit');
+        botaoEnvio.disabled = true;
+        botaoEnvio.textContent = 'Criando conta...';
+    });
 }

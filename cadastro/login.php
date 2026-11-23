@@ -1,3 +1,9 @@
+<?php
+require_once __DIR__ . '/../src/sessao.php';
+
+$erro = isset($_GET['erro']) ? trim((string) $_GET['erro']) : '';
+$sucesso = isset($_GET['cadastro']) && $_GET['cadastro'] === 'sucesso';
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -30,7 +36,17 @@
             </div>
 
             <!-- Formulário apontando para a rota de autenticação -->
-            <form action="/api/login" method="POST">
+            <form action="/src/processar-login.php" method="POST">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarTokenCsrf(), ENT_QUOTES, 'UTF-8') ?>">
+                <?php if ($erro !== ''): ?>
+                    <div class="form-error" role="alert">
+                        <?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?>
+                    </div>
+                <?php endif; ?>
+                
+                <?php if ($sucesso): ?>
+                    <div class="form-success" role="status">Cadastro concluído! Agora você já pode entrar.</div>
+                <?php endif; ?>
                 
                 <div class="form-group">
                     <label class="form-label">E-mail</label>
@@ -59,7 +75,7 @@
     </main>
 
     <!-- Script de Modo Escuro -->
-        <script src="/js/tema.js"></script>
+        <script src="/JS/tema.js"></script>
 
 </body>
 </html>

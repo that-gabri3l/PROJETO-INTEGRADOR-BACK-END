@@ -88,7 +88,7 @@
         </span>
     </footer>
 
-        <script src="/js/tema.js"></script>
+        <script src="/JS/tema.js"></script>
 
 </body>
 </html>

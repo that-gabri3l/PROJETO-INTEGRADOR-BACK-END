@@ -43,8 +43,8 @@ if (!in_array($regime, ['Presencial', 'Híbrido', 'Remoto'], true)) {
 $salarioMin = $salarioMin !== '' ? (float) str_replace(',', '.', $salarioMin) : null;
 $salarioMax = $salarioMax !== '' ? (float) str_replace(',', '.', $salarioMax) : null;
 
-if ($salarioMin !== null && $salarioMin < 0 || $salarioMax !== null && $salarioMax < 0) {
-    erroVaga('Os salários não podem ser negativos.');
+if (($salarioMin !== null && $salarioMin < 1) || ($salarioMax !== null && $salarioMax < 1)) {
+    erroVaga('Os salários devem ser maiores ou iguais a R$ 1.');
 }
 
 if ($salarioMin !== null && $salarioMax !== null && $salarioMax < $salarioMin) {

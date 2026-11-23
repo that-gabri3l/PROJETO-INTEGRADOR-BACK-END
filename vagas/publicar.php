@@ -96,11 +96,11 @@ $erro = isset($_GET['erro']) ? trim((string) $_GET['erro']) : '';
                     <div class="grid-3-cols">
                         <div>
                             <label class="form-label">Salário mínimo (R$)</label>
-                            <input type="number" name="salario_min" class="form-input" placeholder="Ex: 8000">
+                            <input type="number" name="salario_min" class="form-input" placeholder="Ex: 8000" min="1">
                         </div>
                         <div>
                             <label class="form-label">Salário máximo (R$)</label>
-                            <input type="number" name="salario_max" class="form-input" placeholder="Ex: 12000">
+                            <input type="number" name="salario_max" class="form-input" placeholder="Ex: 12000" min="1">
                         </div>
                         <div>
                             <label class="form-label">Exibir salário?</label>

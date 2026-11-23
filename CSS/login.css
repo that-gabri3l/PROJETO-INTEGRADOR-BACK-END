@@ -1,4 +1,4 @@
-  /* Modo Claro */
+/* Modo Claro */
         :root {
             --background: #FFFFFF;
             --foreground: #000000;
@@ -157,8 +157,71 @@
         }
         .register-link a:hover { text-decoration: underline; }
 
+        /* Estilos para Mensagens de Erro e Sucesso */
+        .form-error,
+        .form-success {
+            margin-bottom: 16px;
+            padding: 12px 14px;
+            border: 1px solid;
+            border-radius: var(--radius);
+            font-size: 13px;
+        }
+
+        .form-error {
+            color: #991B1B;
+            background-color: #FEF2F2;
+            border-color: #FECACA;
+        }
+
+        .form-success {
+            color: #166534;
+            background-color: #F0FDF4;
+            border-color: #BBF7D0;
+        }
+
+        [data-theme="dark"] .form-error {
+            color: #FCA5A5;
+            background-color: #450A0A;
+            border-color: #7F1D1D;
+        }
+
+        [data-theme="dark"] .form-success {
+            color: #86EFAC;
+            background-color: #14532D;
+            border-color: #166534;
+        }
+
         /* Responsividade */
         @media (max-width: 480px) {
             .login-card { padding: 32px 24px; border: none; background-color: transparent; box-shadow: none; }
             .login-wrapper { padding: 0; align-items: flex-start; margin-top: 40px; }
+        }
+
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 12px 16px;
+            }
+
+            .login-wrapper {
+                padding: 24px 16px;
+                align-items: flex-start;
+                margin-top: 0;
+            }
+
+            .login-card {
+                max-width: 480px;
+                padding: 28px 20px;
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                background-color: var(--card);
+                box-shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
+            }
+
+            [data-theme="dark"] .login-card {
+                box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+            }
+
+            .register-link {
+                line-height: 1.8;
+            }
         }

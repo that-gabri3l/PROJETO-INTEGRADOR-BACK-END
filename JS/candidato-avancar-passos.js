@@ -1,6 +1,7 @@
 'use strict'
 
-let currentStep = 1;
+const formularioCandidato = document.getElementById('registerForm');
+let currentStep = formularioCandidato ? Number(formularioCandidato.dataset.currentStep || 1) : 1;
 const totalSteps = 3;
 
 function changeStep(direction) {
@@ -13,6 +14,25 @@ function changeStep(direction) {
             if (!input.checkValidity()) {
                 input.reportValidity(); // Mostra o balãozinho de erro do navegador na hora
                 return; // Trava o avanço até preencher corretamente
+            }
+        }
+
+        if (currentStep === totalSteps) {
+            const senha = passoAtualEl.querySelector('input[name="senha"]');
+            const confirmacao = passoAtualEl.querySelector('input[name="confirmar_senha"]');
+
+            if (senha.value.length < 8) {
+                senha.setCustomValidity('A senha deve ter pelo menos 8 caracteres.');
+                senha.reportValidity();
+                senha.setCustomValidity('');
+                return;
+            }
+
+            if (senha.value !== confirmacao.value) {
+                confirmacao.setCustomValidity('As senhas não conferem.');
+                confirmacao.reportValidity();
+                confirmacao.setCustomValidity('');
+                return;
             }
         }
     }
@@ -56,7 +76,8 @@ function changeStep(direction) {
     }
 }
 
-let regimesSelecionados = [];
+const campoRegime = document.getElementById('regime_input');
+let regimesSelecionados = campoRegime && campoRegime.value !== '' ? campoRegime.value.split(',') : [];
 function toggleRegime(btnElement, valor) {
     btnElement.classList.toggle('active');
 
@@ -66,5 +87,76 @@ function toggleRegime(btnElement, valor) {
         regimesSelecionados.push(valor);
     }
 
-    document.getElementById('regime_input').value = regimesSelecionados.join(',');
+    campoRegime.value = regimesSelecionados.join(',');
+}
+
+if (formularioCandidato) {
+    const campoFoto = formularioCandidato.querySelector('input[name="foto_perfil"]');
+    const fotoLabel = document.getElementById('foto-perfil-label');
+    const fotoPreview = document.getElementById('foto-preview');
+    let urlFotoPreview = null;
+
+    if (campoFoto && fotoLabel && fotoPreview) {
+        const textoPadraoFoto = fotoLabel.dataset.defaultText;
+
+        campoFoto.addEventListener('change', function () {
+            const arquivo = campoFoto.files[0];
+            if (urlFotoPreview) {
+                URL.revokeObjectURL(urlFotoPreview);
+                urlFotoPreview = null;
+            }
+
+            if (!arquivo) {
+                campoFoto.setCustomValidity('');
+                fotoLabel.textContent = textoPadraoFoto;
+                fotoPreview.hidden = true;
+                fotoPreview.removeAttribute('src');
+                return;
+            }
+
+            fotoLabel.textContent = `${arquivo.name} (${(arquivo.size / 1024 / 1024).toFixed(2)} MB)`;
+            if (arquivo.size > 2 * 1024 * 1024) {
+                fotoLabel.textContent += ' · O limite é 2 MB.';
+                campoFoto.setCustomValidity('A foto deve ter no máximo 2 MB.');
+                campoFoto.reportValidity();
+                fotoPreview.hidden = true;
+                return;
+            }
+
+            campoFoto.setCustomValidity('');
+            if (arquivo.type === 'image/jpeg' || arquivo.type === 'image/png') {
+                urlFotoPreview = URL.createObjectURL(arquivo);
+                fotoPreview.src = urlFotoPreview;
+                fotoPreview.hidden = false;
+            } else {
+                fotoPreview.hidden = true;
+                fotoPreview.removeAttribute('src');
+            }
+        });
+    }
+
+    formularioCandidato.addEventListener('submit', function (evento) {
+        const senha = formularioCandidato.querySelector('input[name="senha"]');
+        const confirmacao = formularioCandidato.querySelector('input[name="confirmar_senha"]');
+
+        if (senha.value.length < 8) {
+            evento.preventDefault();
+            senha.setCustomValidity('A senha deve ter pelo menos 8 caracteres.');
+            senha.reportValidity();
+            senha.setCustomValidity('');
+            return;
+        }
+
+        if (senha.value !== confirmacao.value) {
+            evento.preventDefault();
+            confirmacao.setCustomValidity('As senhas não conferem.');
+            confirmacao.reportValidity();
+            confirmacao.setCustomValidity('');
+            return;
+        }
+
+        const botaoEnvio = formularioCandidato.querySelector('#btnSubmit');
+        botaoEnvio.disabled = true;
+        botaoEnvio.textContent = 'Criando perfil...';
+    });
 }

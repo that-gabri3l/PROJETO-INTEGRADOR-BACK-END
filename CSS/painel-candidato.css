@@ -135,6 +135,12 @@
             font-weight: 600;
             color: #FAF8F4;
         }
+        .avatar-large img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
         .header-info {
             flex: 1;
         }
@@ -159,6 +165,23 @@
             font-size: 14px;
             color: rgba(242,237,229,0.65);
             margin-top: 2px;
+        }
+        .btn-edit-profile {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 7px 12px;
+            border: 1px solid rgba(242,237,229,0.35);
+            border-radius: var(--radius);
+            color: #F2EDE5;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.15s, border-color 0.15s;
+        }
+        .btn-edit-profile:hover,
+        .btn-edit-profile:focus-visible {
+            background-color: rgba(242,237,229,0.12);
+            border-color: rgba(242,237,229,0.7);
         }
         .profile-progress {
             background-color: rgba(242,237,229,0.08);
@@ -188,10 +211,10 @@
             overflow: hidden;
         }
         .progress-fill {
-            width: 72%;
             height: 100%;
             background-color: var(--accent);
             border-radius: 3px;
+            transition: width 0.3s ease;
         }
         .progress-percentage {
             font-family: 'Fraunces', serif;
@@ -278,6 +301,16 @@
         }
         .list-item:first-child { border-top: none; }
         .list-item:hover { background-color: var(--secondary); }
+        .saved-job-link {
+            color: inherit;
+            text-decoration: none;
+        }
+        .saved-job-link:focus-visible {
+            position: relative;
+            z-index: 1;
+            outline: 2px solid var(--primary);
+            outline-offset: -2px;
+        }
         
         .company-logo {
             width: 36px;
@@ -335,6 +368,17 @@
         }
         .check-mark { font-size: 10px; color: #10B981; }
         .checklist-label { flex: 1; font-size: 13px; }
+        .checklist-item a.checklist-label,
+        .checklist-item a.checklist-points {
+            color: inherit;
+            text-decoration: none;
+        }
+        .checklist-item a.checklist-label:hover,
+        .checklist-item a.checklist-points:hover,
+        .checklist-item a.checklist-label:focus-visible,
+        .checklist-item a.checklist-points:focus-visible {
+            text-decoration: underline;
+        }
         .checklist-done .checklist-label { text-decoration: line-through; }
         .checklist-points {
             font-family: 'JetBrains Mono', monospace;
@@ -374,4 +418,98 @@
         .badge-green { background-color: #ECFDF5; color: #065F46; }
         .badge-blue { background-color: #EFF6FF; color: #1D4ED8; }
         .badge-gray { background-color: #F3F4F6; color: #6B7280; }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .rec-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                padding: 24px 16px 28px;
+            }
+
+            .header-content {
+                align-items: flex-start;
+                flex-wrap: wrap;
+                gap: 14px;
+            }
+
+            .header-info {
+                min-width: calc(100% - 80px);
+            }
+
+            .avatar-large {
+                width: 52px;
+                height: 52px;
+                font-size: 22px;
+            }
+
+            .user-name {
+                font-size: clamp(22px, 7vw, 28px);
+                overflow-wrap: anywhere;
+            }
+
+            .profile-progress {
+                width: 100%;
+                min-width: 0;
+                margin: 0;
+            }
+
+            .container {
+                padding: 24px 16px;
+            }
+
+            .kpi-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                margin-bottom: 28px;
+            }
+
+            .kpi-card {
+                padding: 16px;
+            }
+
+            .kpi-value {
+                font-size: 26px;
+            }
+
+            .content-grid,
+            .rec-grid {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 24px;
+            }
+
+            .list-item {
+                padding: 14px;
+            }
+
+            .item-title {
+                white-space: normal;
+                overflow-wrap: anywhere;
+            }
+
+            .item-meta {
+                overflow-wrap: anywhere;
+            }
+
+            .checklist-item {
+                gap: 8px;
+                padding: 12px;
+            }
+
+            .checklist-points {
+                text-align: right;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .kpi-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
     

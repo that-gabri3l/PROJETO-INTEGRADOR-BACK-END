@@ -267,4 +267,60 @@
             font-family: 'Work Sans', sans-serif;
         }
         .login-link:hover { opacity: 0.8; }
+
+@media (max-width: 900px) {
+    .split-card {
+        padding: 56px 36px;
+    }
+
+    .main-title {
+        font-size: clamp(30px, 4vw, 38px);
+    }
+
+    .bg-number {
+        font-size: 150px;
+    }
+}
+
+@media (max-width: 680px) {
+    .split-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .split-card {
+        min-height: auto;
+        padding: 40px 24px;
+    }
+
+    .candidate-side {
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .bg-number {
+        right: 12px;
+        bottom: -8px;
+        font-size: 120px;
+    }
+
+    .eyebrow {
+        margin-bottom: 16px;
+    }
+
+    .icon-box {
+        width: 56px;
+        height: 56px;
+        margin-bottom: 20px;
+    }
+
+    .description,
+    .benefits-list {
+        margin-bottom: 24px;
+    }
+
+    .btn-action {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
     

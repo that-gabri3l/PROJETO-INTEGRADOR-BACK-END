@@ -350,3 +350,88 @@
         .badge-blue { background-color: #EFF6FF; color: #1D4ED8; }
         .badge-yellow { background-color: #FEF9C3; color: #854D0E; }
         .badge-green { background-color: #ECFDF5; color: #065F46; }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .tables-grid {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 28px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                padding: 24px 16px 28px;
+            }
+
+            .header-content {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .company-profile-heading {
+                width: 100%;
+                align-items: flex-start;
+            }
+
+            .company-title {
+                font-size: clamp(22px, 7vw, 30px);
+                overflow-wrap: anywhere;
+            }
+
+            .btn-publish {
+                width: 100%;
+                text-align: center;
+            }
+
+            .container {
+                padding: 24px 16px;
+            }
+
+            .kpi-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                margin-bottom: 28px;
+            }
+
+            .kpi-card {
+                padding: 16px;
+            }
+
+            .kpi-value {
+                font-size: 27px;
+            }
+
+            .tables-grid {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 28px;
+            }
+
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            table {
+                min-width: 520px;
+            }
+
+            .table-section-header {
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            td,
+            th {
+                padding: 10px 12px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .kpi-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }

@@ -418,4 +418,98 @@
         .badge-green { background-color: #ECFDF5; color: #065F46; }
         .badge-blue { background-color: #EFF6FF; color: #1D4ED8; }
         .badge-gray { background-color: #F3F4F6; color: #6B7280; }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .rec-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                padding: 24px 16px 28px;
+            }
+
+            .header-content {
+                align-items: flex-start;
+                flex-wrap: wrap;
+                gap: 14px;
+            }
+
+            .header-info {
+                min-width: calc(100% - 80px);
+            }
+
+            .avatar-large {
+                width: 52px;
+                height: 52px;
+                font-size: 22px;
+            }
+
+            .user-name {
+                font-size: clamp(22px, 7vw, 28px);
+                overflow-wrap: anywhere;
+            }
+
+            .profile-progress {
+                width: 100%;
+                min-width: 0;
+                margin: 0;
+            }
+
+            .container {
+                padding: 24px 16px;
+            }
+
+            .kpi-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                margin-bottom: 28px;
+            }
+
+            .kpi-card {
+                padding: 16px;
+            }
+
+            .kpi-value {
+                font-size: 26px;
+            }
+
+            .content-grid,
+            .rec-grid {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 24px;
+            }
+
+            .list-item {
+                padding: 14px;
+            }
+
+            .item-title {
+                white-space: normal;
+                overflow-wrap: anywhere;
+            }
+
+            .item-meta {
+                overflow-wrap: anywhere;
+            }
+
+            .checklist-item {
+                gap: 8px;
+                padding: 12px;
+            }
+
+            .checklist-points {
+                text-align: right;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .kpi-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
     

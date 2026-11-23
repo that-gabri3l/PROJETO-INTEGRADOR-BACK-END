@@ -92,11 +92,13 @@ function toggleRegime(btnElement, valor) {
 
 if (formularioCandidato) {
     const campoFoto = formularioCandidato.querySelector('input[name="foto_perfil"]');
-    const fotoFeedback = document.getElementById('foto-feedback');
+    const fotoLabel = document.getElementById('foto-perfil-label');
     const fotoPreview = document.getElementById('foto-preview');
     let urlFotoPreview = null;
 
-    if (campoFoto) {
+    if (campoFoto && fotoLabel && fotoPreview) {
+        const textoPadraoFoto = fotoLabel.dataset.defaultText;
+
         campoFoto.addEventListener('change', function () {
             const arquivo = campoFoto.files[0];
             if (urlFotoPreview) {
@@ -105,15 +107,16 @@ if (formularioCandidato) {
             }
 
             if (!arquivo) {
-                fotoFeedback.textContent = 'Nenhuma foto selecionada.';
+                campoFoto.setCustomValidity('');
+                fotoLabel.textContent = textoPadraoFoto;
                 fotoPreview.hidden = true;
                 fotoPreview.removeAttribute('src');
                 return;
             }
 
-            fotoFeedback.textContent = `${arquivo.name} (${(arquivo.size / 1024 / 1024).toFixed(2)} MB)`;
+            fotoLabel.textContent = `${arquivo.name} (${(arquivo.size / 1024 / 1024).toFixed(2)} MB)`;
             if (arquivo.size > 2 * 1024 * 1024) {
-                fotoFeedback.textContent += ' · O limite é 2 MB.';
+                fotoLabel.textContent += ' · O limite é 2 MB.';
                 campoFoto.setCustomValidity('A foto deve ter no máximo 2 MB.');
                 campoFoto.reportValidity();
                 fotoPreview.hidden = true;

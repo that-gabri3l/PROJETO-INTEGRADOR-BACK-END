@@ -257,3 +257,47 @@
             color: #991B1B;
             font-size: 13px;
         }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 28px auto;
+                padding: 0 16px;
+            }
+
+            .page-header {
+                margin-bottom: 24px;
+            }
+
+            .page-title {
+                font-size: clamp(28px, 8vw, 34px);
+            }
+
+            .form-section {
+                margin-bottom: 14px;
+            }
+
+            .section-header {
+                padding: 14px 16px;
+            }
+
+            .section-body {
+                padding: 18px 16px;
+            }
+
+            .grid-2-cols,
+            .grid-3-cols {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 16px;
+            }
+
+            .form-actions {
+                align-items: stretch;
+                flex-direction: column-reverse;
+            }
+
+            .form-actions .btn-primary,
+            .form-actions .btn-secondary {
+                width: 100%;
+                margin: 0;
+            }
+        }

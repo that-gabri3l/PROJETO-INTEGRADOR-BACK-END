@@ -196,3 +196,32 @@
             .login-card { padding: 32px 24px; border: none; background-color: transparent; box-shadow: none; }
             .login-wrapper { padding: 0; align-items: flex-start; margin-top: 40px; }
         }
+
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 12px 16px;
+            }
+
+            .login-wrapper {
+                padding: 24px 16px;
+                align-items: flex-start;
+                margin-top: 0;
+            }
+
+            .login-card {
+                max-width: 480px;
+                padding: 28px 20px;
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                background-color: var(--card);
+                box-shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
+            }
+
+            [data-theme="dark"] .login-card {
+                box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+            }
+
+            .register-link {
+                line-height: 1.8;
+            }
+        }

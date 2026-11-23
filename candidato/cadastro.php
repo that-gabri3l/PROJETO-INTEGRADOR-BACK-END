@@ -16,6 +16,7 @@ $regimesSelecionadosIniciais = array_filter(explode(',', (string) ($dadosFormula
     <title>Cadastro de Candidato - Infodin</title>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/CSS/cadastro-candidato.css">
+    <link rel="stylesheet" href="/CSS/mobile.css">
 
 </head>
 
@@ -29,7 +30,7 @@ $regimesSelecionadosIniciais = array_filter(explode(',', (string) ($dadosFormula
             <!-- Imagem para o Modo Escuro -->
             <img src="/images/logo-infodin.png" alt="Logo do site" class="logo-dark"
                 style="height: 40px; width: auto; object-fit: contain;"></a>
-        <button id="theme-toggle" class="theme-toggle" title="Mudar tema">🌗</button>
+        <button id="theme-toggle" class="theme-toggle" title="Mudar tema" aria-label="Alternar tema"><svg class="bi bi-moon-fill" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/></svg></button>
     </nav>
 
     <div class="container">
@@ -104,9 +105,8 @@ $regimesSelecionadosIniciais = array_filter(explode(',', (string) ($dadosFormula
                         </div>
 
                         <div>
-                            <label class="form-label" for="foto_perfil">Foto de perfil (JPG/PNG, até 2 MB)</label>
+                            <label id="foto-perfil-label" class="form-label" for="foto_perfil" data-default-text="Foto de perfil (JPG/PNG, até 2 MB)" aria-live="polite">Foto de perfil (JPG/PNG, até 2 MB)</label>
                             <input id="foto_perfil" type="file" name="foto_perfil" class="form-input" accept="image/png,image/jpeg">
-                            <div id="foto-feedback" class="upload-feedback" role="status">Nenhuma foto selecionada.</div>
                             <img id="foto-preview" class="upload-preview" alt="Prévia da foto selecionada" hidden>
                         </div>
 

@@ -1,215 +1,266 @@
-/* Shared responsive rules for the site */
-* {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
-html,
-body {
-    max-width: 100%;
-    overflow-x: hidden;
+html {
+    min-width: 320px;
+    scroll-behavior: smooth;
 }
 
-img {
+body {
+    min-width: 320px;
+    overflow-x: clip;
+    line-height: 1.5;
+}
+
+img,
+svg,
+video {
     max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+a,
+button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+    outline: 3px solid var(--accent, #2563EB);
+    outline-offset: 3px;
+}
+
+.form-input:focus {
+    border-color: #2563EB;
+}
+
+.form-input:focus-visible {
+    outline: none;
+}
+
+[data-theme="dark"] .form-input:focus {
+    border-color: #0A84FF;
+}
+
+.navbar {
+    gap: 12px;
+}
+
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.navbar-logo,
+.logo {
+    min-width: 0;
+}
+
+.navbar-logo img,
+.logo img {
+    max-width: min(100%, 220px);
     height: auto;
 }
 
+.theme-toggle {
+    display: inline-flex;
+    flex-shrink: 0;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0;
+    color: var(--foreground);
+}
+
+.theme-toggle svg {
+    display: block;
+}
+
+.navbar .nav-btn {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    border: 1px solid transparent;
+    border-radius: var(--radius, 4px);
+    background-color: var(--primary, #000000);
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.navbar .nav-btn:hover {
+    opacity: 0.9;
+}
+
+[data-theme="dark"] .btn-primary,
+[data-theme="dark"] .nav-btn,
+[data-theme="dark"] .btn-publish,
+[data-theme="dark"] .candidate-side .btn-action {
+    border-color: #005EB8;
+    background-color: #005EB8 !important;
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .company-side .btn-action {
+    border-color: var(--accent);
+    background-color: var(--accent) !important;
+    color: #111111 !important;
+}
+
+[data-theme="dark"] .btn-secondary {
+    border: 1px solid #74747C;
+    background-color: var(--secondary) !important;
+    color: var(--foreground) !important;
+}
+
+[data-theme="dark"] .btn-outline:hover {
+    border-color: #005EB8;
+    background-color: #005EB8;
+    color: #FFFFFF;
+}
+
+[data-theme="dark"] .btn-apply:hover {
+    color: #111111;
+}
+
+[data-theme="dark"] .filter-tag.active,
+[data-theme="dark"] .filter-tag:hover,
+[data-theme="dark"] .filter-btn.active-primary,
+[data-theme="dark"] .step-active .step-circle,
+[data-theme="dark"] .btn-checkbox.active {
+    background-color: #005EB8;
+    border-color: #005EB8;
+    color: #FFFFFF;
+}
+
+.form-input,
 input,
 select,
-textarea,
-button {
-    max-width: 100%;
+textarea {
+    min-width: 0;
+}
+
+input[type="file"].form-input {
+    display: block;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 0;
+}
+
+input[type="file"].form-input::file-selector-button {
+    margin-right: 12px;
+    padding: 4px 8px 4px 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--foreground);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.2;
+    cursor: pointer;
+}
+
+.form-label[aria-live="polite"] {
+    overflow-wrap: anywhere;
 }
 
 @media (max-width: 768px) {
-    body {
-        min-width: 0;
-    }
-
     .navbar {
-        position: relative;
-        flex-wrap: wrap;
         padding: 12px 16px;
     }
 
-    .navbar-logo {
-        max-width: calc(100% - 52px);
+    .navbar--menu {
+        position: relative;
+        align-items: stretch;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 8px;
     }
 
-    .navbar-links,
-    .menu-links {
+    .navbar--menu > .logo,
+    .navbar--menu > .navbar-logo {
+        align-self: center;
+        margin-right: 0;
+    }
+
+    .navbar--menu .hamburger {
+        display: flex;
+        position: absolute;
+        top: 18px;
+        right: 16px;
+    }
+
+    .navbar--menu .menu-links {
+        display: none;
         width: 100%;
-        min-width: 0;
-        flex-direction: column;
         align-items: stretch;
-        gap: 12px;
+        flex-direction: column;
+        gap: 8px;
         padding-top: 8px;
     }
 
-    .navbar-links > *,
-    .menu-links > * {
-        width: 100%;
-        margin: 0 !important;
-        text-align: center;
-    }
-
-    .menu-toggle:checked ~ .menu-links,
-    .menu-toggle:checked ~ .navbar-links {
+    .navbar--menu .menu-toggle:checked ~ .menu-links {
         display: flex;
     }
 
-    .hamburger {
-        right: 16px;
-        top: 18px;
-    }
-
-    .page-header,
-    .hero,
-    .section,
-    .section-container {
-        padding-left: 16px;
-        padding-right: 16px;
-    }
-
-    .header-container,
-    .container,
-    .main-layout,
-    .detail-layout,
-    .form-container {
+    .navbar--menu .menu-links > * {
         width: 100%;
-        max-width: 100%;
-        padding-left: 16px;
-        padding-right: 16px;
-    }
-
-    .main-layout,
-    .detail-layout,
-    .split-layout,
-    .kpi-grid,
-    .content-grid,
-    .tables-grid,
-    .rec-grid,
-    .job-grid,
-    .jobs-grid,
-    .companies-grid,
-    .how-grid,
-    .grid-2,
-    .grid-2-cols,
-    .grid-3-cols,
-    .benefits-grid {
-        grid-template-columns: 1fr !important;
-    }
-
-    .main-layout,
-    .detail-layout {
-        gap: 24px;
-    }
-
-    .sidebar {
-        position: static;
-    }
-
-    .split-card {
-        min-height: 0;
-        padding: 40px 24px;
-    }
-
-    .form-card,
-    .section-body,
-    .card {
-        padding-left: 16px;
-        padding-right: 16px;
-    }
-
-    .step-container {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .step-line {
-        width: 2px;
-        height: 20px;
-        margin-left: 13px;
-    }
-
-    .form-actions {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
-    }
-
-    .form-actions button,
-    .form-actions a,
-    .btn-primary,
-    .btn-secondary,
-    .btn-publish,
-    .nav-btn {
-        width: 100%;
-        margin-left: 0 !important;
+        margin: 0;
         text-align: center;
     }
 
-    .search-bar {
+    .navbar--menu .menu-links .nav-link {
+        padding: 10px 12px;
+    }
+
+    .navbar--menu .menu-links .theme-toggle {
+        align-self: center;
+        width: 44px;
+    }
+
+    .form-input,
+    input,
+    select,
+    textarea,
+    button {
+        font-size: 16px;
+    }
+
+    .container,
+    .section-container,
+    .main-layout,
+    .detail-layout,
+    .header-container {
         width: 100%;
-        max-width: none;
-        flex-direction: column;
-    }
-
-    .search-bar input,
-    .search-bar button {
-        width: 100%;
-        min-width: 0;
-    }
-
-    .header-content,
-    .section-header,
-    .job-footer {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    .table-container {
         max-width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    table {
-        min-width: 600px;
-    }
-
-    h1,
-    h2,
-    h3,
-    p,
-    td,
-    th,
-    .nav-link,
-    .page-title {
-        overflow-wrap: anywhere;
-    }
-
-    .page-title {
-        font-size: clamp(28px, 8vw, 36px);
     }
 }
 
-@media (max-width: 480px) {
-    .page-header {
-        padding-top: 28px;
-        padding-bottom: 32px;
-    }
-
-    .split-card {
-        padding: 32px 20px;
-    }
-
-    .form-card,
-    .section-body,
-    .card {
-        padding-left: 12px;
-        padding-right: 12px;
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
     }
 }

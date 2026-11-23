@@ -62,12 +62,13 @@ $empresasDestaque = $pdo->query(
         href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="CSS/index.css">    
+    <link rel="stylesheet" href="/CSS/mobile.css">
 
 </head>
 
 <body>
 
-    <nav class="navbar">
+    <nav class="navbar navbar--menu">
         <a href="index.php" class="logo">
             <!-- Imagem para o Modo Claro -->
             <img src="images/logo-claro-infodin.png" alt="Logo do site" class="logo-light"

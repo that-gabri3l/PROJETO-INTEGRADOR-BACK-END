@@ -56,6 +56,7 @@ if ($empresaId) {
     <title>Painel da Empresa - Infodin</title>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/CSS/painel-empresa.css"> 
+    <link rel="stylesheet" href="/CSS/mobile.css">
     
 
     
@@ -71,8 +72,10 @@ if ($empresaId) {
             <img src="/images/logo-infodin.png" alt="Logo do site" class="logo-dark"
                 style="height: 40px; width: auto; object-fit: contain;">
                 </a>
-        <button id="theme-toggle" class="theme-toggle" title="Mudar tema">🌗</button>
-        <a href="/src/logout.php" class="theme-toggle" title="Sair">Sair</a>
+        <div class="navbar-actions">
+            <button id="theme-toggle" class="theme-toggle" type="button" title="Mudar tema">🌗</button>
+            <a href="/src/logout.php" class="nav-btn" title="Sair">Sair</a>
+        </div>
     </nav>
 
     <!-- Dashboard Header -->

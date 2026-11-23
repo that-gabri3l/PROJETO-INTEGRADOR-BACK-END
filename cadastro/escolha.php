@@ -6,17 +6,18 @@
     <title>Escolha o seu perfil - Infodin</title>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
      <link rel="stylesheet" href="/CSS/escolha-cadastro.css">
+     <link rel="stylesheet" href="/CSS/mobile.css">
    
 </head>
 <body>
 
     <nav class="navbar">
         <a href="/index.php" class="navbar-logo"><!-- Imagem para o Modo Claro -->
-            <img src="logo-claro-infodin.png" alt="Logo do site" class="logo-light"
+            <img src="/images/logo-claro-infodin.png" alt="Logo do site" class="logo-light"
                 style="height:40px; width: auto; object-fit: contain;">
 
             <!-- Imagem para o Modo Escuro -->
-            <img src="logo-infodin.png" alt="Logo do site" class="logo-dark"
+            <img src="/images/logo-infodin.png" alt="Logo do site" class="logo-dark"
                 style="height: 40px; width: auto; object-fit: contain;"></a>
         <button id="theme-toggle" class="theme-toggle" title="Mudar tema">🌗</button>
     </nav>

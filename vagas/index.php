@@ -77,12 +77,13 @@ $vagas = $stmt->fetchAll(PDO::FETCH_ASSOC);
         href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
 <link rel="stylesheet" href="/CSS/vagas.css"> 
+<link rel="stylesheet" href="/CSS/mobile.css">
 
 </head>
 
 <body>
 
-    <nav class="navbar">
+    <nav class="navbar navbar--menu">
         <a href="/index.php" class="navbar-logo"><!-- Imagem para o Modo Claro -->
             <img src="/images/logo-claro-infodin.png" alt="Logo do site" class="logo-light"
                 style="height:40px; width: auto; object-fit: contain;">
@@ -195,7 +196,7 @@ $vagas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarTokenCsrf(), ENT_QUOTES, 'UTF-8') ?>">
                                 <input type="hidden" name="vaga_id" value="<?= (int) $vaga['id'] ?>">
                                 <input type="hidden" name="origem" value="/vagas/index.php<?= htmlspecialchars('?' . ($_SERVER['QUERY_STRING'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
-                                <button type="submit" name="acao" value="salvar" class="btn-secondary">Salvar</button>
+                                <button type="submit" name="acao" value="salvar" class="btn-apply">Salvar</button>
                                 <a href="/vagas/detalhes.php?id=<?= (int) $vaga['id'] ?>" class="btn-apply">Ver vaga</a>
                             </form>
                         </div>

@@ -8,7 +8,7 @@ A aplicação é deliberadamente simples: PHP tradicional, HTML, CSS e JavaScrip
 
 ## Estrutura e responsabilidade dos arquivos
 
-- `index.php`: página inicial, busca por vagas e destaques.
+- `index.php`: página inicial, busca por vagas com sugestões enquanto digita e destaques.
 - `cadastro/escolha.php`: escolha entre candidato e empresa.
 - `cadastro/login.php`: interface de login.
 - `candidato/cadastro.php`: cadastro de candidato em três passos.
@@ -17,7 +17,7 @@ A aplicação é deliberadamente simples: PHP tradicional, HTML, CSS e JavaScrip
 - `empresa/painel.php`: painel da empresa, com vagas e candidaturas recentes.
 - `empresa/editar-vaga.php`: edição, alteração de status e exclusão de vaga da empresa autenticada.
 - `empresa/ver-candidato.php`: perfil do candidato associado a uma candidatura de vaga da empresa; permite avançar o status da candidatura.
-- `vagas/index.php`: listagem de vagas ativas com busca e filtros conectados ao banco.
+- `vagas/index.php`: listagem de vagas ativas com busca, filtros e sugestões conectados ao banco.
 - `vagas/detalhes.php`: detalhes de uma vaga ativa consultada no banco.
 - `vagas/publicar.php`: formulário visual de publicação de vaga.
 - `src/conexao.php`: conexão PDO com MySQL/MariaDB.
@@ -28,18 +28,21 @@ A aplicação é deliberadamente simples: PHP tradicional, HTML, CSS e JavaScrip
 - `src/gerenciar-vaga.php`: atualiza ou exclui vagas, verificando a empresa proprietária.
 - `src/processar-candidatura.php`: registra a candidatura do usuário candidato.
 - `src/atualizar-status-candidatura.php`: valida e grava as transições de status autorizadas para a empresa proprietária.
+- `src/sugestoes-vagas.php`: endpoint JSON com sugestões limitadas às vagas ativas.
 - `src/sessao.php`: inicialização de sessão, autorização por tipo de usuário e proteção CSRF.
+- `JS/busca-vagas-sugestoes.js`: carrega, apresenta e permite selecionar sugestões nas barras da página inicial e da listagem de vagas.
 - `JS/tema.js`: alternância e persistência do tema em `localStorage` (`theme`).
 - `JS/candidato-avancar-passos.js`: navegação por passos do cadastro de candidato.
 - `JS/empresa-avancar-passos.js`: navegação por passos do cadastro de empresa.
 - `JS/empresa-gerenciar-vaga.js`: confirmação da exclusão de vaga.
-- `CSS/`: estilos separados por página ou área, incluindo `painel-candidato.css`, `painel-empresa.css` e `perfil-candidato-empresa.css`.
+- `CSS/`: estilos separados por página ou área, incluindo `painel-candidato.css`, `painel-empresa.css`, `perfil-candidato-empresa.css` e `sugestoes-vagas.css`.
 - `images/`: logotipos claro e escuro.
 - `logs/`: reserva atual para arquivos de log.
  
 ## Fluxos e rotas existentes
 
-- Página inicial → `/vagas/index.php?q=...`
+- Página inicial → sugestões conforme digitação → `/vagas/index.php?q=...`
+- Listagem de vagas → sugestões conforme digitação → resultados filtrados por `q`
 - Cadastro → `cadastro/escolha.php` → `candidato/cadastro.php` ou `empresa/cadastro.php`
 - Login → `cadastro/login.php` → `src/processar-login.php`
 - Candidato → `candidato/painel.php` → seção “Minhas candidaturas”, com o status atual de cada candidatura

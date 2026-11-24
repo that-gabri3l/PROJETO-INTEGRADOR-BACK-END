@@ -27,11 +27,11 @@ $params = ['status' => 'ativa'];
 
 if ($q !== '') {
     $where[] = '(v.titulo LIKE :q
-                 OR v.area LIKE :q
-                 OR v.localizacao LIKE :q
-                 OR v.descricao LIKE :q
-                 OR v.requisitos LIKE :q
-                 OR v.beneficios LIKE :q
+                OR v.area LIKE :q
+                OR v.localizacao LIKE :q
+                OR v.descricao LIKE :q
+                OR v.requisitos LIKE :q
+                OR v.beneficios LIKE :q
                  OR v.regime LIKE :q
                  OR e.nome LIKE :q
                  OR e.razao_social LIKE :q

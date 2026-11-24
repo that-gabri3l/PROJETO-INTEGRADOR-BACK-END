@@ -144,20 +144,21 @@
             min-width: 0;
         }
         .company-profile-logo {
-            width: 56px;
-            height: 56px;
-            flex: 0 0 56px;
-            object-fit: contain;
-            padding: 5px;
-            border: 1px solid rgba(242,237,229,0.3);
-            border-radius: var(--radius);
-            background-color: #FFFFFF;
+            width: 64px;
+            height: 64px;
+            flex: 0 0 64px;
+            object-fit: cover;
+            padding: 0;
+            border: 0;
+            border-radius: 50%;
+            background: transparent;
         }
         .company-profile-initial {
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--primary);
+            background-color: var(--accent);
+            color: #FAF8F4;
             font-family: 'Fraunces', serif;
             font-size: 24px;
             font-weight: 600;

@@ -185,12 +185,18 @@ $regimesSelecionadosIniciais = array_filter(explode(',', (string) ($dadosFormula
                         </div>
 
                         <div>
-                            <label class="form-label">Senha<span class="required">*</span></label>
-                            <input type="password" name="senha" class="form-input" placeholder="Mínimo 8 caracteres" minlength="8" required>
+                            <label class="form-label" for="senha-candidato">Senha<span class="required">*</span></label>
+                            <div class="password-field">
+                                <input id="senha-candidato" type="password" name="senha" class="form-input" placeholder="Mínimo 8 caracteres" minlength="8" required>
+                                <button type="button" class="password-toggle" aria-label="Mostrar senha" aria-controls="senha-candidato" aria-pressed="false">Mostrar</button>
+                            </div>
                         </div>
                         <div>
-                            <label class="form-label">Confirmar senha<span class="required">*</span></label>
-                            <input type="password" name="confirmar_senha" class="form-input" placeholder="Repita a senha" minlength="8" required>
+                            <label class="form-label" for="confirmar-senha-candidato">Confirmar senha<span class="required">*</span></label>
+                            <div class="password-field">
+                                <input id="confirmar-senha-candidato" type="password" name="confirmar_senha" class="form-input" placeholder="Repita a senha" minlength="8" required>
+                                <button type="button" class="password-toggle" aria-label="Mostrar senha" aria-controls="confirmar-senha-candidato" aria-pressed="false">Mostrar</button>
+                            </div>
                         </div>
 
                         <!-- Checkbox customizado -->
@@ -216,6 +222,7 @@ $regimesSelecionadosIniciais = array_filter(explode(',', (string) ($dadosFormula
 
     <!-- Script Simples para Alternar os Passos -->
     <script src="/JS/candidato-avancar-passos.js"></script>
+    <script src="/JS/alternar-senha.js"></script>
 
     <script src="/JS/tema.js"></script>
 </body>

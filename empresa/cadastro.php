@@ -136,12 +136,18 @@ $valorCampo = static fn(string $campo): string => htmlspecialchars((string) ($da
                         </div>
                         
                         <div>
-                            <label class="form-label">Senha<span class="required">*</span></label>
-                            <input type="password" name="senha" class="form-input" placeholder="Mínimo 8 caracteres" minlength="8" required>
+                            <label class="form-label" for="senha-empresa">Senha<span class="required">*</span></label>
+                            <div class="password-field">
+                                <input id="senha-empresa" type="password" name="senha" class="form-input" placeholder="Mínimo 8 caracteres" minlength="8" required>
+                                <button type="button" class="password-toggle" aria-label="Mostrar senha" aria-controls="senha-empresa" aria-pressed="false">Mostrar</button>
+                            </div>
                         </div>
                         <div>
-                            <label class="form-label">Confirmar senha<span class="required">*</span></label>
-                            <input type="password" name="confirmar_senha" class="form-input" placeholder="Repita a senha" minlength="8" required>
+                            <label class="form-label" for="confirmar-senha-empresa">Confirmar senha<span class="required">*</span></label>
+                            <div class="password-field">
+                                <input id="confirmar-senha-empresa" type="password" name="confirmar_senha" class="form-input" placeholder="Repita a senha" minlength="8" required>
+                                <button type="button" class="password-toggle" aria-label="Mostrar senha" aria-controls="confirmar-senha-empresa" aria-pressed="false">Mostrar</button>
+                            </div>
                         </div>
                         
                         <div style="font-size: 12px; color: var(--muted-foreground); line-height: 1.5;">
@@ -165,6 +171,7 @@ $valorCampo = static fn(string $campo): string => htmlspecialchars((string) ($da
 
     <!-- Script de transição de abas (Idêntico ao do Candidato) -->
     <script src="/JS/empresa-avancar-passos.js"></script>
+    <script src="/JS/alternar-senha.js"></script>
     <script src="/JS/tema.js"></script>
 
 </body>

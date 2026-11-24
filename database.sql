@@ -93,11 +93,6 @@ CREATE TABLE IF NOT EXISTS recuperacoes_senha (
     KEY idx_recuperacoes_senha_usuario (usuario_id, criado_em),
     KEY idx_recuperacoes_senha_candidato (candidato_id, criado_em),
     KEY idx_recuperacoes_senha_data (criado_em),
-    CONSTRAINT chk_recuperacoes_senha_alvo CHECK (
-        (usuario_id IS NULL AND candidato_id IS NULL AND token_hash IS NULL AND expira_em IS NULL)
-        OR
-        ((usuario_id IS NULL) <> (candidato_id IS NULL) AND token_hash IS NOT NULL AND expira_em IS NOT NULL)
-    ),
     CONSTRAINT fk_recuperacoes_senha_usuario
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
         ON DELETE CASCADE ON UPDATE CASCADE,

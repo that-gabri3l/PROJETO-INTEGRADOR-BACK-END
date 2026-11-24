@@ -88,7 +88,8 @@ $empresasDestaque = $pdo->query(
     <link
         href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="CSS/index.css">    
+    <link rel="stylesheet" href="CSS/index.css">
+    <link rel="stylesheet" href="/CSS/sugestoes-vagas.css">
     <link rel="stylesheet" href="/CSS/mobile.css">
 
 </head>
@@ -143,7 +144,11 @@ $empresasDestaque = $pdo->query(
                 <p class="hero-desc">Conectamos profissionais talentosos às empresas e oportunidades disponíveis em diversas áreas.</p>
 
                 <form class="search-bar" action="/vagas/index.php" method="GET">
-                    <input id="busca-pagina-inicial" type="search" name="q" value="<?= htmlspecialchars($busca, ENT_QUOTES, 'UTF-8') ?>" placeholder="Cargo, empresa, habilidade ou palavra-chave..." aria-label="Buscar vagas" autocomplete="on">
+                    <div class="search-autocomplete" data-search-autocomplete data-suggestions-url="/src/sugestoes-vagas.php">
+                        <input id="busca-pagina-inicial" type="search" name="q" value="<?= htmlspecialchars($busca, ENT_QUOTES, 'UTF-8') ?>" placeholder="Cargo, empresa, habilidade ou palavra-chave..." aria-label="Buscar vagas" aria-autocomplete="list" aria-controls="sugestoes-busca-inicial" aria-expanded="false" role="combobox" autocomplete="off">
+                        <div id="sugestoes-busca-inicial" class="search-suggestions" role="listbox" hidden></div>
+                        <span class="search-suggestions-status" data-suggestions-status role="status" aria-live="polite"></span>
+                    </div>
                     <button type="submit" aria-label="Pesquisar vagas">Buscar Vagas</button>
                 </form>
             </div>
@@ -385,6 +390,7 @@ $empresasDestaque = $pdo->query(
         </div>
     </footer>
 
+    <script src="/JS/busca-vagas-sugestoes.js"></script>
     <script src="/JS/tema.js"></script>
 
 </body>

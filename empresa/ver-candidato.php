@@ -23,6 +23,16 @@ $stmt = $pdo->prepare(
 );
 $stmt->execute(['candidatura_id' => $candidaturaId, 'empresa_id' => $empresaId]);
 $candidatura = $stmt->fetch(PDO::FETCH_ASSOC);
+$fotoCandidatoUrl = null;
+if ($candidatura && !empty($candidatura['foto_perfil'])) {
+    $nomeArquivoFoto = basename(str_replace('\\', '/', (string) $candidatura['foto_perfil']));
+    if (
+        preg_match('/\A[a-f0-9]{32}\.(?:jpg|png)\z/i', $nomeArquivoFoto)
+        && is_file(__DIR__ . '/../src/uploads/fotos_perfil/' . $nomeArquivoFoto)
+    ) {
+        $fotoCandidatoUrl = '../src/uploads/fotos_perfil/' . $nomeArquivoFoto;
+    }
+}
 
 $statusCandidaturas = [
     'recebida' => 'Recebida',
@@ -72,8 +82,8 @@ $linkedinValido = filter_var($urlLinkedin, FILTER_VALIDATE_URL)
             </section>
         <?php else: ?>
             <header class="profile-header">
-                <?php if (!empty($candidatura['foto_perfil'])): ?>
-                    <img class="candidate-photo" src="<?= htmlspecialchars($candidatura['foto_perfil'], ENT_QUOTES, 'UTF-8') ?>" alt="Foto de <?= htmlspecialchars($candidatura['nome'], ENT_QUOTES, 'UTF-8') ?>">
+                <?php if ($fotoCandidatoUrl !== null): ?>
+                    <img class="candidate-photo" src="<?= htmlspecialchars($fotoCandidatoUrl, ENT_QUOTES, 'UTF-8') ?>" alt="Foto de <?= htmlspecialchars($candidatura['nome'], ENT_QUOTES, 'UTF-8') ?>">
                 <?php else: ?>
                     <div class="candidate-photo candidate-initial" aria-hidden="true"><?= htmlspecialchars(strtoupper(substr($candidatura['nome'], 0, 1)), ENT_QUOTES, 'UTF-8') ?></div>
                 <?php endif; ?>

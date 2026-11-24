@@ -85,9 +85,9 @@ body {
 }
 
 .candidate-photo {
-    width: 88px;
-    height: 88px;
-    flex: 0 0 88px;
+    width: 104px;
+    height: 104px;
+    flex: 0 0 104px;
     border: 1px solid var(--border);
     border-radius: 50%;
     background: var(--secondary);
@@ -333,9 +333,9 @@ body {
     }
 
     .candidate-photo {
-        width: 68px;
-        height: 68px;
-        flex-basis: 68px;
+        width: 76px;
+        height: 76px;
+        flex-basis: 76px;
     }
 
     .profile-heading h1 {

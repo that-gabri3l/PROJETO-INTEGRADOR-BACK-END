@@ -558,6 +558,17 @@
             color: #FAF8F4;
         }
 
+        .company-logo-image {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background-color: #FFFFFF;
+            object-fit: contain;
+            padding: 4px;
+        }
+
         /* How it Works Section */
         .how-it-works {
             background-color: var(--primary);

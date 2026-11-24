@@ -80,7 +80,7 @@ $sucesso = isset($_GET['cadastro']) && $_GET['cadastro'] === 'sucesso';
 
     <!-- Script de Modo Escuro -->
         <script src="/JS/tema.js"></script>
-        <script src="/JS/login.js"></script>
+        <script src="/JS/alternar-senha.js"></script>
 
 </body>
 </html>

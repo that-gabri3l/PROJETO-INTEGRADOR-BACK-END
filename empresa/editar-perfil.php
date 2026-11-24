@@ -19,6 +19,7 @@ if (!$empresa) {
 
 $erro = trim((string) ($_GET['erro'] ?? ''));
 $salvo = ($_GET['salvo'] ?? '') === '1';
+$senhaAlterada = ($_GET['senha'] ?? '') === 'alterada';
 $setores = ['Tecnologia', 'Finanças', 'Saúde', 'Educação', 'Varejo', 'Logística', 'Outro'];
 $portes = ['Microempresa', 'Pequena', 'Média', 'Grande'];
 ?>
@@ -54,6 +55,9 @@ $portes = ['Microempresa', 'Pequena', 'Média', 'Grande'];
             <?php endif; ?>
             <?php if ($salvo): ?>
                 <div class="form-success" role="status">Perfil da empresa atualizado.</div>
+            <?php endif; ?>
+            <?php if ($senhaAlterada): ?>
+                <div class="form-success" role="status">Senha alterada com sucesso.</div>
             <?php endif; ?>
 
             <form action="/src/atualizar-empresa.php" method="POST" enctype="multipart/form-data">
@@ -135,6 +139,34 @@ $portes = ['Microempresa', 'Pequena', 'Média', 'Grande'];
                         <input id="logo" type="file" name="logo" class="form-input" accept="image/png,image/jpeg">
                         <img id="logo-preview" class="upload-preview" alt="Prévia da nova logo" hidden>
                     </div>
+
+                    <fieldset class="password-settings">
+                        <legend>Alterar senha</legend>
+                        <p class="password-help">Opcional. Preencha os três campos para trocar a senha da empresa.</p>
+                        <div class="password-fields">
+                            <div>
+                                <label class="form-label" for="senha-atual">Senha atual</label>
+                                <div class="password-field">
+                                    <input id="senha-atual" type="password" name="senha_atual" class="form-input" autocomplete="current-password">
+                                    <button type="button" class="password-toggle" aria-label="Mostrar senha atual" aria-controls="senha-atual" aria-pressed="false">Mostrar</button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="form-label" for="nova-senha">Nova senha</label>
+                                <div class="password-field">
+                                    <input id="nova-senha" type="password" name="nova_senha" class="form-input" minlength="8" autocomplete="new-password">
+                                    <button type="button" class="password-toggle" aria-label="Mostrar nova senha" aria-controls="nova-senha" aria-pressed="false">Mostrar</button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="form-label" for="confirmar-nova-senha">Confirmar nova senha</label>
+                                <div class="password-field">
+                                    <input id="confirmar-nova-senha" type="password" name="confirmar_senha" class="form-input" minlength="8" autocomplete="new-password">
+                                    <button type="button" class="password-toggle" aria-label="Mostrar confirmação da senha" aria-controls="confirmar-nova-senha" aria-pressed="false">Mostrar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
                 </div>
 
                 <div class="form-actions">
@@ -145,6 +177,7 @@ $portes = ['Microempresa', 'Pequena', 'Média', 'Grande'];
         </div>
     </main>
     <script src="/JS/empresa-editar-perfil.js"></script>
+    <script src="/JS/alternar-senha.js"></script>
     <script src="/JS/tema.js"></script>
 </body>
 </html>

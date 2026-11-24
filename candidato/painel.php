@@ -262,7 +262,6 @@ $vagasDisponiveis = (int) $stmtVagasDisponiveis->fetchColumn();
         <!-- Vagas Recomendadas -->
         <div style="margin-top: 36px;">
             <div class="section-header">
-                <span class="section-eyebrow">§ 04</span>
                 <h2 class="section-title">Vagas recomendadas para você</h2>
             </div>
             

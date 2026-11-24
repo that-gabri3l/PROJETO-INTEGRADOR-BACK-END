@@ -31,6 +31,28 @@ $telefone = trim($_POST['telefone'] ?? '');
 $cidade = trim($_POST['cidade_sede'] ?? '');
 $site = trim($_POST['site'] ?? '');
 $descricao = trim($_POST['descricao'] ?? '');
+$senhaAtual = $_POST['senha_atual'] ?? '';
+$novaSenha = $_POST['nova_senha'] ?? '';
+$confirmarSenha = $_POST['confirmar_senha'] ?? '';
+
+if (!is_string($senhaAtual) || !is_string($novaSenha) || !is_string($confirmarSenha)) {
+    redirecionarComErroEmpresa('Os dados de senha informados são inválidos.');
+}
+
+$solicitouAlteracaoSenha = $senhaAtual !== '' || $novaSenha !== '' || $confirmarSenha !== '';
+if ($solicitouAlteracaoSenha) {
+    if ($senhaAtual === '' || $novaSenha === '' || $confirmarSenha === '') {
+        redirecionarComErroEmpresa('Preencha a senha atual, a nova senha e a confirmação para alterar a senha.');
+    }
+
+    if (strlen($novaSenha) < 8) {
+        redirecionarComErroEmpresa('A nova senha deve ter pelo menos 8 caracteres.');
+    }
+
+    if (!hash_equals($novaSenha, $confirmarSenha)) {
+        redirecionarComErroEmpresa('A nova senha e a confirmação não correspondem.');
+    }
+}
 
 if ($nome === '' || $cnpjDigitos === '' || $setor === '' || $porte === '' || $email === '' || $cidade === '') {
     redirecionarComErroEmpresa('Preencha nome, CNPJ, setor, porte, e-mail corporativo e cidade.');
@@ -63,6 +85,34 @@ $stmtAtual->execute(['id' => $empresaId]);
 $empresaAtual = $stmtAtual->fetch();
 if (!$empresaAtual) {
     redirecionarComErroEmpresa('Não foi possível localizar o perfil da empresa.');
+}
+
+$senhaHash = null;
+if ($solicitouAlteracaoSenha) {
+    $sessaoUsuarioId = filter_var($_SESSION['usuario_id'] ?? null, FILTER_VALIDATE_INT);
+    if (!$empresaAtual['usuario_id']
+        || !$sessaoUsuarioId
+        || (int) $sessaoUsuarioId !== (int) $empresaAtual['usuario_id']) {
+        redirecionarComErroEmpresa('Não foi possível validar sua conta. Faça login novamente.');
+    }
+
+    $stmtUsuario = $pdo->prepare('SELECT tipo, senha, ativo FROM usuarios WHERE id = :id LIMIT 1');
+    $stmtUsuario->execute(['id' => $empresaAtual['usuario_id']]);
+    $usuarioAtual = $stmtUsuario->fetch();
+
+    if (!$usuarioAtual || $usuarioAtual['tipo'] !== 'empresa' || !(bool) $usuarioAtual['ativo']) {
+        redirecionarComErroEmpresa('Não foi possível validar sua conta. Faça login novamente.');
+    }
+
+    if (!password_verify($senhaAtual, $usuarioAtual['senha'])) {
+        redirecionarComErroEmpresa('A senha atual não confere.');
+    }
+
+    if (password_verify($novaSenha, $usuarioAtual['senha'])) {
+        redirecionarComErroEmpresa('A nova senha deve ser diferente da senha atual.');
+    }
+
+    $senhaHash = password_hash($novaSenha, PASSWORD_DEFAULT);
 }
 
 $caminhoLogo = $empresaAtual['logo'];
@@ -138,9 +188,30 @@ try {
         $stmtUsuario->execute(['email' => $email, 'id' => $empresaAtual['usuario_id']]);
     }
 
+    if ($senhaHash !== null) {
+        $stmtSenha = $pdo->prepare(
+            'UPDATE usuarios SET senha = :senha WHERE id = :id AND tipo = \'empresa\' AND ativo = 1'
+        );
+        $stmtSenha->execute([
+            'senha' => $senhaHash,
+            'id' => $empresaAtual['usuario_id'],
+        ]);
+
+        if ($stmtSenha->rowCount() !== 1) {
+            $pdo->rollBack();
+            if ($novoArquivo && is_file($novoArquivo)) {
+                unlink($novoArquivo);
+            }
+            redirecionarComErroEmpresa('Não foi possível validar sua conta. Faça login novamente.');
+        }
+    }
+
     $pdo->commit();
     $_SESSION['usuario_nome'] = $nome;
     $_SESSION['usuario_email'] = $email;
+    if ($senhaHash !== null) {
+        session_regenerate_id(true);
+    }
 
     if ($novoArquivo && !empty($empresaAtual['logo']) && str_starts_with($empresaAtual['logo'], '/src/uploads/logos_empresas/')) {
         $logoAnterior = __DIR__ . '/uploads/logos_empresas/' . basename($empresaAtual['logo']);
@@ -149,7 +220,11 @@ try {
         }
     }
 
-    header('Location: /empresa/editar-perfil.php?salvo=1');
+    $destino = '/empresa/editar-perfil.php?salvo=1';
+    if ($senhaHash !== null) {
+        $destino .= '&senha=alterada';
+    }
+    header('Location: ' . $destino);
     exit;
 } catch (PDOException $e) {
     if ($pdo->inTransaction()) {

@@ -352,6 +352,113 @@
             flex-wrap: wrap;
         }
 
+        .job-filter {
+            position: relative;
+            min-width: 180px;
+        }
+
+        .job-filter-toggle {
+            display: flex;
+            min-height: 42px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background-color: var(--background);
+            color: var(--foreground);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            list-style: none;
+            transition: border-color 0.15s, background-color 0.15s;
+        }
+
+        .job-filter-toggle::-webkit-details-marker {
+            display: none;
+        }
+
+        .job-filter-toggle:hover,
+        .job-filter-toggle:focus-visible,
+        .job-filter[open] .job-filter-toggle {
+            border-color: var(--primary);
+            background-color: var(--secondary);
+        }
+
+        .job-filter-icon {
+            font-size: 18px;
+            line-height: 1;
+            transition: transform 0.15s;
+        }
+
+        .job-filter[open] .job-filter-icon {
+            transform: rotate(180deg);
+        }
+
+        .job-filter-panel {
+            position: absolute;
+            z-index: 20;
+            top: calc(100% + 8px);
+            right: 0;
+            width: min(450px, calc(100vw - 48px));
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background-color: var(--background);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        .job-filter-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .job-filter-section + .job-filter-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .job-filter-label {
+            color: var(--muted-foreground);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .sort-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sort-control label {
+            color: var(--muted-foreground);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .sort-control select {
+            min-height: 38px;
+            padding: 7px 34px 7px 10px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background-color: var(--background);
+            color: var(--foreground);
+            cursor: pointer;
+        }
+
         .filter-tag {
             padding: 6px 12px;
             border: 1px solid var(--border);
@@ -427,6 +534,8 @@
             display: flex;
             align-items: center;
             gap: 16px;
+            color: inherit;
+            text-decoration: none;
             transition: background-color 0.15s;
             cursor: pointer;
         }
@@ -741,6 +850,36 @@
                 overflow-x: auto;
                 padding: 2px 2px 8px;
                 scrollbar-width: thin;
+            }
+
+            .job-filter,
+            .category-tabs {
+                width: 100%;
+                max-width: none;
+            }
+
+            .job-filter-panel {
+                position: static;
+                width: 100%;
+                margin-top: 8px;
+                box-shadow: none;
+            }
+
+            .category-tabs {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                padding: 2px 2px 8px;
+                scrollbar-width: thin;
+            }
+
+            .sort-control {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .sort-control select {
+                flex: 1;
+                max-width: 220px;
             }
 
             .filter-tag {

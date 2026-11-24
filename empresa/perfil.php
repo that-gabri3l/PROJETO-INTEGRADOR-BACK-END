@@ -1,5 +1,10 @@
 <?php
 require_once __DIR__ . '/../src/conexao.php';
+require_once __DIR__ . '/../src/sessao.php';
+
+$usuarioLogado = usuarioEstaLogado();
+$usuarioTipo = $_SESSION['usuario_tipo'] ?? null;
+$usuarioNome = $_SESSION['usuario_nome'] ?? '';
 
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 if (!$id) {
@@ -48,12 +53,33 @@ if ($site !== '' && !preg_match('#^https?://#i', $site)) {
     <link rel="stylesheet" href="/CSS/mobile.css">
 </head>
 <body>
-    <nav class="navbar">
+    <nav class="navbar navbar--menu">
         <a href="/index.php" class="navbar-logo">
             <img src="/images/logo-claro-infodin.png" alt="Logo do site" class="logo-light">
             <img src="/images/logo-infodin.png" alt="Logo do site" class="logo-dark">
         </a>
-        <button id="theme-toggle" class="theme-toggle" type="button" title="Mudar tema">🌗</button>
+
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+        <label for="menu-toggle" class="hamburger" aria-label="Abrir menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </label>
+
+        <div class="menu-links">
+            <a href="/vagas/index.php" class="nav-link">Buscar Vagas</a>
+            <?php if (!$usuarioLogado): ?>
+                <a href="/empresa/cadastro.php" class="nav-link">Para Empresas</a>
+                <a href="/candidato/cadastro.php" class="nav-link">Cadastrar</a>
+                <a href="/cadastro/login.php" class="nav-btn">Entrar</a>
+            <?php else: ?>
+                <a href="<?= $usuarioTipo === 'empresa' ? '/empresa/painel.php' : '/candidato/painel.php' ?>" class="nav-btn">
+                    <?= htmlspecialchars($usuarioNome !== '' ? $usuarioNome : 'Meu painel', ENT_QUOTES, 'UTF-8') ?>
+                </a>
+                <a href="/src/logout.php" class="nav-link">Sair</a>
+            <?php endif; ?>
+            <button id="theme-toggle" class="theme-toggle" type="button" title="Mudar tema">🌗</button>
+        </div>
     </nav>
 
     <main class="company-profile">

@@ -56,10 +56,13 @@ $sucesso = isset($_GET['cadastro']) && $_GET['cadastro'] === 'sucesso';
 
                 <div class="form-group">
                     <div class="form-label">
-                        <span>Senha</span>
+                        <label for="senha-login">Senha</label>
                         <a href="#" class="forgot-password">Esqueceu a senha?</a>
                     </div>
-                    <input type="password" name="senha" class="form-input" placeholder="••••••••" required>
+                    <div class="password-field">
+                        <input id="senha-login" type="password" name="senha" class="form-input" placeholder="••••••••" required>
+                        <button type="button" class="password-toggle" aria-label="Mostrar senha" aria-controls="senha-login" aria-pressed="false">Mostrar</button>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn-primary">Entrar</button>
@@ -77,6 +80,7 @@ $sucesso = isset($_GET['cadastro']) && $_GET['cadastro'] === 'sucesso';
 
     <!-- Script de Modo Escuro -->
         <script src="/JS/tema.js"></script>
+        <script src="/JS/login.js"></script>
 
 </body>
 </html>

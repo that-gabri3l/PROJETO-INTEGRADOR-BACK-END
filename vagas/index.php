@@ -10,6 +10,10 @@ $q = trim($_GET['q'] ?? '');
 $area = trim($_GET['area'] ?? '');
 $regime = trim($_GET['regime'] ?? '');
 $ordem = $_GET['ordem'] ?? 'recente';
+$empresa = filter_input(INPUT_GET, 'empresa', FILTER_VALIDATE_INT);
+if ($empresa === false) {
+    $empresa = null;
+}
 
 $areasDisponiveis = $pdo->query(
     "SELECT DISTINCT area FROM vagas WHERE status = 'ativa' AND area IS NOT NULL AND area <> '' ORDER BY area"
@@ -22,7 +26,17 @@ $where = ['v.status = :status'];
 $params = ['status' => 'ativa'];
 
 if ($q !== '') {
-    $where[] = '(v.titulo LIKE :q OR v.area LIKE :q OR v.localizacao LIKE :q OR e.nome LIKE :q)';
+    $where[] = '(v.titulo LIKE :q
+                 OR v.area LIKE :q
+                 OR v.localizacao LIKE :q
+                 OR v.descricao LIKE :q
+                 OR v.requisitos LIKE :q
+                 OR v.beneficios LIKE :q
+                 OR v.regime LIKE :q
+                 OR e.nome LIKE :q
+                 OR e.razao_social LIKE :q
+                 OR e.setor LIKE :q
+                 OR e.cidade_sede LIKE :q)';
     $params['q'] = '%' . $q . '%';
 }
 if (in_array($area, $areasDisponiveis, true)) {
@@ -37,6 +51,20 @@ if (in_array($regime, $regimesDisponiveis, true)) {
 } else {
     $regime = '';
 }
+if ($empresa !== null) {
+    $empresaExiste = $pdo->prepare(
+        "SELECT COUNT(*)
+         FROM vagas
+         WHERE empresa_id = :empresa_id AND status = 'ativa'"
+    );
+    $empresaExiste->execute(['empresa_id' => $empresa]);
+    if ((int) $empresaExiste->fetchColumn() > 0) {
+        $where[] = 'v.empresa_id = :empresa';
+        $params['empresa'] = $empresa;
+    } else {
+        $empresa = null;
+    }
+}
 
 $orderBy = 'v.criado_em DESC';
 if ($ordem === 'salario') {
@@ -45,12 +73,13 @@ if ($ordem === 'salario') {
     $ordem = 'recente';
 }
 
-$urlComFiltros = static function (array $alteracoes) use ($q, $area, $regime, $ordem): string {
+$urlComFiltros = static function (array $alteracoes) use ($q, $area, $regime, $ordem, $empresa): string {
     $filtros = array_merge([
         'q' => $q,
         'area' => $area,
         'regime' => $regime,
         'ordem' => $ordem,
+        'empresa' => $empresa,
     ], $alteracoes);
     $filtros = array_filter($filtros, static fn($valor): bool => $valor !== null && $valor !== '');
 
@@ -65,6 +94,12 @@ $sql = 'SELECT v.*, e.nome AS empresa_nome
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $vagas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$totalVagas = count($vagas);
+$totalPaginas = $totalVagas > 1 ? 2 : ($totalVagas === 1 ? 1 : 0);
+$paginaAtual = filter_input(INPUT_GET, 'pagina', FILTER_VALIDATE_INT);
+$paginaAtual = $paginaAtual === false || $paginaAtual === null ? 1 : max(1, min($paginaAtual, max(1, $totalPaginas)));
+$vagasPorPagina = $totalPaginas > 0 ? (int) ceil($totalVagas / $totalPaginas) : 0;
+$vagas = array_slice($vagas, ($paginaAtual - 1) * $vagasPorPagina, $vagasPorPagina);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -121,93 +156,132 @@ $vagas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="page-header">
         <div class="header-container">
             <span class="eyebrow-text">Explorar vagas</span>
-            <h1 class="page-title"><?= count($vagas) ?> <?= count($vagas) === 1 ? 'vaga disponível' : 'vagas disponíveis' ?></h1>
+            <h1 class="page-title"><?= $totalVagas ?> <?= $totalVagas === 1 ? 'vaga disponível' : 'vagas disponíveis' ?></h1>
 
             <form class="search-bar" action="/vagas/index.php" method="GET">
-                <input type="text" name="q" value="<?= htmlspecialchars($q, ENT_QUOTES, 'UTF-8') ?>" placeholder="Buscar por cargo, empresa ou habilidade...">
+                <input id="busca-vagas" type="search" name="q" value="<?= htmlspecialchars($q, ENT_QUOTES, 'UTF-8') ?>" placeholder="Cargo, empresa, habilidade ou palavra-chave..." aria-label="Buscar vagas" autocomplete="on">
                 <?php if ($area !== ''): ?><input type="hidden" name="area" value="<?= htmlspecialchars($area, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
                 <?php if ($regime !== ''): ?><input type="hidden" name="regime" value="<?= htmlspecialchars($regime, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
                 <?php if ($ordem !== 'recente'): ?><input type="hidden" name="ordem" value="<?= htmlspecialchars($ordem, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
-                <button type="submit">Buscar</button>
+                <?php if ($empresa !== null): ?><input type="hidden" name="empresa" value="<?= (int) $empresa ?>"><?php endif; ?>
+                <button type="submit" aria-label="Pesquisar vagas">Buscar</button>
             </form>
         </div>
     </div>
 
-    <div class="main-layout">
-        <!-- Sidebar Filters -->
-        <aside class="sidebar">
-            <div class="filter-section">
-                <div class="filter-title">Área</div>
-                <div class="filter-list">
-                    <a href="<?= htmlspecialchars($urlComFiltros(['area' => null]), ENT_QUOTES, 'UTF-8') ?>" class="filter-btn <?= $area === '' ? 'active-primary' : '' ?>">Todas</a>
-                    <?php foreach ($areasDisponiveis as $areaDisponivel): ?>
-                        <a href="<?= htmlspecialchars($urlComFiltros(['area' => $areaDisponivel]), ENT_QUOTES, 'UTF-8') ?>" class="filter-btn <?= $area === $areaDisponivel ? 'active-primary' : '' ?>"><?= htmlspecialchars($areaDisponivel, ENT_QUOTES, 'UTF-8') ?></a>
-                    <?php endforeach; ?>
+    <div class="main-layout main-layout--filtered">
+        <aside class="sidebar vaga-filter-sidebar">
+            <form class="vaga-filter-form" action="/vagas/index.php" method="GET">
+                <?php if ($q !== ''): ?><input type="hidden" name="q" value="<?= htmlspecialchars($q, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
+                <?php if ($empresa !== null): ?><input type="hidden" name="empresa" value="<?= (int) $empresa ?>"><?php endif; ?>
+
+                <div class="vaga-filter-field">
+                    <label for="filtro-area">Área</label>
+                    <select id="filtro-area" name="area">
+                        <option value="">Todas</option>
+                        <?php foreach ($areasDisponiveis as $areaDisponivel): ?>
+                            <option value="<?= htmlspecialchars($areaDisponivel, ENT_QUOTES, 'UTF-8') ?>" <?= $area === $areaDisponivel ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($areaDisponivel, ENT_QUOTES, 'UTF-8') ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
-            </div>
 
-            <div class="divider"></div>
-
-            <div class="filter-section">
-                <div class="filter-title">Regime</div>
-                <div class="filter-list">
-                    <a href="<?= htmlspecialchars($urlComFiltros(['regime' => null]), ENT_QUOTES, 'UTF-8') ?>" class="filter-btn <?= $regime === '' ? 'active-primary' : '' ?>">Todos</a>
-                    <?php foreach ($regimesDisponiveis as $regimeDisponivel): ?>
-                        <a href="<?= htmlspecialchars($urlComFiltros(['regime' => $regimeDisponivel]), ENT_QUOTES, 'UTF-8') ?>" class="filter-btn <?= $regime === $regimeDisponivel ? 'active-primary' : '' ?>"><?= htmlspecialchars($regimeDisponivel, ENT_QUOTES, 'UTF-8') ?></a>
-                    <?php endforeach; ?>
+                <div class="vaga-filter-field">
+                    <label for="filtro-regime">Regime</label>
+                    <select id="filtro-regime" name="regime">
+                        <option value="">Todos</option>
+                        <?php foreach ($regimesDisponiveis as $regimeDisponivel): ?>
+                            <option value="<?= htmlspecialchars($regimeDisponivel, ENT_QUOTES, 'UTF-8') ?>" <?= $regime === $regimeDisponivel ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($regimeDisponivel, ENT_QUOTES, 'UTF-8') ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
-            </div>
 
-            <div class="divider"></div>
-
-            <div class="filter-section">
-                <div class="filter-title">Ordenar por</div>
-                <div class="filter-list">
-                    <a href="<?= htmlspecialchars($urlComFiltros(['ordem' => 'recente']), ENT_QUOTES, 'UTF-8') ?>" class="filter-btn <?= $ordem === 'recente' ? 'active-secondary' : '' ?>">Mais recente</a>
-                    <a href="<?= htmlspecialchars($urlComFiltros(['ordem' => 'salario']), ENT_QUOTES, 'UTF-8') ?>" class="filter-btn <?= $ordem === 'salario' ? 'active-secondary' : '' ?>">Maior salário</a>
+                <div class="vaga-filter-field">
+                    <label for="filtro-ordem">Ordenar por</label>
+                    <select id="filtro-ordem" name="ordem">
+                        <option value="recente" <?= $ordem === 'recente' ? 'selected' : '' ?>>Mais recente</option>
+                        <option value="salario" <?= $ordem === 'salario' ? 'selected' : '' ?>>Maior salário</option>
+                    </select>
                 </div>
-            </div>
+
+                <div class="vaga-filter-actions">
+                    <a href="/vagas/index.php" class="vaga-filter-clear">Limpar</a>
+                    <button type="submit" class="vaga-filter-submit">Aplicar filtros</button>
+                </div>
+            </form>
         </aside>
 
-        <!-- Job List -->
-        <div class="jobs-grid">
-            <?php if (!$vagas): ?>
-                <div class="job-card">
-                    <h3 class="job-title">Nenhuma vaga encontrada</h3>
-                    <div class="job-meta">Tente alterar os filtros ou buscar outro termo.</div>
-                    <div class="job-footer"><a href="/vagas/index.php" class="btn-apply">Limpar filtros</a></div>
-                </div>
-            <?php else: ?>
-                <?php foreach ($vagas as $vaga): ?>
-                    <div class="job-card">
-                        <div class="job-company"><?= htmlspecialchars($vaga['empresa_nome'], ENT_QUOTES, 'UTF-8') ?></div>
-                        <h3 class="job-title"><?= htmlspecialchars($vaga['titulo'], ENT_QUOTES, 'UTF-8') ?></h3>
-                        <div class="job-meta"><?= htmlspecialchars($vaga['area'], ENT_QUOTES, 'UTF-8') ?> • <?= htmlspecialchars($vaga['regime'], ENT_QUOTES, 'UTF-8') ?></div>
-                        <div class="job-footer">
-                            <span class="job-salary">
-                                <?php if ($vaga['exibir_salario'] && $vaga['salario_min'] !== null): ?>
-                                    R$ <?= number_format((float) $vaga['salario_min'], 2, ',', '.') ?>
-                                    <?= $vaga['salario_max'] !== null ? ' – R$ ' . number_format((float) $vaga['salario_max'], 2, ',', '.') : '' ?>
-                                <?php else: ?>
-                                    A combinar
-                                <?php endif; ?>
-                            </span>
-                            <form action="/src/vagas-salvas.php" method="POST" style="display:flex;gap:8px">
-                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarTokenCsrf(), ENT_QUOTES, 'UTF-8') ?>">
-                                <input type="hidden" name="vaga_id" value="<?= (int) $vaga['id'] ?>">
-                                <input type="hidden" name="origem" value="/vagas/index.php<?= htmlspecialchars('?' . ($_SERVER['QUERY_STRING'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
-                                <button type="submit" name="acao" value="salvar" class="btn-apply">Salvar</button>
-                                <a href="/vagas/detalhes.php?id=<?= (int) $vaga['id'] ?>" class="btn-apply">Ver vaga</a>
-                            </form>
-                        </div>
+        <section class="vacancies-content" aria-label="Resultados das vagas">
+            <div class="jobs-grid">
+                <?php if (!$vagas): ?>
+                    <div class="job-card job-card-empty">
+                        <h3 class="job-title">Nenhuma vaga encontrada</h3>
+                        <div class="job-meta">Tente alterar os filtros ou buscar outro termo.</div>
+                        <div class="job-footer"><a href="/vagas/index.php" class="btn-apply">Limpar filtros</a></div>
                     </div>
-                <?php endforeach; ?>
+                <?php else: ?>
+                    <?php foreach ($vagas as $vaga): ?>
+                        <div class="job-card">
+                            <div class="job-company"><?= htmlspecialchars($vaga['empresa_nome'], ENT_QUOTES, 'UTF-8') ?></div>
+                            <h3 class="job-title"><?= htmlspecialchars($vaga['titulo'], ENT_QUOTES, 'UTF-8') ?></h3>
+                            <div class="job-meta"><?= htmlspecialchars($vaga['area'], ENT_QUOTES, 'UTF-8') ?> • <?= htmlspecialchars($vaga['regime'], ENT_QUOTES, 'UTF-8') ?></div>
+                            <div class="job-footer">
+                                <span class="job-salary">
+                                    <?php if ($vaga['exibir_salario'] && $vaga['salario_min'] !== null): ?>
+                                        R$ <?= number_format((float) $vaga['salario_min'], 2, ',', '.') ?>
+                                        <?= $vaga['salario_max'] !== null ? ' – R$ ' . number_format((float) $vaga['salario_max'], 2, ',', '.') : '' ?>
+                                    <?php else: ?>
+                                        A combinar
+                                    <?php endif; ?>
+                                </span>
+                                <form action="/src/vagas-salvas.php" method="POST" style="display:flex;gap:8px">
+                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarTokenCsrf(), ENT_QUOTES, 'UTF-8') ?>">
+                                    <input type="hidden" name="vaga_id" value="<?= (int) $vaga['id'] ?>">
+                                    <input type="hidden" name="origem" value="/vagas/index.php<?= htmlspecialchars('?' . ($_SERVER['QUERY_STRING'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+                                    <button type="submit" name="acao" value="salvar" class="btn-apply">Salvar</button>
+                                    <a href="/vagas/detalhes.php?id=<?= (int) $vaga['id'] ?>" class="btn-apply">Ver vaga</a>
+                                </form>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+            <?php if ($totalPaginas > 1): ?>
+                <nav class="jobs-pagination" aria-label="Paginação das vagas">
+                    <a class="pagination-link <?= $paginaAtual === 1 ? 'is-disabled' : '' ?>"
+                        href="<?= htmlspecialchars($urlComFiltros(['pagina' => 1]), ENT_QUOTES, 'UTF-8') ?>"
+                        <?= $paginaAtual === 1 ? 'aria-disabled="true"' : '' ?>>Anterior</a>
+                    <?php for ($pagina = 1; $pagina <= $totalPaginas; $pagina++): ?>
+                        <a class="pagination-link <?= $paginaAtual === $pagina ? 'is-current' : '' ?>"
+                            href="<?= htmlspecialchars($urlComFiltros(['pagina' => $pagina]), ENT_QUOTES, 'UTF-8') ?>"
+                            <?= $paginaAtual === $pagina ? 'aria-current="page"' : '' ?>><?= $pagina ?></a>
+                    <?php endfor; ?>
+                    <a class="pagination-link <?= $paginaAtual === $totalPaginas ? 'is-disabled' : '' ?>"
+                        href="<?= htmlspecialchars($urlComFiltros(['pagina' => $totalPaginas]), ENT_QUOTES, 'UTF-8') ?>"
+                        <?= $paginaAtual === $totalPaginas ? 'aria-disabled="true"' : '' ?>>Próxima</a>
+                </nav>
             <?php endif; ?>
-        </div>
+        </section>
     </div>
 
-        <script src="/JS/tema.js"></script>
+    <footer class="footer">
+        <div style="display: flex; align-items: baseline; gap: 6px;">
+            <span style="font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; color: var(--primary);">Infodin</span>
+        </div>
+        <p style="font-size: 12px; color: var(--muted-foreground); margin: 0;">
+            © 2026 Infodin — Todos os direitos reservados
+        </p>
+        <div class="footer-links">
+            <a href="#">Termos</a>
+            <a href="#">Privacidade</a>
+            <a href="#">Contato</a>
+        </div>
+    </footer>
 
+    <script src="/JS/tema.js"></script>
 
 </body>
 

@@ -14,6 +14,7 @@ $vagasSalvas = [];
 $candidaturasTotal = 0;
 $entrevistas = 0;
 $vagasDisponiveis = 0;
+$vagasRecomendadas = [];
 
 if ($candidatoId) {
     $stmtPerfil = $pdo->prepare('SELECT * FROM candidatos WHERE id = :id LIMIT 1');
@@ -90,6 +91,17 @@ $statusCandidaturas = [
 
 $stmtVagasDisponiveis = $pdo->query('SELECT COUNT(*) FROM vagas WHERE status = "ativa"');
 $vagasDisponiveis = (int) $stmtVagasDisponiveis->fetchColumn();
+
+$stmtVagasRecomendadas = $pdo->prepare(
+    'SELECT v.id, v.titulo, v.localizacao, v.regime, v.salario_min, v.salario_max, v.exibir_salario, e.nome AS empresa_nome
+     FROM vagas v
+     INNER JOIN empresas e ON e.id = v.empresa_id
+     WHERE v.status = :status
+     ORDER BY v.criado_em DESC
+     LIMIT 3'
+);
+$stmtVagasRecomendadas->execute(['status' => 'ativa']);
+$vagasRecomendadas = $stmtVagasRecomendadas->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -182,22 +194,32 @@ $vagasDisponiveis = (int) $stmtVagasDisponiveis->fetchColumn();
                 </div>
                 <div class="list-container">
                     <?php foreach ($candidaturas as $candidatura): ?>
+<<<<<<< HEAD
                     <?php $statusCandidatura = $statusCandidaturas[$candidatura['status']] ?? [
                         'rotulo' => 'Status indisponível',
                         'descricao' => 'Consulte a empresa para mais informações.',
                         'classe' => 'badge-gray',
                     ]; ?>
                     <div class="list-item application-item">
+=======
+                    <a class="list-item saved-job-link" href="/vagas/detalhes.php?id=<?= (int) $candidatura['vaga_id'] ?>" aria-label="Ver detalhes da candidatura <?= htmlspecialchars($candidatura['titulo'], ENT_QUOTES, 'UTF-8') ?>">
+>>>>>>> samuel-taike
                         <div class="company-logo" style="background-color: #6B21A8;">N</div>
                         <div class="item-details">
                             <div class="item-title"><?= htmlspecialchars($candidatura['titulo'], ENT_QUOTES, 'UTF-8') ?></div>
                             <div class="item-meta"><?= htmlspecialchars($candidatura['empresa_nome'], ENT_QUOTES, 'UTF-8') ?> · <?= date('d/m/Y', strtotime($candidatura['criado_em'])) ?></div>
                         </div>
+<<<<<<< HEAD
                         <div class="application-status">
                             <span class="badge <?= htmlspecialchars($statusCandidatura['classe'], ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($statusCandidatura['rotulo'], ENT_QUOTES, 'UTF-8') ?></span>
                             <span class="application-status-description"><?= htmlspecialchars($statusCandidatura['descricao'], ENT_QUOTES, 'UTF-8') ?></span>
                         </div>
                     </div>
+=======
+                        <span class="badge badge-yellow"><?= ucfirst(htmlspecialchars($candidatura['status'], ENT_QUOTES, 'UTF-8')) ?></span>
+                        <span aria-hidden="true" style="font-size: 14px; color: var(--muted-foreground);">→</span>
+                    </a>
+>>>>>>> samuel-taike
                     <?php endforeach; ?>
                     <?php if (!$candidaturas): ?>
                         <div class="list-item"><div class="item-details"><div class="item-title">Nenhuma candidatura enviada</div><div class="item-meta">Explore vagas e envie uma candidatura para acompanhar o andamento aqui.</div></div></div>
@@ -266,53 +288,40 @@ $vagasDisponiveis = (int) $stmtVagasDisponiveis->fetchColumn();
             </div>
             
             <div class="rec-grid">
-                <!-- Vaga Recomendada 1 -->
-                <div class="rec-card">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                        <div>
-                            <div style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 2px;">Desenvolvedor Full Stack</div>
-                            <div style="font-size: 12px; color: var(--muted-foreground);">Acme Corp</div>
+                <?php foreach ($vagasRecomendadas as $vaga): ?>
+                    <?php
+                    $iniciaisEmpresa = strtoupper(substr(trim($vaga['empresa_nome']), 0, 1));
+                    ?>
+                    <a class="rec-card" href="/vagas/detalhes.php?id=<?= (int) $vaga['id'] ?>" aria-label="Ver detalhes da vaga <?= htmlspecialchars($vaga['titulo'], ENT_QUOTES, 'UTF-8') ?>">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                            <div>
+                                <div style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 2px;"><?= htmlspecialchars($vaga['titulo'], ENT_QUOTES, 'UTF-8') ?></div>
+                                <div style="font-size: 12px; color: var(--muted-foreground);"><?= htmlspecialchars($vaga['empresa_nome'], ENT_QUOTES, 'UTF-8') ?></div>
+                            </div>
+                            <div class="company-logo" style="background-color: var(--primary);"><?= htmlspecialchars($iniciaisEmpresa, ENT_QUOTES, 'UTF-8') ?></div>
                         </div>
-                        <div class="company-logo" style="background-color: var(--primary);">A</div>
-                    </div>
-                    <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px;">São Paulo, SP · Híbrido</div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 13px; font-weight: 600; color: var(--primary);">R$ 8.000</span>
-                        <span style="font-size: 12px; color: var(--accent); font-weight: 600;">Ver vaga →</span>
-                    </div>
-                </div>
-
-                <!-- Vaga Recomendada 2 -->
-                <div class="rec-card">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                        <div>
-                            <div style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 2px;">Engenheiro de Dados</div>
-                            <div style="font-size: 12px; color: var(--muted-foreground);">Tech Start</div>
+                        <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px;">
+                            <?= htmlspecialchars($vaga['localizacao'], ENT_QUOTES, 'UTF-8') ?> · <?= htmlspecialchars($vaga['regime'], ENT_QUOTES, 'UTF-8') ?>
                         </div>
-                        <div class="company-logo" style="background-color: var(--primary);">T</div>
-                    </div>
-                    <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px;">Remoto · Integral</div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 13px; font-weight: 600; color: var(--primary);">R$ 11.500</span>
-                        <span style="font-size: 12px; color: var(--accent); font-weight: 600;">Ver vaga →</span>
-                    </div>
-                </div>
-
-                <!-- Vaga Recomendada 3 -->
-                <div class="rec-card">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                        <div>
-                            <div style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; margin-bottom: 2px;">UX/UI Designer</div>
-                            <div style="font-size: 12px; color: var(--muted-foreground);">Creative Agency</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 13px; font-weight: 600; color: var(--primary);">
+                                <?php if ($vaga['exibir_salario'] && $vaga['salario_min'] !== null): ?>
+                                    R$ <?= number_format((float) $vaga['salario_min'], 0, ',', '.') ?>
+                                    <?= $vaga['salario_max'] !== null ? ' – R$ ' . number_format((float) $vaga['salario_max'], 0, ',', '.') : '' ?>
+                                <?php else: ?>
+                                    A combinar
+                                <?php endif; ?>
+                            </span>
+                            <span style="font-size: 12px; color: var(--accent); font-weight: 600;">Ver vaga →</span>
                         </div>
-                        <div class="company-logo" style="background-color: var(--primary);">C</div>
+                    </a>
+                <?php endforeach; ?>
+                <?php if (!$vagasRecomendadas): ?>
+                    <div class="rec-card" role="status">
+                        <div style="font-weight: 600;">Nenhuma vaga recomendada disponível</div>
+                        <div style="font-size: 12px; color: var(--muted-foreground); margin-top: 6px;">Novas vagas aparecerão aqui assim que forem publicadas.</div>
                     </div>
-                    <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px;">Rio de Janeiro, RJ · Presencial</div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 13px; font-weight: 600; color: var(--primary);">R$ 6.200</span>
-                        <span style="font-size: 12px; color: var(--accent); font-weight: 600;">Ver vaga →</span>
-                    </div>
-                </div>
+                <?php endif; ?>
             </div>
         </div>
     </main>

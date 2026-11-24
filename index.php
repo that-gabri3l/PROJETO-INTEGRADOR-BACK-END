@@ -5,11 +5,33 @@ require_once __DIR__ . '/src/conexao.php';
 $usuarioLogado = usuarioEstaLogado();
 $usuarioTipo = $_SESSION['usuario_tipo'] ?? null;
 $usuarioNome = $_SESSION['usuario_nome'] ?? '';
+$busca = trim($_GET['q'] ?? '');
 
-$areasDestaque = ['Tecnologia', 'Design', 'Marketing', 'Dados', 'Gestão', 'Vendas', 'Jurídico', 'Financeiro', 'RH'];
+$areasDestaque = [
+    'Administrativo',
+    'Atendimento',
+    'Comercial',
+    'Comunicação',
+    'Contabilidade',
+    'Dados',
+    'Design',
+    'Educação',
+    'Financeiro',
+    'Gestão',
+    'Logística',
+    'Marketing',
+    'Meio ambiente',
+    'RH',
+    'Tecnologia',
+    'Vendas',
+];
 $areaSelecionada = trim($_GET['area'] ?? '');
 if (!in_array($areaSelecionada, $areasDestaque, true)) {
     $areaSelecionada = '';
+}
+$ordemSelecionada = trim($_GET['ordem'] ?? 'recente');
+if (!in_array($ordemSelecionada, ['recente', 'salario', 'titulo'], true)) {
+    $ordemSelecionada = 'recente';
 }
 
 $sqlDestaques = 'SELECT v.id, v.titulo, v.area, v.regime, v.localizacao, v.salario_min, v.salario_max,
@@ -25,7 +47,12 @@ if ($areaSelecionada !== '') {
     $parametrosDestaques['area'] = $areaSelecionada;
 }
 
-$sqlDestaques .= ' ORDER BY v.criado_em DESC LIMIT 3';
+$orderByDestaques = [
+    'recente' => 'v.criado_em DESC',
+    'salario' => 'CASE WHEN v.exibir_salario = 1 THEN COALESCE(v.salario_max, v.salario_min) ELSE NULL END DESC, v.criado_em DESC',
+    'titulo' => 'v.titulo ASC',
+][$ordemSelecionada];
+$sqlDestaques .= ' ORDER BY ' . $orderByDestaques . ' LIMIT 3';
 $stmtDestaques = $pdo->prepare($sqlDestaques);
 $stmtDestaques->execute($parametrosDestaques);
 $vagasDestaque = $stmtDestaques->fetchAll();
@@ -43,7 +70,7 @@ $taxaResposta = (int) $estatisticas['candidaturas_total'] > 0
     : null;
 
 $empresasDestaque = $pdo->query(
-    "SELECT e.nome, e.setor, COUNT(v.id) AS vagas_ativas
+    "SELECT e.id, e.nome, e.setor, COUNT(v.id) AS vagas_ativas
      FROM empresas e
      INNER JOIN vagas v ON v.empresa_id = e.id AND v.status = 'ativa'
      GROUP BY e.id, e.nome, e.setor
@@ -116,8 +143,8 @@ $empresasDestaque = $pdo->query(
                 <p class="hero-desc">Conectamos profissionais talentosos às empresas e oportunidades disponíveis em diversas áreas.</p>
 
                 <form class="search-bar" action="/vagas/index.php" method="GET">
-                    <input type="text" name="q" placeholder="Cargo, empresa ou palavra-chave...">
-                    <button type="submit">Buscar Vagas</button>
+                    <input id="busca-pagina-inicial" type="search" name="q" value="<?= htmlspecialchars($busca, ENT_QUOTES, 'UTF-8') ?>" placeholder="Cargo, empresa, habilidade ou palavra-chave..." aria-label="Buscar vagas" autocomplete="on">
+                    <button type="submit" aria-label="Pesquisar vagas">Buscar Vagas</button>
                 </form>
             </div>
         </div>
@@ -152,12 +179,42 @@ $empresasDestaque = $pdo->query(
                 <span class="section-eyebrow">§ 01 — Destaques</span>
                 <h2 class="section-title">Vagas em destaque</h2>
             </div>
-            <div class="filter-tags">
-                <a class="filter-tag <?= $areaSelecionada === '' ? 'active' : '' ?>" href="/index.php">Todos</a>
-                <?php foreach ($areasDestaque as $area): ?>
-                    <a class="filter-tag <?= $areaSelecionada === $area ? 'active' : '' ?>" href="/index.php?area=<?= urlencode($area) ?>"><?= htmlspecialchars($area, ENT_QUOTES, 'UTF-8') ?></a>
-                <?php endforeach; ?>
-            </div>
+            <details class="job-filter">
+                <summary class="job-filter-toggle">
+                    <span>Filtrar</span>
+                    <span class="job-filter-icon" aria-hidden="true">⌄</span>
+                </summary>
+                <div class="job-filter-panel">
+                    <div class="job-filter-section">
+                        <span class="job-filter-label">Categorias</span>
+                        <div class="category-tabs" role="tablist" aria-label="Categorias de vagas">
+                            <a class="filter-tag <?= $areaSelecionada === '' ? 'active' : '' ?>" role="tab" aria-selected="<?= $areaSelecionada === '' ? 'true' : 'false' ?>" href="/index.php<?= $ordemSelecionada !== 'recente' ? '?ordem=' . urlencode($ordemSelecionada) : '' ?>">Todos</a>
+                            <?php foreach ($areasDestaque as $area): ?>
+                                <?php
+                                $parametrosCategoria = ['area' => $area];
+                                if ($ordemSelecionada !== 'recente') {
+                                    $parametrosCategoria['ordem'] = $ordemSelecionada;
+                                }
+                                ?>
+                                <a class="filter-tag <?= $areaSelecionada === $area ? 'active' : '' ?>" role="tab" aria-selected="<?= $areaSelecionada === $area ? 'true' : 'false' ?>" href="/index.php?<?= http_build_query($parametrosCategoria) ?>"><?= htmlspecialchars($area, ENT_QUOTES, 'UTF-8') ?></a>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <div class="job-filter-section">
+                        <form class="sort-control" action="/index.php" method="GET">
+                            <?php if ($areaSelecionada !== ''): ?>
+                                <input type="hidden" name="area" value="<?= htmlspecialchars($areaSelecionada, ENT_QUOTES, 'UTF-8') ?>">
+                            <?php endif; ?>
+                            <label for="ordem-destaques">Ordenar por</label>
+                            <select id="ordem-destaques" name="ordem" onchange="this.form.submit()">
+                                <option value="recente" <?= $ordemSelecionada === 'recente' ? 'selected' : '' ?>>Mais recente</option>
+                                <option value="salario" <?= $ordemSelecionada === 'salario' ? 'selected' : '' ?>>Maior salário</option>
+                                <option value="titulo" <?= $ordemSelecionada === 'titulo' ? 'selected' : '' ?>>Título A-Z</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+            </details>
         </div>
 
         <div class="job-grid">
@@ -221,7 +278,7 @@ $empresasDestaque = $pdo->query(
                 <p>Nenhuma empresa tem vagas ativas no momento.</p>
             <?php else: ?>
                 <?php foreach ($empresasDestaque as $empresa): ?>
-                    <div class="company-card">
+                    <a href="/empresa/perfil.php?id=<?= (int) $empresa['id'] ?>" class="company-card" aria-label="Ver perfil e vagas abertas de <?= htmlspecialchars($empresa['nome'], ENT_QUOTES, 'UTF-8') ?>">
                         <div class="company-logo"><?= htmlspecialchars(strtoupper(substr($empresa['nome'], 0, 1)), ENT_QUOTES, 'UTF-8') ?></div>
                         <div>
                             <div style="font-weight: 600; font-size: 15px;"><?= htmlspecialchars($empresa['nome'], ENT_QUOTES, 'UTF-8') ?></div>
@@ -230,7 +287,7 @@ $empresasDestaque = $pdo->query(
                                 <?= (int) $empresa['vagas_ativas'] ?> vaga<?= (int) $empresa['vagas_ativas'] === 1 ? '' : 's' ?> aberta<?= (int) $empresa['vagas_ativas'] === 1 ? '' : 's' ?>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>

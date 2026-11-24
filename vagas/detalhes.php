@@ -162,7 +162,7 @@ $beneficios = array_filter(array_map('trim', preg_split('/\R/', (string) $vaga['
                     <div>
                         <div class="eyebrow" style="margin-bottom: 4px;">Sobre a empresa</div>
                         <div style="font-weight: 600; font-size: 15px;"><?= htmlspecialchars($vaga['empresa_nome'], ENT_QUOTES, 'UTF-8') ?></div>
-                        <a href="#" style="font-size: 12px; color: var(--muted-foreground); text-decoration: none;">Ver perfil completo →</a>
+                        <a href="/empresa/perfil.php?id=<?= (int) $vaga['empresa_id'] ?>" style="font-size: 12px; color: var(--muted-foreground); text-decoration: none;">Ver perfil completo →</a>
                     </div>
                 </div>
             </div>

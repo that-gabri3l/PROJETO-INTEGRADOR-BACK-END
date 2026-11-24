@@ -269,6 +269,145 @@
             font-weight: 600;
         }
 
+        .main-layout--filtered {
+            width: 100%;
+            max-width: 1600px;
+            grid-template-columns: 220px minmax(0, 1fr);
+            align-items: start;
+        }
+
+        .vaga-filter-sidebar {
+            position: sticky;
+            top: 24px;
+            align-self: start;
+            width: 100%;
+            height: fit-content;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--card);
+        }
+
+        .vaga-filter {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .vaga-filter-toggle {
+            display: flex;
+            width: 100%;
+            min-height: 46px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--card);
+            color: var(--foreground);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .vaga-filter-toggle::-webkit-details-marker {
+            display: none;
+        }
+
+        .vaga-filter-toggle:hover,
+        .vaga-filter-toggle:focus-visible,
+        .vaga-filter[open] .vaga-filter-toggle {
+            border-color: var(--primary);
+            background: var(--secondary);
+        }
+
+        .vaga-filter-icon {
+            font-size: 18px;
+            transition: transform 0.15s;
+        }
+
+        .vaga-filter[open] .vaga-filter-icon {
+            transform: rotate(180deg);
+        }
+
+        .vaga-filter-panel {
+            margin-top: 8px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--background);
+        }
+
+        .vaga-filter-form {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 12px;
+            align-items: stretch;
+        }
+
+        .vaga-filter-field {
+            display: flex;
+            min-width: 0;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .vaga-filter-field label {
+            color: var(--muted-foreground);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .vaga-filter-field select {
+            width: 100%;
+            min-height: 42px;
+            padding: 8px 34px 8px 10px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--background);
+            color: var(--foreground);
+        }
+
+        .vaga-filter-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .vaga-filter-clear,
+        .vaga-filter-submit {
+            min-height: 42px;
+            padding: 9px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--background);
+            color: var(--foreground);
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .vaga-filter-submit {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: #F2EDE5;
+        }
+
+        .job-card-filter-placeholder {
+            min-height: 180px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
         .divider {
             height: 1px;
             background-color: var(--border);
@@ -277,17 +416,55 @@
 
         /* Grid de Vagas (Job List) */
         .jobs-grid {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: stretch;
-            align-content: flex-start;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            align-content: start;
             gap: 16px;
         }
 
+        .vacancies-content {
+            min-width: 0;
+        }
+
+        .jobs-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 24px;
+        }
+
+        .pagination-link {
+            display: inline-flex;
+            min-width: 40px;
+            min-height: 40px;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--card);
+            color: var(--foreground);
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .pagination-link:hover,
+        .pagination-link.is-current {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: #FFFFFF;
+        }
+
+        .pagination-link.is-disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
         .job-card {
-            flex: 0 1 360px;
-            width: 360px;
-            max-width: 360px;
+            width: auto;
+            max-width: none;
+            min-width: 0;
             min-height: 240px;
             background-color: var(--card);
             border: 1px solid var(--border);
@@ -296,6 +473,10 @@
             display: flex;
             flex-direction: column;
             transition: border-color 0.2s;
+        }
+
+        .job-card-empty {
+            grid-column: 1 / -1;
         }
 
         .job-card:hover {
@@ -364,6 +545,32 @@
             text-decoration: none;
             white-space: nowrap;
             transition: background-color 0.2s, color 0.2s;
+        }
+
+        .footer {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            color: var(--muted-foreground);
+            font-family: 'Work Sans', sans-serif;
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: var(--foreground);
         }
 
         .btn-apply:hover {
@@ -546,6 +753,10 @@
         padding-right: 20px;
     }
 
+    .jobs-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
 }
 
 @media (max-width: 768px) {
@@ -568,6 +779,14 @@
         width: 100%;
     }
 
+    .vaga-filter-form {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .vaga-filter-actions {
+        grid-column: 1;
+    }
+
     .main-layout {
         grid-template-columns: minmax(0, 1fr);
         gap: 24px;
@@ -583,6 +802,12 @@
         border: 1px solid var(--border);
         border-radius: var(--radius);
         background: var(--card);
+    }
+
+    .vaga-filter-sidebar {
+        display: block;
+        align-self: start;
+        height: fit-content;
     }
 
     .sidebar .divider {
@@ -608,6 +833,7 @@
     }
 
     .jobs-grid {
+        grid-template-columns: minmax(0, 1fr);
         gap: 12px;
     }
 
@@ -615,6 +841,18 @@
         min-width: 0;
         max-width: 100%;
         padding: 18px;
+    }
+
+    .footer {
+        padding: 28px 20px;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .footer-links {
+        flex-wrap: wrap;
+        gap: 12px 20px;
     }
 
     .job-footer form {

@@ -11,6 +11,11 @@ $vagas = [];
 $candidatosRecentes = [];
 $totalVagas = 0;
 $totalCandidatos = 0;
+$mensagensVaga = [
+    'atualizada' => 'As informações da vaga foram atualizadas.',
+    'excluida' => 'A vaga foi excluída.',
+];
+$resultadoVaga = (string) ($_GET['vaga'] ?? '');
 
 if ($empresaId) {
     $stmtEmpresa = $pdo->prepare('SELECT nome, logo FROM empresas WHERE id = :id LIMIT 1');
@@ -96,6 +101,10 @@ if ($empresaId) {
     </header>
 
     <main class="container">
+
+        <?php if (isset($mensagensVaga[$resultadoVaga])): ?>
+            <div class="dashboard-notice" role="status"><?= htmlspecialchars($mensagensVaga[$resultadoVaga], ENT_QUOTES, 'UTF-8') ?></div>
+        <?php endif; ?>
         
         <!-- KPI Cards -->
         <div class="kpi-grid">
@@ -141,6 +150,7 @@ if ($empresaId) {
                                 <th>Vaga</th>
                                 <th class="col-center">Candidatos</th>
                                 <th class="col-center">Status</th>
+                                <th class="col-center">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -156,14 +166,19 @@ if ($empresaId) {
                                         <span class="badge badge-green">Ativa</span>
                                     <?php elseif ($vaga['status'] == 'pausada'): ?>
                                         <span class="badge badge-yellow">Pausada</span>
+                                    <?php elseif ($vaga['status'] == 'rascunho'): ?>
+                                        <span class="badge badge-blue">Rascunho</span>
                                     <?php else: ?>
                                         <span class="badge badge-red">Encerrada</span>
                                     <?php endif; ?>
                                 </td>
+                                <td class="col-center">
+                                    <a class="job-manage-link" href="/empresa/editar-vaga.php?id=<?= (int) $vaga['id'] ?>">Gerenciar</a>
+                                </td>
                             </tr>
                             <?php endforeach; ?>
                             <?php if (!$vagas): ?>
-                            <tr><td colspan="3">Nenhuma vaga publicada ainda.</td></tr>
+                            <tr><td colspan="4">Nenhuma vaga publicada ainda.</td></tr>
                             <?php endif; ?>
                         </tbody>
                     </table>

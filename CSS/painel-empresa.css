@@ -263,6 +263,24 @@
             font-family: 'Work Sans', sans-serif;
             text-decoration: none;
         }
+        .dashboard-notice {
+            margin-bottom: 24px;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            background-color: var(--card);
+            color: var(--foreground);
+            font-size: 13px;
+        }
+        .job-manage-link {
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .job-manage-link:hover,
+        .job-manage-link:focus-visible {
+            text-decoration: underline;
+        }
         
         .table-container {
             background-color: var(--card);
@@ -350,6 +368,7 @@
         .badge-blue { background-color: #EFF6FF; color: #1D4ED8; }
         .badge-yellow { background-color: #FEF9C3; color: #854D0E; }
         .badge-green { background-color: #ECFDF5; color: #065F46; }
+        .badge-red { background-color: #FEF2F2; color: #991B1B; }
 
         @media (min-width: 769px) and (max-width: 1024px) {
             .kpi-grid {
@@ -416,7 +435,7 @@
             }
 
             table {
-                min-width: 520px;
+                min-width: 600px;
             }
 
             .table-section-header {

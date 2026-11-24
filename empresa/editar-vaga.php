@@ -1,0 +1,177 @@
+<?php
+require_once __DIR__ . '/../src/sessao.php';
+exigirTipo('empresa');
+require_once __DIR__ . '/../src/conexao.php';
+
+$empresaId = $_SESSION['perfil_id'] ?? null;
+$vagaId = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
+if (!$empresaId || !$vagaId || $vagaId < 1) {
+    header('Location: /empresa/painel.php');
+    exit;
+}
+
+$stmt = $pdo->prepare('SELECT * FROM vagas WHERE id = :id AND empresa_id = :empresa_id LIMIT 1');
+$stmt->execute(['id' => $vagaId, 'empresa_id' => $empresaId]);
+$vaga = $stmt->fetch(PDO::FETCH_ASSOC);
+if (!$vaga) {
+    header('Location: /empresa/painel.php');
+    exit;
+}
+
+$erro = trim((string) ($_GET['erro'] ?? ''));
+$statusVagas = [
+    'rascunho' => 'Rascunho',
+    'ativa' => 'Ativa',
+    'pausada' => 'Pausada',
+    'encerrada' => 'Encerrada',
+];
+$areas = ['Tecnologia', 'Design', 'Marketing', 'Dados', 'Gestão', 'Vendas', 'Jurídico', 'Financeiro', 'RH'];
+$regimes = ['Presencial', 'Híbrido', 'Remoto'];
+?>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar vaga - Infodin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/CSS/publicar-vaga.css">
+    <link rel="stylesheet" href="/CSS/editar-vaga.css">
+    <link rel="stylesheet" href="/CSS/mobile.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/empresa/painel.php" class="navbar-logo">
+            <img src="/images/logo-claro-infodin.png" alt="Infodin" class="logo-light" style="height:40px;width:auto;object-fit:contain;">
+            <img src="/images/logo-infodin.png" alt="Infodin" class="logo-dark" style="height:40px;width:auto;object-fit:contain;">
+        </a>
+        <button id="theme-toggle" class="theme-toggle" type="button" title="Mudar tema" aria-label="Alternar tema"><svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/></svg></button>
+    </nav>
+
+    <main class="container">
+        <header class="page-header">
+            <a href="/empresa/painel.php" class="btn-back">← Voltar ao painel</a>
+            <span class="eyebrow">Gerenciamento</span>
+            <h1 class="page-title">Editar vaga</h1>
+        </header>
+
+        <?php if ($erro !== ''): ?>
+            <div class="form-error" role="alert"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></div>
+        <?php endif; ?>
+
+        <form action="/src/gerenciar-vaga.php" method="POST">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarTokenCsrf(), ENT_QUOTES, 'UTF-8') ?>">
+            <input type="hidden" name="vaga_id" value="<?= (int) $vaga['id'] ?>">
+
+            <section class="form-section">
+                <div class="section-header">
+                    <span class="section-number">01</span>
+                    <h2 class="section-title">Informações da vaga</h2>
+                </div>
+                <div class="section-body">
+                    <div class="grid-2-cols">
+                        <div class="col-full">
+                            <label class="form-label" for="titulo">Título da vaga<span class="required-mark">*</span></label>
+                            <input id="titulo" type="text" name="titulo" class="form-input" maxlength="150" value="<?= htmlspecialchars($vaga['titulo'], ENT_QUOTES, 'UTF-8') ?>" required>
+                        </div>
+                        <div>
+                            <label class="form-label" for="area">Área<span class="required-mark">*</span></label>
+                            <select id="area" name="area" class="form-input" required>
+                                <?php foreach ($areas as $area): ?>
+                                    <option value="<?= htmlspecialchars($area, ENT_QUOTES, 'UTF-8') ?>" <?= $vaga['area'] === $area ? 'selected' : '' ?>><?= htmlspecialchars($area, ENT_QUOTES, 'UTF-8') ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label" for="regime">Regime de trabalho<span class="required-mark">*</span></label>
+                            <select id="regime" name="regime" class="form-input" required>
+                                <?php foreach ($regimes as $regime): ?>
+                                    <option value="<?= htmlspecialchars($regime, ENT_QUOTES, 'UTF-8') ?>" <?= $vaga['regime'] === $regime ? 'selected' : '' ?>><?= htmlspecialchars($regime, ENT_QUOTES, 'UTF-8') ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col-full">
+                            <label class="form-label" for="localizacao">Localização<span class="required-mark">*</span></label>
+                            <input id="localizacao" type="text" name="localizacao" class="form-input" maxlength="150" value="<?= htmlspecialchars($vaga['localizacao'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <div class="section-header">
+                    <span class="section-number">02</span>
+                    <h2 class="section-title">Remuneração e status</h2>
+                </div>
+                <div class="section-body">
+                    <div class="grid-3-cols">
+                        <div>
+                            <label class="form-label" for="salario_min">Salário mínimo (R$)</label>
+                            <input id="salario_min" type="number" name="salario_min" class="form-input" min="1" max="9999999999.99" step="0.01" value="<?= $vaga['salario_min'] !== null ? htmlspecialchars(number_format((float) $vaga['salario_min'], 2, '.', ''), ENT_QUOTES, 'UTF-8') : '' ?>">
+                        </div>
+                        <div>
+                            <label class="form-label" for="salario_max">Salário máximo (R$)</label>
+                            <input id="salario_max" type="number" name="salario_max" class="form-input" min="1" max="9999999999.99" step="0.01" value="<?= $vaga['salario_max'] !== null ? htmlspecialchars(number_format((float) $vaga['salario_max'], 2, '.', ''), ENT_QUOTES, 'UTF-8') : '' ?>">
+                        </div>
+                        <div>
+                            <label class="form-label" for="exibir_salario">Exibir salário?</label>
+                            <select id="exibir_salario" name="exibir_salario" class="form-input">
+                                <option value="sim" <?= (bool) $vaga['exibir_salario'] ? 'selected' : '' ?>>Sim, exibir</option>
+                                <option value="nao" <?= !(bool) $vaga['exibir_salario'] ? 'selected' : '' ?>>Não exibir</option>
+                            </select>
+                        </div>
+                        <div class="col-full">
+                            <label class="form-label" for="status">Status da vaga</label>
+                            <select id="status" name="status" class="form-input" required>
+                                <?php foreach ($statusVagas as $valor => $rotulo): ?>
+                                    <option value="<?= htmlspecialchars($valor, ENT_QUOTES, 'UTF-8') ?>" <?= $vaga['status'] === $valor ? 'selected' : '' ?>><?= htmlspecialchars($rotulo, ENT_QUOTES, 'UTF-8') ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <div class="section-header">
+                    <span class="section-number">03</span>
+                    <h2 class="section-title">Descrição e requisitos</h2>
+                </div>
+                <div class="section-body flex-col">
+                    <div>
+                        <label class="form-label" for="descricao">Descrição da vaga<span class="required-mark">*</span></label>
+                        <textarea id="descricao" name="descricao" class="form-input" rows="5" required><?= htmlspecialchars($vaga['descricao'], ENT_QUOTES, 'UTF-8') ?></textarea>
+                    </div>
+                    <div>
+                        <label class="form-label" for="requisitos">Requisitos<span class="required-mark">*</span></label>
+                        <textarea id="requisitos" name="requisitos" class="form-input" rows="4" required><?= htmlspecialchars($vaga['requisitos'] ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
+                    </div>
+                    <div>
+                        <label class="form-label" for="beneficios">Benefícios</label>
+                        <textarea id="beneficios" name="beneficios" class="form-input" rows="3"><?= htmlspecialchars($vaga['beneficios'] ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <div class="form-actions">
+                <a href="/empresa/painel.php" class="btn-secondary">Cancelar</a>
+                <button type="submit" name="acao" value="salvar" class="btn-primary">Salvar alterações</button>
+            </div>
+        </form>
+
+        <section class="delete-section">
+            <div>
+                <h2>Excluir vaga</h2>
+                <p>A exclusão é permanente. As candidaturas e vagas salvas relacionadas também serão removidas.</p>
+            </div>
+            <form action="/src/gerenciar-vaga.php" method="POST" data-confirm-delete>
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarTokenCsrf(), ENT_QUOTES, 'UTF-8') ?>">
+                <input type="hidden" name="vaga_id" value="<?= (int) $vaga['id'] ?>">
+                <button type="submit" name="acao" value="excluir" class="btn-delete">Excluir vaga</button>
+            </form>
+        </section>
+    </main>
+    <script src="/JS/empresa-gerenciar-vaga.js"></script>
+    <script src="/JS/tema.js"></script>
+</body>
+</html>

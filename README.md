@@ -18,3 +18,7 @@ php -S localhost:8000
 ```
 
 Acesse `http://localhost:8000`.
+
+No painel da empresa, use **Gerenciar** em uma vaga para editar suas informações,
+alterar o status ou excluí-la. A exclusão também remove candidaturas e vagas salvas
+relacionadas à vaga.

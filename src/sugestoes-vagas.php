@@ -45,9 +45,9 @@ try {
              WHERE v.status = 'ativa' AND v.titulo LIKE :titulo
              UNION
              SELECT e.nome AS sugestao, 'Empresa' AS tipo, 2 AS prioridade
-             FROM vagas v
-             INNER JOIN empresas e ON e.id = v.empresa_id
-             WHERE v.status = 'ativa' AND e.nome LIKE :empresa
+             FROM empresas e
+             WHERE e.nome LIKE :empresa_nome
+                OR e.razao_social LIKE :empresa_razao_social
              UNION
              SELECT v.area AS sugestao, 'Área' AS tipo, 3 AS prioridade
              FROM vagas v
@@ -67,7 +67,8 @@ try {
     );
     $stmt->execute([
         'titulo' => $busca,
-        'empresa' => $busca,
+        'empresa_nome' => $busca,
+        'empresa_razao_social' => $busca,
         'area' => $busca,
         'localizacao' => $busca,
         'regime' => $busca,

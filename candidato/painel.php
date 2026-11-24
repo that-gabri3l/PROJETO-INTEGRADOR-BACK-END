@@ -65,6 +65,28 @@ $percentualPerfil = array_sum(array_map(
     static fn(array $item): int => $item['concluido'] ? $item['pontos'] : 0,
     $itensPerfil
 ));
+$statusCandidaturas = [
+    'recebida' => [
+        'rotulo' => 'Recebida',
+        'descricao' => 'Sua candidatura foi enviada e aguarda análise da empresa.',
+        'classe' => 'badge-blue',
+    ],
+    'em_analise' => [
+        'rotulo' => 'Em análise',
+        'descricao' => 'A empresa está avaliando sua candidatura.',
+        'classe' => 'badge-yellow',
+    ],
+    'aprovada' => [
+        'rotulo' => 'Aprovada',
+        'descricao' => 'A empresa aprovou sua candidatura.',
+        'classe' => 'badge-green',
+    ],
+    'recusada' => [
+        'rotulo' => 'Não selecionada',
+        'descricao' => 'A empresa encerrou a análise desta candidatura sem aprovação.',
+        'classe' => 'badge-red',
+    ],
+];
 
 $stmtVagasDisponiveis = $pdo->query('SELECT COUNT(*) FROM vagas WHERE status = "ativa"');
 $vagasDisponiveis = (int) $stmtVagasDisponiveis->fetchColumn();
@@ -156,20 +178,29 @@ $vagasDisponiveis = (int) $stmtVagasDisponiveis->fetchColumn();
                 <div class="section-header">
                     <span class="section-eyebrow">§ 01</span>
                     <h2 class="section-title">Minhas candidaturas</h2>
+                    <p class="section-description">Acompanhe o status das vagas para as quais você se candidatou.</p>
                 </div>
                 <div class="list-container">
                     <?php foreach ($candidaturas as $candidatura): ?>
-                    <div class="list-item">
+                    <?php $statusCandidatura = $statusCandidaturas[$candidatura['status']] ?? [
+                        'rotulo' => 'Status indisponível',
+                        'descricao' => 'Consulte a empresa para mais informações.',
+                        'classe' => 'badge-gray',
+                    ]; ?>
+                    <div class="list-item application-item">
                         <div class="company-logo" style="background-color: #6B21A8;">N</div>
                         <div class="item-details">
                             <div class="item-title"><?= htmlspecialchars($candidatura['titulo'], ENT_QUOTES, 'UTF-8') ?></div>
                             <div class="item-meta"><?= htmlspecialchars($candidatura['empresa_nome'], ENT_QUOTES, 'UTF-8') ?> · <?= date('d/m/Y', strtotime($candidatura['criado_em'])) ?></div>
                         </div>
-                        <span class="badge badge-yellow"><?= ucfirst(htmlspecialchars($candidatura['status'], ENT_QUOTES, 'UTF-8')) ?></span>
+                        <div class="application-status">
+                            <span class="badge <?= htmlspecialchars($statusCandidatura['classe'], ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($statusCandidatura['rotulo'], ENT_QUOTES, 'UTF-8') ?></span>
+                            <span class="application-status-description"><?= htmlspecialchars($statusCandidatura['descricao'], ENT_QUOTES, 'UTF-8') ?></span>
+                        </div>
                     </div>
                     <?php endforeach; ?>
                     <?php if (!$candidaturas): ?>
-                        <div class="list-item"><div class="item-details"><div class="item-title">Nenhuma candidatura enviada</div><div class="item-meta">Explore vagas e candidate-se ao seu perfil.</div></div></div>
+                        <div class="list-item"><div class="item-details"><div class="item-title">Nenhuma candidatura enviada</div><div class="item-meta">Explore vagas e envie uma candidatura para acompanhar o andamento aqui.</div></div></div>
                     <?php endif; ?>
                 </div>
             </div>

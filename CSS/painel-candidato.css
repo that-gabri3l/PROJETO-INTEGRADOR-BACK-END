@@ -283,6 +283,11 @@
             margin: 4px 0 0;
             letter-spacing: -0.3px;
         }
+        .section-description {
+            margin: 6px 0 0;
+            color: var(--muted-foreground);
+            font-size: 12px;
+        }
 
         /* Listas de Itens (Candidaturas e Vagas Salvas) */
         .list-container {
@@ -337,6 +342,21 @@
         .item-meta {
             font-size: 12px;
             color: var(--muted-foreground);
+        }
+        .application-item {
+            align-items: flex-start;
+        }
+        .application-status {
+            display: flex;
+            flex: 0 0 170px;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+        }
+        .application-status-description {
+            color: var(--muted-foreground);
+            font-size: 11px;
+            line-height: 1.4;
         }
 
         /* Checklist do Perfil */
@@ -418,6 +438,7 @@
         .badge-green { background-color: #ECFDF5; color: #065F46; }
         .badge-blue { background-color: #EFF6FF; color: #1D4ED8; }
         .badge-gray { background-color: #F3F4F6; color: #6B7280; }
+        .badge-red { background-color: #FEF2F2; color: #991B1B; }
 
         @media (min-width: 769px) and (max-width: 1024px) {
             .kpi-grid {
@@ -486,6 +507,9 @@
 
             .list-item {
                 padding: 14px;
+            }
+            .application-status {
+                flex-basis: 135px;
             }
 
             .item-title {

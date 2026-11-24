@@ -22,3 +22,9 @@ Acesse `http://localhost:8000`.
 No painel da empresa, use **Gerenciar** em uma vaga para editar suas informações,
 alterar o status ou excluí-la. A exclusão também remove candidaturas e vagas salvas
 relacionadas à vaga.
+
+Na lista de candidatos recentes do painel da empresa, **Ver perfil** abre as
+informações profissionais e os dados enviados pelo candidato na candidatura.
+
+No painel do candidato, a seção **Minhas candidaturas** apresenta o status e uma
+explicação de cada candidatura enviada.

@@ -40,7 +40,7 @@ if ($empresaId) {
     $totalVagas = count($vagas);
 
     $stmt = $pdo->prepare(
-        'SELECT c.status, c.criado_em, ca.nome AS candidato_nome, ca.cargo, v.titulo AS vaga_titulo
+        'SELECT c.id AS candidatura_id, c.status, c.criado_em, ca.nome AS candidato_nome, ca.cargo, v.titulo AS vaga_titulo
          FROM candidaturas c
          INNER JOIN candidatos ca ON ca.id = c.candidato_id
          INNER JOIN vagas v ON v.id = c.vaga_id
@@ -197,7 +197,9 @@ if ($empresaId) {
                         <thead>
                             <tr>
                                 <th>Candidato</th>
-                                <th class="col-right">Status</th>
+                                <th>Vaga</th>
+                                <th class="col-center">Status</th>
+                                <th class="col-right">Ação</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -212,7 +214,8 @@ if ($empresaId) {
                                         </div>
                                     </div>
                                 </td>
-                                <td class="col-right">
+                                <td><?= htmlspecialchars($candidato['vaga_titulo'], ENT_QUOTES, 'UTF-8') ?></td>
+                                <td class="col-center">
                                     <?php if ($candidato['status'] === 'recebida'): ?>
                                         <span class="badge badge-blue">Nova</span>
                                     <?php elseif ($candidato['status'] === 'em_analise'): ?>
@@ -223,10 +226,13 @@ if ($empresaId) {
                                         <span class="badge badge-red">Recusada</span>
                                     <?php endif; ?>
                                 </td>
+                                <td class="col-right">
+                                    <a class="candidate-profile-link" href="/empresa/ver-candidato.php?id=<?= (int) $candidato['candidatura_id'] ?>">Ver perfil</a>
+                                </td>
                             </tr>
                             <?php endforeach; ?>
                             <?php if (!$candidatosRecentes): ?>
-                            <tr><td colspan="2">Nenhum candidato recebeu uma vaga ainda.</td></tr>
+                            <tr><td colspan="4">Nenhum candidato recebeu uma vaga ainda.</td></tr>
                             <?php endif; ?>
                         </tbody>
                     </table>

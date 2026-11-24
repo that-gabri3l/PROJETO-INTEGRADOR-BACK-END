@@ -281,6 +281,16 @@
         .job-manage-link:focus-visible {
             text-decoration: underline;
         }
+        .candidate-profile-link {
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .candidate-profile-link:hover,
+        .candidate-profile-link:focus-visible {
+            text-decoration: underline;
+        }
         
         .table-container {
             background-color: var(--card);
@@ -435,7 +445,7 @@
             }
 
             table {
-                min-width: 600px;
+                min-width: 640px;
             }
 
             .table-section-header {

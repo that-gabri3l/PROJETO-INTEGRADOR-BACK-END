@@ -10,20 +10,30 @@ A aplicação é deliberadamente simples: PHP tradicional, HTML, CSS e JavaScrip
 
 - `index.php`: página inicial, busca por vagas e destaques.
 - `cadastro/escolha.php`: escolha entre candidato e empresa.
-- `cadastro/login.php`: interface de login; ainda não implementada no back-end.
+- `cadastro/login.php`: interface de login.
 - `candidato/cadastro.php`: cadastro de candidato em três passos.
-- `candidato/painel.php`: painel estático do candidato.
+- `candidato/painel.php`: painel do candidato, com candidaturas, status, vagas salvas e perfil.
 - `empresa/cadastro.php`: cadastro de empresa em três passos.
-- `empresa/painel.php`: painel estático da empresa.
-- `vagas/index.php`: listagem visual e filtros ainda estáticos.
-- `vagas/detalhes.php`: detalhes estáticos de uma vaga.
+- `empresa/painel.php`: painel da empresa, com vagas e candidaturas recentes.
+- `empresa/editar-vaga.php`: edição, alteração de status e exclusão de vaga da empresa autenticada.
+- `empresa/ver-candidato.php`: perfil do candidato associado a uma candidatura de vaga da empresa; permite avançar o status da candidatura.
+- `vagas/index.php`: listagem de vagas ativas com busca e filtros conectados ao banco.
+- `vagas/detalhes.php`: detalhes de uma vaga ativa consultada no banco.
 - `vagas/publicar.php`: formulário visual de publicação de vaga.
 - `src/conexao.php`: conexão PDO com MySQL/MariaDB.
-- `src/processar-candidato.php`: processa o cadastro real de candidatos e upload de foto.
+- `src/processar-candidato.php`: processa o cadastro de candidatos e upload de foto.
+- `src/processar-login.php`: autentica usuários e inicia a sessão correspondente.
+- `src/processar-empresa.php`: processa o cadastro de empresas.
+- `src/processar-vaga.php`: cria vagas para empresas autenticadas.
+- `src/gerenciar-vaga.php`: atualiza ou exclui vagas, verificando a empresa proprietária.
+- `src/processar-candidatura.php`: registra a candidatura do usuário candidato.
+- `src/atualizar-status-candidatura.php`: valida e grava as transições de status autorizadas para a empresa proprietária.
+- `src/sessao.php`: inicialização de sessão, autorização por tipo de usuário e proteção CSRF.
 - `JS/tema.js`: alternância e persistência do tema em `localStorage` (`theme`).
 - `JS/candidato-avancar-passos.js`: navegação por passos do cadastro de candidato.
 - `JS/empresa-avancar-passos.js`: navegação por passos do cadastro de empresa.
-- `CSS/`: estilos separados por página ou área.
+- `JS/empresa-gerenciar-vaga.js`: confirmação da exclusão de vaga.
+- `CSS/`: estilos separados por página ou área, incluindo `painel-candidato.css`, `painel-empresa.css` e `perfil-candidato-empresa.css`.
 - `images/`: logotipos claro e escuro.
 - `logs/`: reserva atual para arquivos de log.
 
@@ -31,13 +41,14 @@ A aplicação é deliberadamente simples: PHP tradicional, HTML, CSS e JavaScrip
 
 - Página inicial → `/vagas/index.php?q=...`
 - Cadastro → `cadastro/escolha.php` → `candidato/cadastro.php` ou `empresa/cadastro.php`
-- Login → `cadastro/login.php`, ainda sem rota PHP real
-- Candidato → `candidato/painel.php`
-- Empresa → `empresa/painel.php`
+- Login → `cadastro/login.php` → `src/processar-login.php`
+- Candidato → `candidato/painel.php` → seção “Minhas candidaturas”, com o status atual de cada candidatura
+- Empresa → `empresa/painel.php` → gerenciar vagas em `empresa/editar-vaga.php`
+- Empresa → candidaturas recentes → `empresa/ver-candidato.php`, com perfil e atualização do status
 - Publicar vaga → `vagas/publicar.php`
 - Detalhes da vaga → `vagas/detalhes.php`
 
-Os links que apontam para `/api/login`, `/api/empresas`, `/api/vagas` ou para uma rota vazia de candidatura são placeholders e não possuem processamento implementado.
+O processamento de login, cadastro de empresa, publicação de vagas e envio de candidaturas existe em `src/`. Não presumir que os antigos links `/api/...` sejam endpoints implementados.
 
 ## Banco de dados
 
@@ -50,9 +61,9 @@ O projeto usa o banco MySQL/MariaDB chamado `jobboard_bd`, com conexão configur
 - Charset: `utf8mb4`
 - PDO em modo de exceção
 
-O modelo completo está versionado em `database.sql` e inclui usuários, candidatos, empresas, vagas, candidaturas e vagas salvas.
+O modelo completo está versionado em `database.sql` e inclui usuários, candidatos, empresas, vagas, candidaturas e vagas salvas. O campo `candidaturas.status` aceita `recebida`, `em_analise`, `aprovada` e `recusada`.
 
-Campos persistidos pelo processador atual:
+O cadastro inicial de candidato persiste:
 
 - `nome`
 - `email`
@@ -62,11 +73,19 @@ Campos persistidos pelo processador atual:
 - `data_nascimento`
 - `foto_perfil`
 
-Campos adicionais exibidos no cadastro de candidato ainda não são persistidos pelo processador atual. O modelo SQL para candidaturas, empresas, vagas, usuários e vagas salvas já está criado em `database.sql`, mas os respectivos processadores PHP ainda não foram implementados.
+`src/atualizar-candidato.php` também persiste os campos profissionais do perfil (`cargo`, `area`, `experiencia`, `escolaridade`, `regime_preferido`, `linkedin` e `sobre`). O perfil visto pela empresa usa esses dados e os campos da candidatura `portifolio`, `mensagem`, `status` e `criado_em`. A empresa só pode acessar candidaturas associadas a vagas próprias.
+
+Transições de status implementadas para candidaturas:
+
+- `recebida` → `em_analise` ou `recusada`
+- `em_analise` → `aprovada` ou `recusada`
+- `aprovada` e `recusada` são estados finais e não podem ser alterados pela interface.
+
+O painel do candidato lê o status atual da candidatura no banco. Ao atualizar o status pela página da empresa, o candidato verá o novo estado ao carregar novamente o painel.
 
 ## Sessões e autenticação
 
-Não existe `session_start()`, autenticação, proteção de rotas, logout ou armazenamento em `$_SESSION`. Os painéis podem ser acessados diretamente por URL. Qualquer alteração de login, perfil ou painel deve adicionar sessões PHP e validação server-side antes de confiar em identificadores do usuário.
+As páginas privadas usam `src/sessao.php`, que inicia a sessão e fornece `exigirTipo()` para restringir painéis e operações ao tipo de usuário correto. Formulários que alteram dados devem incluir e validar token CSRF com `gerarTokenCsrf()` e `exigirTokenCsrf()`. Operações sobre vagas e candidaturas também devem validar no banco se o registro pertence à empresa autenticada; não confiar em IDs enviados pelo navegador.
 
 ## Convenções a seguir
 
@@ -115,14 +134,11 @@ require_once __DIR__ . '/../src/conexao.php';
 - `src/processar-candidato.php` usa redirecionamentos para nomes `.html` que não existem; usar páginas `.php` atuais.
 - O processador não possui tabela criada automaticamente nem migration.
 - Senha e confirmação de senha aparecem em mais de uma etapa do cadastro.
-- Campos adicionais do cadastro de candidato não são persistidos.
-- Login, cadastro empresarial, publicação de vagas e candidatura possuem endpoints placeholders.
-- Nenhuma sessão ou proteção de painel está implementada.
+- O cadastro inicial de candidato ainda não persiste todos os campos profissionais; a edição de perfil persiste esses campos.
 - Alguns links usam letras misturadas em `JS/` e `js/`; preservar a capitalização real `JS/`.
 - `vagas/detalhes.php`, `vagas/publicar.php` e outras páginas possuem links antigos para arquivos `.html` ou `#`.
-- Filtros, busca, ordenação, vagas salvas e estatísticas são atualmente visuais/hardcoded.
 - `CSS/mobile.css` não está carregado por todas as páginas.
-- O upload aceita via HTML, mas precisa de validação PHP de tipo real, tamanho e nome seguro.
+- Todo novo endpoint de upload deve validar tipo real, tamanho e nome seguro no servidor; não confiar apenas no atributo HTML `accept`.
 - O diretório `.vs/` não pertence ao projeto e não deve ser alterado nem versionado.
 
 ## Diretrizes para implementar mudanças
@@ -141,7 +157,7 @@ Ao implementar login, cadastro, vagas ou candidaturas:
 
 - Criar esquema SQL ou migrations versionadas.
 - Criar módulos PHP claros para conexão, autenticação e operações do domínio.
-- Implementar `$_SESSION` e proteção de painel.
+- Reutilizar `src/sessao.php` para autorização de painéis e validar CSRF em formulários que alteram dados.
 - Usar consultas parametrizadas.
 - Validar todas as entradas no servidor.
 - Fazer todos os redirecionamentos para rotas `.php` existentes.

@@ -119,7 +119,13 @@ if ($solicitouAlteracaoSenha) {
 $caminhoLogo = $empresaAtual['logo'];
 $novoArquivo = null;
 if (isset($_FILES['logo']) && $_FILES['logo']['error'] !== UPLOAD_ERR_NO_FILE) {
+    try {
+        $logoCarregada = armazenarLogoEmpresa($_FILES['logo']);
+    } catch (RuntimeException $e) {
+        redirecionarComErroEmpresa($e->getMessage());
     }
+    $caminhoLogo = $logoCarregada['url'];
+    $novoArquivo = $logoCarregada['caminho'];
 }
 
 try {

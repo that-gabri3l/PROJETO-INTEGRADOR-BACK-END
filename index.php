@@ -35,7 +35,7 @@ if (!in_array($ordemSelecionada, ['recente', 'salario', 'titulo'], true)) {
 }
 
 $sqlDestaques = 'SELECT v.id, v.titulo, v.area, v.regime, v.localizacao, v.salario_min, v.salario_max,
-                        v.exibir_salario, e.nome AS empresa_nome
+                        v.exibir_salario, e.nome AS empresa_nome, e.logo AS empresa_logo
                 FROM vagas v
                 INNER JOIN empresas e ON e.id = v.empresa_id
                 
@@ -70,13 +70,29 @@ $taxaResposta = (int) $estatisticas['candidaturas_total'] > 0
     : null;
 
 $empresasDestaque = $pdo->query(
-    "SELECT e.id, e.nome, e.setor, COUNT(v.id) AS vagas_ativas
+    "SELECT e.id, e.nome, e.setor, e.logo, COUNT(v.id) AS vagas_ativas
      FROM empresas e
      INNER JOIN vagas v ON v.empresa_id = e.id AND v.status = 'ativa'
-     GROUP BY e.id, e.nome, e.setor
+     GROUP BY e.id, e.nome, e.setor, e.logo
      ORDER BY vagas_ativas DESC, e.nome ASC
      LIMIT 6"
 )->fetchAll();
+
+$urlLogoEmpresa = static function ($logo): ?string {
+    if (!$logo) {
+        return null;
+    }
+
+    $nomeArquivo = basename(str_replace('\\', '/', (string) $logo));
+    if (
+        !preg_match('/\A[a-f0-9]{32}\.(?:jpg|png)\z/i', $nomeArquivo)
+        || !is_file(__DIR__ . '/src/uploads/logos_empresas/' . $nomeArquivo)
+    ) {
+        return null;
+    }
+
+    return 'src/uploads/logos_empresas/' . $nomeArquivo;
+};
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -239,8 +255,13 @@ $empresasDestaque = $pdo->query(
                                 <div style="font-size: 12px; color: var(--muted-foreground);">
                                     <?= htmlspecialchars($vaga['empresa_nome'], ENT_QUOTES, 'UTF-8') ?></div>
                             </div>
-                            <div class="company-logo" style="width: 36px; height: 36px; font-size: 14px;">
-                                <?= htmlspecialchars(strtoupper(substr($vaga['empresa_nome'], 0, 1)), ENT_QUOTES, 'UTF-8') ?></div>
+                            <?php $logoVaga = $urlLogoEmpresa($vaga['empresa_logo']); ?>
+                            <?php if ($logoVaga !== null): ?>
+                                <img class="company-logo-image" src="<?= htmlspecialchars($logoVaga, ENT_QUOTES, 'UTF-8') ?>" alt="Logo de <?= htmlspecialchars($vaga['empresa_nome'], ENT_QUOTES, 'UTF-8') ?>" style="width:36px;height:36px;">
+                            <?php else: ?>
+                                <div class="company-logo" style="width: 36px; height: 36px; font-size: 14px;">
+                                    <?= htmlspecialchars(strtoupper(substr($vaga['empresa_nome'], 0, 1)), ENT_QUOTES, 'UTF-8') ?></div>
+                            <?php endif; ?>
                         </div>
                         <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px;">
                             <?= htmlspecialchars($vaga['localizacao'] ?? 'Localização não informada', ENT_QUOTES, 'UTF-8') ?> ·
@@ -284,7 +305,12 @@ $empresasDestaque = $pdo->query(
             <?php else: ?>
                 <?php foreach ($empresasDestaque as $empresa): ?>
                     <a href="/empresa/perfil.php?id=<?= (int) $empresa['id'] ?>" class="company-card" aria-label="Ver perfil e vagas abertas de <?= htmlspecialchars($empresa['nome'], ENT_QUOTES, 'UTF-8') ?>">
-                        <div class="company-logo"><?= htmlspecialchars(strtoupper(substr($empresa['nome'], 0, 1)), ENT_QUOTES, 'UTF-8') ?></div>
+                        <?php $logoEmpresa = $urlLogoEmpresa($empresa['logo']); ?>
+                        <?php if ($logoEmpresa !== null): ?>
+                            <img class="company-logo-image" src="<?= htmlspecialchars($logoEmpresa, ENT_QUOTES, 'UTF-8') ?>" alt="Logo de <?= htmlspecialchars($empresa['nome'], ENT_QUOTES, 'UTF-8') ?>">
+                        <?php else: ?>
+                            <div class="company-logo"><?= htmlspecialchars(strtoupper(substr($empresa['nome'], 0, 1)), ENT_QUOTES, 'UTF-8') ?></div>
+                        <?php endif; ?>
                         <div>
                             <div style="font-weight: 600; font-size: 15px;"><?= htmlspecialchars($empresa['nome'], ENT_QUOTES, 'UTF-8') ?></div>
                             <div style="font-size: 12px; color: var(--muted-foreground);"><?= htmlspecialchars($empresa['setor'] ?: 'Empresa cadastrada', ENT_QUOTES, 'UTF-8') ?></div>

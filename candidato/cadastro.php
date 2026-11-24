@@ -77,7 +77,7 @@ $regimesSelecionadosIniciais = array_filter(explode(',', (string) ($dadosFormula
     <div class="container">
         <!-- Header -->
         <div style="margin-bottom: 36px;">
-            <a class="btn-back" href="/cadastro/escolha.php">← Voltar</a>
+            <a class="btn-back" href="/index.php">← Voltar</a>
             <div class="eyebrow">Cadastro de candidato</div>
             <h1 class="page-title">Crie seu perfil</h1>
             <p style="font-size: 14px; color: var(--muted-foreground); margin: 0;">

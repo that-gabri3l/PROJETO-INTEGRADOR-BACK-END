@@ -3,6 +3,7 @@ require_once __DIR__ . '/sessao.php';
 exigirTipo('empresa');
 exigirTokenCsrf();
 require_once __DIR__ . '/conexao.php';
+require_once __DIR__ . '/Helpers/armazenar-logo-empresa.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: /empresa/editar-perfil.php');
@@ -19,6 +20,13 @@ $empresaId = $_SESSION['perfil_id'] ?? null;
 if (!$empresaId) {
     header('Location: /cadastro/login.php');
     exit;
+}
+
+$stmtAtual = $pdo->prepare('SELECT usuario_id, logo FROM empresas WHERE id = :id LIMIT 1');
+$stmtAtual->execute(['id' => $empresaId]);
+$empresaAtual = $stmtAtual->fetch();
+if (!$empresaAtual) {
+    redirecionarComErroEmpresa('Não foi possível localizar o perfil da empresa.');
 }
 
 $nome = trim($_POST['nome'] ?? '');
@@ -80,13 +88,6 @@ if ($site !== '' && !filter_var($site, FILTER_VALIDATE_URL)) {
 
 $cnpj = substr($cnpjDigitos, 0, 2) . '.' . substr($cnpjDigitos, 2, 3) . '.' . substr($cnpjDigitos, 5, 3) . '/' . substr($cnpjDigitos, 8, 4) . '-' . substr($cnpjDigitos, 12, 2);
 
-$stmtAtual = $pdo->prepare('SELECT usuario_id, logo FROM empresas WHERE id = :id LIMIT 1');
-$stmtAtual->execute(['id' => $empresaId]);
-$empresaAtual = $stmtAtual->fetch();
-if (!$empresaAtual) {
-    redirecionarComErroEmpresa('Não foi possível localizar o perfil da empresa.');
-}
-
 $senhaHash = null;
 if ($solicitouAlteracaoSenha) {
     $sessaoUsuarioId = filter_var($_SESSION['usuario_id'] ?? null, FILTER_VALIDATE_INT);
@@ -118,44 +119,13 @@ if ($solicitouAlteracaoSenha) {
 $caminhoLogo = $empresaAtual['logo'];
 $novoArquivo = null;
 if (isset($_FILES['logo']) && $_FILES['logo']['error'] !== UPLOAD_ERR_NO_FILE) {
-    $arquivo = $_FILES['logo'];
-    if ($arquivo['error'] !== UPLOAD_ERR_OK) {
-        $mensagemUpload = match ($arquivo['error']) {
-            UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE => 'A logo excede o limite permitido. Envie uma imagem de até 2 MB.',
-            UPLOAD_ERR_PARTIAL => 'A logo foi enviada parcialmente. Tente novamente.',
-            UPLOAD_ERR_NO_TMP_DIR, UPLOAD_ERR_CANT_WRITE => 'O servidor não conseguiu armazenar temporariamente a logo.',
-            default => 'Não foi possível enviar a logo.',
-        };
-        redirecionarComErroEmpresa($mensagemUpload);
+    try {
+        $logoCarregada = armazenarLogoEmpresa($_FILES['logo']);
+    } catch (RuntimeException $e) {
+        redirecionarComErroEmpresa($e->getMessage());
     }
-    if ($arquivo['size'] > 2 * 1024 * 1024) {
-        redirecionarComErroEmpresa('A logo deve ter no máximo 2 MB.');
-    }
-    if (!class_exists('finfo')) {
-        error_log('Atualização de empresa: extensão PHP fileinfo indisponível.');
-        redirecionarComErroEmpresa('O servidor não está configurado para validar imagens.');
-    }
-
-    $tiposPermitidos = ['image/jpeg' => 'jpg', 'image/png' => 'png'];
-    $finfo = new finfo(FILEINFO_MIME_TYPE);
-    $tipoReal = $finfo->file($arquivo['tmp_name']);
-    if (!isset($tiposPermitidos[$tipoReal])) {
-        redirecionarComErroEmpresa('O arquivo selecionado não é uma imagem JPG ou PNG válida.');
-    }
-
-    $pastaDestino = __DIR__ . '/uploads/logos_empresas/';
-    if (!is_dir($pastaDestino) && !mkdir($pastaDestino, 0755, true)) {
-        error_log('Atualização de empresa: falha ao criar diretório de logos: ' . $pastaDestino);
-        redirecionarComErroEmpresa('Não foi possível preparar o armazenamento da logo.');
-    }
-
-    $nomeArquivo = bin2hex(random_bytes(16)) . '.' . $tiposPermitidos[$tipoReal];
-    $novoArquivo = $pastaDestino . $nomeArquivo;
-    if (!move_uploaded_file($arquivo['tmp_name'], $novoArquivo)) {
-        error_log('Atualização de empresa: move_uploaded_file falhou para ' . $novoArquivo);
-        redirecionarComErroEmpresa('Não foi possível salvar a logo.');
-    }
-    $caminhoLogo = '/src/uploads/logos_empresas/' . $nomeArquivo;
+    $caminhoLogo = $logoCarregada['url'];
+    $novoArquivo = $logoCarregada['caminho'];
 }
 
 try {

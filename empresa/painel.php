@@ -89,6 +89,8 @@ if ($empresaId) {
             <div class="company-profile-heading">
                 <?php if ($logoEmpresa): ?>
                     <img class="company-profile-logo" src="<?= htmlspecialchars($logoEmpresa, ENT_QUOTES, 'UTF-8') ?>" alt="Logo de <?= htmlspecialchars($nomeEmpresa, ENT_QUOTES, 'UTF-8') ?>">
+                <?php else: ?>
+                    <div class="company-profile-logo company-profile-initial" aria-hidden="true"><?= htmlspecialchars(strtoupper(substr($nomeEmpresa, 0, 1)), ENT_QUOTES, 'UTF-8') ?></div>
                 <?php endif; ?>
                 <div>
                     <span class="eyebrow">Painel da empresa</span>

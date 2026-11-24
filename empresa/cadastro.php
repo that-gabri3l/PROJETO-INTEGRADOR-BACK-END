@@ -5,6 +5,31 @@ $dadosFormulario = $_SESSION['cadastro_empresa_dados'] ?? [];
 unset($_SESSION['cadastro_empresa_dados']);
 $etapaInicial = max(1, min(3, (int) ($_GET['etapa'] ?? 1)));
 $valorCampo = static fn(string $campo): string => htmlspecialchars((string) ($dadosFormulario[$campo] ?? ''), ENT_QUOTES, 'UTF-8');
+$opcoesSetor = [
+    'Agronegócio',
+    'Alimentação e Bebidas',
+    'Arquitetura e Construção',
+    'Automotivo',
+    'Comunicação e Mídia',
+    'Consultoria',
+    'Educação',
+    'Energia',
+    'Engenharia',
+    'Finanças',
+    'Indústria e Manufatura',
+    'Imobiliário',
+    'Jurídico',
+    'Logística',
+    'Meio Ambiente',
+    'Recursos Humanos',
+    'Saúde',
+    'Tecnologia',
+    'Telecomunicações',
+    'Transportes',
+    'Turismo e Hotelaria',
+    'Varejo',
+    'Outro',
+];
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -33,6 +58,7 @@ $valorCampo = static fn(string $campo): string => htmlspecialchars((string) ($da
     <div class="container">
         <!-- Header -->
         <div style="margin-bottom: 36px;">
+            <a class="btn-back" href="/index.php">← Voltar</a>
             <span class="eyebrow">Cadastro empresarial</span>
             <h1 class="page-title">Registre sua empresa</h1>
             <p style="font-size: 14px; color: var(--muted-foreground); margin: 0; line-height: 1.5;">
@@ -63,7 +89,7 @@ $valorCampo = static fn(string $campo): string => htmlspecialchars((string) ($da
         <!-- Formulário Geral -->
         <div class="form-card">
             <!-- Aponte a action para a rota da API no seu backend -->
-            <form data-current-step="<?= $etapaInicial ?>" action="/src/processar-empresa.php" method="POST">
+            <form data-current-step="<?= $etapaInicial ?>" action="/src/processar-empresa.php" method="POST" novalidate>
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarTokenCsrf(), ENT_QUOTES, 'UTF-8') ?>">
                 <?php if ($erro !== ''): ?>
                     <div class="form-error" role="alert"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></div>
@@ -73,8 +99,8 @@ $valorCampo = static fn(string $campo): string => htmlspecialchars((string) ($da
                 <div class="step-content <?= $etapaInicial === 1 ? 'active' : '' ?>" id="step-1">
                     <div class="form-group">
                         <div>
-                            <label class="form-label">CNPJ<span class="required">*</span></label>
-                            <input type="text" name="cnpj" class="form-input" placeholder="00.000.000/0000-00" value="<?= $valorCampo('cnpj') ?>" required>
+                            <label class="form-label" for="cnpj-empresa">CNPJ<span class="required">*</span></label>
+                            <input id="cnpj-empresa" type="text" name="cnpj" class="form-input" placeholder="00.000.000/0000-00" value="<?= $valorCampo('cnpj') ?>" inputmode="numeric" pattern="[0-9]{2}\.[0-9]{3}\.[0-9]{3}/[0-9]{4}-[0-9]{2}" maxlength="18" required>
                         </div>
                         <div>
                             <label class="form-label">Razão social / Nome da empresa<span class="required">*</span></label>
@@ -84,13 +110,11 @@ $valorCampo = static fn(string $campo): string => htmlspecialchars((string) ($da
                             <label class="form-label">Setor de atuação<span class="required">*</span></label>
                             <select name="setor" class="form-input" required>
                                 <option value="">Selecione...</option>
-                                <option value="Tecnologia" <?= ($dadosFormulario['setor'] ?? '') === 'Tecnologia' ? 'selected' : '' ?>>Tecnologia</option>
-                                <option value="Finanças" <?= ($dadosFormulario['setor'] ?? '') === 'Finanças' ? 'selected' : '' ?>>Finanças</option>
-                                <option value="Saúde" <?= ($dadosFormulario['setor'] ?? '') === 'Saúde' ? 'selected' : '' ?>>Saúde</option>
-                                <option value="Educação" <?= ($dadosFormulario['setor'] ?? '') === 'Educação' ? 'selected' : '' ?>>Educação</option>
-                                <option value="Varejo" <?= ($dadosFormulario['setor'] ?? '') === 'Varejo' ? 'selected' : '' ?>>Varejo</option>
-                                <option value="Logística" <?= ($dadosFormulario['setor'] ?? '') === 'Logística' ? 'selected' : '' ?>>Logística</option>
-                                <option value="Outro" <?= ($dadosFormulario['setor'] ?? '') === 'Outro' ? 'selected' : '' ?>>Outro</option>
+                                <?php foreach ($opcoesSetor as $opcaoSetor): ?>
+                                    <option value="<?= htmlspecialchars($opcaoSetor, ENT_QUOTES, 'UTF-8') ?>" <?= ($dadosFormulario['setor'] ?? '') === $opcaoSetor ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($opcaoSetor, ENT_QUOTES, 'UTF-8') ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div>

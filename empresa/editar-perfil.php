@@ -135,7 +135,7 @@ $portes = ['Microempresa', 'Pequena', 'Média', 'Grande'];
                     </div>
 
                     <div>
-                        <label id="logo-label" class="form-label" for="logo" data-default-text="Alterar logo (JPG/PNG, até 2 MB)" aria-live="polite">Alterar logo (JPG/PNG, até 2 MB)</label>
+                        <label id="logo-label" class="form-label" for="logo" data-default-text="Imagem de perfil da empresa (JPG/PNG, até 2 MB)" aria-live="polite">Imagem de perfil da empresa (JPG/PNG, até 2 MB)</label>
                         <input id="logo" type="file" name="logo" class="form-input" accept="image/png,image/jpeg">
                         <img id="logo-preview" class="upload-preview" alt="Prévia da nova logo" hidden>
                     </div>

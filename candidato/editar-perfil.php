@@ -21,28 +21,6 @@ if (!$candidato) {
 $erro = trim((string) ($_GET['erro'] ?? ''));
 $salvo = ($_GET['salvo'] ?? '') === '1';
 $senhaAlterada = ($_GET['senha'] ?? '') === 'alterada';
-$opcoesEscolaridade = [
-    'Ensino fundamental incompleto',
-    'Ensino fundamental completo',
-    'Ensino médio incompleto',
-    'Ensino médio completo',
-    'Ensino técnico incompleto',
-    'Ensino técnico completo',
-    'Ensino superior incompleto',
-    'Ensino superior completo',
-    'Pós-graduação incompleta',
-    'Pós-graduação completa',
-    'Mestrado incompleto',
-    'Mestrado completo',
-    'Doutorado incompleto',
-    'Doutorado completo',
-];
-$escolaridadeAtual = $candidato['escolaridade'] ?? '';
-if ($escolaridadeAtual === 'Graduação') {
-    $escolaridadeAtual = 'Ensino superior completo';
-}
-$escolaridadeLegada = $escolaridadeAtual !== ''
-    && !in_array($escolaridadeAtual, $opcoesEscolaridade, true);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -148,19 +126,7 @@ $escolaridadeLegada = $escolaridadeAtual !== ''
                         </div>
                         <div>
                             <label class="form-label" for="escolaridade">Escolaridade</label>
-                            <select id="escolaridade" name="escolaridade" class="form-input">
-                                <option value="">Selecione...</option>
-                                <?php if ($escolaridadeLegada): ?>
-                                    <option value="<?= htmlspecialchars($escolaridadeAtual, ENT_QUOTES, 'UTF-8') ?>" selected>
-                                        Valor anterior: <?= htmlspecialchars($escolaridadeAtual, ENT_QUOTES, 'UTF-8') ?>
-                                    </option>
-                                <?php endif; ?>
-                                <?php foreach ($opcoesEscolaridade as $opcaoEscolaridade): ?>
-                                    <option value="<?= htmlspecialchars($opcaoEscolaridade, ENT_QUOTES, 'UTF-8') ?>" <?= $escolaridadeAtual === $opcaoEscolaridade ? 'selected' : '' ?>>
-                                        <?= htmlspecialchars($opcaoEscolaridade, ENT_QUOTES, 'UTF-8') ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
+                            <input id="escolaridade" type="text" name="escolaridade" class="form-input" value="<?= htmlspecialchars($candidato['escolaridade'] ?? '', ENT_QUOTES, 'UTF-8') ?>" maxlength="100">
                         </div>
                     </div>
 

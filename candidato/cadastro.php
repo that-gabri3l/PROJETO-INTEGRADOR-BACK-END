@@ -5,47 +5,6 @@ $dadosFormulario = $_SESSION['cadastro_candidato_dados'] ?? [];
 unset($_SESSION['cadastro_candidato_dados']);
 $etapaInicial = max(1, min(3, (int) ($_GET['etapa'] ?? 1)));
 $valorCampo = static fn(string $campo): string => htmlspecialchars((string) ($dadosFormulario[$campo] ?? ''), ENT_QUOTES, 'UTF-8');
-$opcoesArea = [
-    'Administração e Negócios',
-    'Agronegócio',
-    'Arquitetura e Urbanismo',
-    'Artes e Comunicação',
-    'Atendimento ao Cliente',
-    'Comercial e Vendas',
-    'Contabilidade e Finanças',
-    'Design',
-    'Educação',
-    'Engenharia',
-    'Indústria e Manufatura',
-    'Jurídico',
-    'Logística',
-    'Marketing',
-    'Meio Ambiente',
-    'Recursos Humanos',
-    'Saúde',
-    'Segurança do Trabalho',
-    'Serviço Social',
-    'Tecnologia',
-    'Turismo e Hotelaria',
-    'Varejo',
-];
-$opcoesEscolaridade = [
-    'Ensino fundamental incompleto',
-    'Ensino fundamental completo',
-    'Ensino médio incompleto',
-    'Ensino médio completo',
-    'Ensino técnico incompleto',
-    'Ensino técnico completo',
-    'Ensino superior incompleto',
-    'Ensino superior completo',
-    'Pós-graduação incompleta',
-    'Pós-graduação completa',
-    'Mestrado incompleto',
-    'Mestrado completo',
-    'Doutorado incompleto',
-    'Doutorado completo',
-];
-$escolaridadeSelecionada = $dadosFormulario['escolaridade'] ?? '';
 $regimesSelecionadosIniciais = array_filter(explode(',', (string) ($dadosFormulario['regime_preferido'] ?? '')));
 ?>
 <!DOCTYPE html>
@@ -166,11 +125,9 @@ $regimesSelecionadosIniciais = array_filter(explode(',', (string) ($dadosFormula
                             <label class="form-label">Área de atuação<span class="required">*</span></label>
                             <select name="area" class="form-input" required>
                                 <option value="">Selecione...</option>
-                                <?php foreach ($opcoesArea as $opcaoArea): ?>
-                                    <option value="<?= htmlspecialchars($opcaoArea, ENT_QUOTES, 'UTF-8') ?>" <?= ($dadosFormulario['area'] ?? '') === $opcaoArea ? 'selected' : '' ?>>
-                                        <?= htmlspecialchars($opcaoArea, ENT_QUOTES, 'UTF-8') ?>
-                                    </option>
-                                <?php endforeach; ?>
+                                <option value="Tecnologia" <?= ($dadosFormulario['area'] ?? '') === 'Tecnologia' ? 'selected' : '' ?>>Tecnologia</option>
+                                <option value="Design" <?= ($dadosFormulario['area'] ?? '') === 'Design' ? 'selected' : '' ?>>Design</option>
+                                <option value="Marketing" <?= ($dadosFormulario['area'] ?? '') === 'Marketing' ? 'selected' : '' ?>>Marketing</option>
                             </select>
                         </div>
                     </div>
@@ -186,14 +143,12 @@ $regimesSelecionadosIniciais = array_filter(explode(',', (string) ($dadosFormula
                                 </select>
                             </div>
                             <div>
-                                <label class="form-label" for="escolaridade">Escolaridade</label>
-                                <select id="escolaridade" name="escolaridade" class="form-input">
+                                <label class="form-label">Escolaridade</label>
+                                <select name="escolaridade" class="form-input">
                                     <option value="">Selecione...</option>
-                                    <?php foreach ($opcoesEscolaridade as $opcaoEscolaridade): ?>
-                                        <option value="<?= htmlspecialchars($opcaoEscolaridade, ENT_QUOTES, 'UTF-8') ?>" <?= $escolaridadeSelecionada === $opcaoEscolaridade ? 'selected' : '' ?>>
-                                            <?= htmlspecialchars($opcaoEscolaridade, ENT_QUOTES, 'UTF-8') ?>
-                                        </option>
-                                    <?php endforeach; ?>
+                                    <option value="Ensino médio" <?= ($dadosFormulario['escolaridade'] ?? '') === 'Ensino médio' ? 'selected' : '' ?>>Ensino médio</option>
+                                    <option value="Graduação" <?= ($dadosFormulario['escolaridade'] ?? '') === 'Graduação' ? 'selected' : '' ?>>Graduação completa</option>
+                                    <option value="Pós-graduação" <?= ($dadosFormulario['escolaridade'] ?? '') === 'Pós-graduação' ? 'selected' : '' ?>>Pós-graduação / MBA</option>
                                 </select>
                             </div>
                         </div>

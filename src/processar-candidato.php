@@ -28,6 +28,47 @@ function voltarComErro(string $mensagem, int $etapa = 1): void
     exit;
 }
 
+$opcoesEscolaridade = [
+    'Ensino fundamental incompleto',
+    'Ensino fundamental completo',
+    'Ensino médio incompleto',
+    'Ensino médio completo',
+    'Ensino técnico incompleto',
+    'Ensino técnico completo',
+    'Ensino superior incompleto',
+    'Ensino superior completo',
+    'Pós-graduação incompleta',
+    'Pós-graduação completa',
+    'Mestrado incompleto',
+    'Mestrado completo',
+    'Doutorado incompleto',
+    'Doutorado completo',
+];
+$opcoesArea = [
+    'Administração e Negócios',
+    'Agronegócio',
+    'Arquitetura e Urbanismo',
+    'Artes e Comunicação',
+    'Atendimento ao Cliente',
+    'Comercial e Vendas',
+    'Contabilidade e Finanças',
+    'Design',
+    'Educação',
+    'Engenharia',
+    'Indústria e Manufatura',
+    'Jurídico',
+    'Logística',
+    'Marketing',
+    'Meio Ambiente',
+    'Recursos Humanos',
+    'Saúde',
+    'Segurança do Trabalho',
+    'Serviço Social',
+    'Tecnologia',
+    'Turismo e Hotelaria',
+    'Varejo',
+];
+
 $nome = trim($_POST['nome'] ?? '');
 $email = strtolower(trim($_POST['email'] ?? ''));
 $telefone = trim($_POST['telefone'] ?? '');
@@ -36,9 +77,17 @@ $dataNascimento = trim($_POST['data_nascimento'] ?? '');
 $senha = $_POST['senha'] ?? '';
 $confirmarSenha = $_POST['confirmar_senha'] ?? '';
 $cargo = trim($_POST['cargo'] ?? '');
-$area = trim($_POST['area'] ?? '');
+$areaRecebida = $_POST['area'] ?? '';
+if (!is_string($areaRecebida)) {
+    voltarComErro('Selecione uma área de atuação válida.', 2);
+}
+$area = trim($areaRecebida);
 $experiencia = trim($_POST['experiencia'] ?? '');
-$escolaridade = trim($_POST['escolaridade'] ?? '');
+$escolaridadeRecebida = $_POST['escolaridade'] ?? '';
+if (!is_string($escolaridadeRecebida)) {
+    voltarComErro('Selecione uma opção válida de escolaridade.', 2);
+}
+$escolaridade = trim($escolaridadeRecebida);
 $regimePreferido = trim($_POST['regime_preferido'] ?? '');
 $linkedin = trim($_POST['linkedin'] ?? '');
 $sobre = trim($_POST['sobre'] ?? '');
@@ -50,6 +99,14 @@ if ($nome === '' || $email === '' || $cidade === '') {
 
 if ($cargo === '' || $area === '' || $experiencia === '') {
     voltarComErro('Preencha cargo, área e nível de experiência.', 2);
+}
+
+if (!in_array($area, $opcoesArea, true)) {
+    voltarComErro('Selecione uma área de atuação válida.', 2);
+}
+
+if ($escolaridade !== '' && !in_array($escolaridade, $opcoesEscolaridade, true)) {
+    voltarComErro('Selecione uma opção válida de escolaridade.', 2);
 }
 
 if ($senha === '' || $confirmarSenha === '') {

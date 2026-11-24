@@ -29,7 +29,11 @@ $dataNascimento = trim($_POST['data_nascimento'] ?? '');
 $cargo = trim($_POST['cargo'] ?? '');
 $area = trim($_POST['area'] ?? '');
 $experiencia = trim($_POST['experiencia'] ?? '');
-$escolaridade = trim($_POST['escolaridade'] ?? '');
+$escolaridadeRecebida = $_POST['escolaridade'] ?? '';
+if (!is_string($escolaridadeRecebida)) {
+    redirecionarComErroPerfil('Selecione uma opção válida de escolaridade.');
+}
+$escolaridade = trim($escolaridadeRecebida);
 $regimePreferido = trim($_POST['regime_preferido'] ?? '');
 $linkedin = trim($_POST['linkedin'] ?? '');
 $sobre = trim($_POST['sobre'] ?? '');
@@ -76,11 +80,33 @@ if ($dataNascimento !== '') {
     }
 }
 
-$stmtAtual = $pdo->prepare('SELECT usuario_id, foto_perfil, senha FROM candidatos WHERE id = :id LIMIT 1');
+$stmtAtual = $pdo->prepare('SELECT usuario_id, foto_perfil, senha, escolaridade FROM candidatos WHERE id = :id LIMIT 1');
 $stmtAtual->execute(['id' => $candidatoId]);
 $perfilAtual = $stmtAtual->fetch();
 if (!$perfilAtual) {
     redirecionarComErroPerfil('Não foi possível localizar seu perfil.');
+}
+
+$opcoesEscolaridade = [
+    'Ensino fundamental incompleto',
+    'Ensino fundamental completo',
+    'Ensino médio incompleto',
+    'Ensino médio completo',
+    'Ensino técnico incompleto',
+    'Ensino técnico completo',
+    'Ensino superior incompleto',
+    'Ensino superior completo',
+    'Pós-graduação incompleta',
+    'Pós-graduação completa',
+    'Mestrado incompleto',
+    'Mestrado completo',
+    'Doutorado incompleto',
+    'Doutorado completo',
+];
+if ($escolaridade !== ''
+    && !in_array($escolaridade, $opcoesEscolaridade, true)
+    && $escolaridade !== ($perfilAtual['escolaridade'] ?? '')) {
+    redirecionarComErroPerfil('Selecione uma opção válida de escolaridade.');
 }
 
 $senhaHash = null;

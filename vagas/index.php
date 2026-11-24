@@ -112,6 +112,7 @@ $vagas = array_slice($vagas, ($paginaAtual - 1) * $vagasPorPagina, $vagasPorPagi
         href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
 <link rel="stylesheet" href="/CSS/vagas.css"> 
+<link rel="stylesheet" href="/CSS/sugestoes-vagas.css">
 <link rel="stylesheet" href="/CSS/mobile.css">
 
 </head>
@@ -159,7 +160,11 @@ $vagas = array_slice($vagas, ($paginaAtual - 1) * $vagasPorPagina, $vagasPorPagi
             <h1 class="page-title"><?= $totalVagas ?> <?= $totalVagas === 1 ? 'vaga disponível' : 'vagas disponíveis' ?></h1>
 
             <form class="search-bar" action="/vagas/index.php" method="GET">
-                <input id="busca-vagas" type="search" name="q" value="<?= htmlspecialchars($q, ENT_QUOTES, 'UTF-8') ?>" placeholder="Cargo, empresa, habilidade ou palavra-chave..." aria-label="Buscar vagas" autocomplete="on">
+                <div class="search-autocomplete" data-search-autocomplete data-suggestions-url="/src/sugestoes-vagas.php">
+                    <input id="busca-vagas" type="search" name="q" value="<?= htmlspecialchars($q, ENT_QUOTES, 'UTF-8') ?>" placeholder="Cargo, empresa, habilidade ou palavra-chave..." aria-label="Buscar vagas" aria-autocomplete="list" aria-controls="sugestoes-busca-vagas" aria-expanded="false" role="combobox" autocomplete="off">
+                    <div id="sugestoes-busca-vagas" class="search-suggestions" role="listbox" hidden></div>
+                    <span class="search-suggestions-status" data-suggestions-status role="status" aria-live="polite"></span>
+                </div>
                 <?php if ($area !== ''): ?><input type="hidden" name="area" value="<?= htmlspecialchars($area, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
                 <?php if ($regime !== ''): ?><input type="hidden" name="regime" value="<?= htmlspecialchars($regime, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
                 <?php if ($ordem !== 'recente'): ?><input type="hidden" name="ordem" value="<?= htmlspecialchars($ordem, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
@@ -281,6 +286,7 @@ $vagas = array_slice($vagas, ($paginaAtual - 1) * $vagasPorPagina, $vagasPorPagi
         </div>
     </footer>
 
+    <script src="/JS/busca-vagas-sugestoes.js"></script>
     <script src="/JS/tema.js"></script>
 
 </body>

@@ -61,6 +61,10 @@
         .navbar-logo {
             display: flex; align-items: center;
         }
+        .navbar-logo img {
+            height: 36px;
+            width: auto;
+        }
         
         .theme-toggle {
             background: none; border: none; font-size: 20px; cursor: pointer;
@@ -120,6 +124,11 @@
             font-weight: 500;
         }
         .forgot-password:hover { text-decoration: underline; }
+        .forgot-password:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 3px;
+            border-radius: 2px;
+        }
         
         .form-input {
             width: 100%; padding: 12px 14px; border: 1px solid var(--border);
@@ -171,6 +180,14 @@
             transition: opacity 0.2s;
         }
         .btn-primary:hover { opacity: 0.85; }
+        .btn-primary:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
+        .btn-primary:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
 
         .register-link {
             text-align: center;

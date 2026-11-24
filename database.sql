@@ -76,6 +76,36 @@ CREATE TABLE IF NOT EXISTS empresas (
         ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS recuperacoes_senha (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    usuario_id BIGINT UNSIGNED NULL,
+    candidato_id BIGINT UNSIGNED NULL,
+    email_hash CHAR(64) NOT NULL,
+    ip_hash CHAR(64) NOT NULL,
+    token_hash CHAR(64) NULL,
+    expira_em DATETIME NULL,
+    usado_em DATETIME NULL,
+    criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_recuperacoes_senha_token (token_hash),
+    KEY idx_recuperacoes_senha_email_data (email_hash, criado_em),
+    KEY idx_recuperacoes_senha_ip_data (ip_hash, criado_em),
+    KEY idx_recuperacoes_senha_usuario (usuario_id, criado_em),
+    KEY idx_recuperacoes_senha_candidato (candidato_id, criado_em),
+    KEY idx_recuperacoes_senha_data (criado_em),
+    CONSTRAINT chk_recuperacoes_senha_alvo CHECK (
+        (usuario_id IS NULL AND candidato_id IS NULL AND token_hash IS NULL AND expira_em IS NULL)
+        OR
+        ((usuario_id IS NULL) <> (candidato_id IS NULL) AND token_hash IS NOT NULL AND expira_em IS NOT NULL)
+    ),
+    CONSTRAINT fk_recuperacoes_senha_usuario
+        FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_recuperacoes_senha_candidato
+        FOREIGN KEY (candidato_id) REFERENCES candidatos(id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS vagas (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     empresa_id BIGINT UNSIGNED NOT NULL,

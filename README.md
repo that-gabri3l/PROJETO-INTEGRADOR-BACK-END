@@ -19,6 +19,30 @@ php -S localhost:8000
 
 Acesse `http://localhost:8000`.
 
+## Recuperação de senha por e-mail
+
+O fluxo usa a função nativa `mail()` do PHP e não requer Composer. O servidor PHP
+precisa ter um serviço de envio de e-mail configurado; em Windows local, isso
+normalmente requer configurar um relay de e-mail no `php.ini` ou usar uma
+hospedagem que ofereça envio de e-mail.
+
+Execute novamente o `database.sql` para criar a tabela `recuperacoes_senha` sem
+remover as tabelas ou dados existentes. Acrescente estas variáveis ao bloco de
+configuração acima, antes de iniciar o PHP:
+
+```powershell
+$env:INFODIN_BASE_URL = "http://localhost:8000"
+$env:INFODIN_MAIL_FROM = "nao-responda@seu-dominio.com"
+$env:INFODIN_RECOVERY_PEPPER = "<resultado do gerador>"
+```
+
+Gere `INFODIN_RECOVERY_PEPPER` com `php -r "echo bin2hex(random_bytes(32)), PHP_EOL;"`,
+copie o resultado para a variável e mantenha-o fora do repositório. Se o
+servidor PHP já estiver iniciado, reinicie-o após configurar as variáveis. Em
+produção, use `INFODIN_BASE_URL` com HTTPS e um remetente autorizado pelo
+provedor de e-mail. A resposta `mail()` confirma apenas que o PHP encaminhou a
+mensagem ao serviço configurado, não que ela chegou à caixa de entrada.
+
 No painel da empresa, use **Gerenciar** em uma vaga para editar suas informações,
 alterar o status ou excluí-la. A exclusão também remove candidaturas e vagas salvas
 relacionadas à vaga.

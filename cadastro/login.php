@@ -3,6 +3,7 @@ require_once __DIR__ . '/../src/sessao.php';
 
 $erro = isset($_GET['erro']) ? trim((string) $_GET['erro']) : '';
 $sucesso = isset($_GET['cadastro']) && $_GET['cadastro'] === 'sucesso';
+$senhaAlterada = isset($_GET['senha']) && $_GET['senha'] === 'alterada';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -48,6 +49,10 @@ $sucesso = isset($_GET['cadastro']) && $_GET['cadastro'] === 'sucesso';
                 <?php if ($sucesso): ?>
                     <div class="form-success" role="status">Cadastro concluído! Agora você já pode entrar.</div>
                 <?php endif; ?>
+
+                <?php if ($senhaAlterada): ?>
+                    <div class="form-success" role="status">Senha redefinida. Entre com sua nova senha.</div>
+                <?php endif; ?>
                 
                 <div class="form-group">
                     <label class="form-label">E-mail</label>
@@ -57,7 +62,7 @@ $sucesso = isset($_GET['cadastro']) && $_GET['cadastro'] === 'sucesso';
                 <div class="form-group">
                     <div class="form-label">
                         <label for="senha-login">Senha</label>
-                        <a href="#" class="forgot-password">Esqueceu a senha?</a>
+                        <a href="recuperar-senha.php" class="forgot-password">Esqueceu a senha?</a>
                     </div>
                     <div class="password-field">
                         <input id="senha-login" type="password" name="senha" class="form-input" placeholder="••••••••" required>

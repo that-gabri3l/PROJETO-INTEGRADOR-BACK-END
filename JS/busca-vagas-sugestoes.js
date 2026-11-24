@@ -17,6 +17,8 @@ document.querySelectorAll('[data-search-autocomplete]').forEach(function (contai
 
     function fecharSugestoes() {
         listbox.hidden = true;
+        listbox.replaceChildren();
+        sugestoes = [];
         input.setAttribute('aria-expanded', 'false');
         input.removeAttribute('aria-activedescendant');
         indiceAtivo = -1;
@@ -125,11 +127,10 @@ document.querySelectorAll('[data-search-autocomplete]').forEach(function (contai
         if (controller) {
             controller.abort();
         }
+        fecharSugestoes();
 
         const termo = input.value.trim();
         if (Array.from(termo).length < 2) {
-            sugestoes = [];
-            fecharSugestoes();
             status.textContent = '';
             return;
         }

@@ -19,6 +19,9 @@ php -S localhost:8000
 
 Acesse `http://localhost:8000`.
 
+As barras de busca na página inicial e em **Vagas** mostram sugestões de vagas
+ativas enquanto você digita. Se as sugestões não carregarem, a busca normal continua disponível.
+
 No painel da empresa, use **Gerenciar** em uma vaga para editar suas informações,
 alterar o status ou excluí-la. A exclusão também remove candidaturas e vagas salvas
 relacionadas à vaga.

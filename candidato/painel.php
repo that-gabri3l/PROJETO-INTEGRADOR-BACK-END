@@ -194,32 +194,22 @@ $vagasRecomendadas = $stmtVagasRecomendadas->fetchAll(PDO::FETCH_ASSOC);
                 </div>
                 <div class="list-container">
                     <?php foreach ($candidaturas as $candidatura): ?>
-<<<<<<< HEAD
                     <?php $statusCandidatura = $statusCandidaturas[$candidatura['status']] ?? [
                         'rotulo' => 'Status indisponível',
                         'descricao' => 'Consulte a empresa para mais informações.',
                         'classe' => 'badge-gray',
                     ]; ?>
                     <div class="list-item application-item">
-=======
-                    <a class="list-item saved-job-link" href="/vagas/detalhes.php?id=<?= (int) $candidatura['vaga_id'] ?>" aria-label="Ver detalhes da candidatura <?= htmlspecialchars($candidatura['titulo'], ENT_QUOTES, 'UTF-8') ?>">
->>>>>>> samuel-taike
                         <div class="company-logo" style="background-color: #6B21A8;">N</div>
                         <div class="item-details">
                             <div class="item-title"><?= htmlspecialchars($candidatura['titulo'], ENT_QUOTES, 'UTF-8') ?></div>
                             <div class="item-meta"><?= htmlspecialchars($candidatura['empresa_nome'], ENT_QUOTES, 'UTF-8') ?> · <?= date('d/m/Y', strtotime($candidatura['criado_em'])) ?></div>
                         </div>
-<<<<<<< HEAD
                         <div class="application-status">
                             <span class="badge <?= htmlspecialchars($statusCandidatura['classe'], ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($statusCandidatura['rotulo'], ENT_QUOTES, 'UTF-8') ?></span>
                             <span class="application-status-description"><?= htmlspecialchars($statusCandidatura['descricao'], ENT_QUOTES, 'UTF-8') ?></span>
                         </div>
                     </div>
-=======
-                        <span class="badge badge-yellow"><?= ucfirst(htmlspecialchars($candidatura['status'], ENT_QUOTES, 'UTF-8')) ?></span>
-                        <span aria-hidden="true" style="font-size: 14px; color: var(--muted-foreground);">→</span>
-                    </a>
->>>>>>> samuel-taike
                     <?php endforeach; ?>
                     <?php if (!$candidaturas): ?>
                         <div class="list-item"><div class="item-details"><div class="item-title">Nenhuma candidatura enviada</div><div class="item-meta">Explore vagas e envie uma candidatura para acompanhar o andamento aqui.</div></div></div>

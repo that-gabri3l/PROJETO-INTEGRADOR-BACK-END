@@ -30,6 +30,13 @@ $statusCandidaturas = [
     'aprovada' => 'Aprovada',
     'recusada' => 'Recusada',
 ];
+$mensagensErro = [
+    'invalida' => 'Selecione um próximo status válido.',
+    'transicao' => 'Esta mudança de status não é permitida. Atualize a página e tente novamente.',
+    'falha' => 'Não foi possível atualizar o status. Tente novamente.',
+];
+$erroStatus = $mensagensErro[(string) ($_GET['erro'] ?? '')] ?? '';
+$statusAtualizado = ($_GET['atualizado'] ?? '') === '1';
 $urlPortfolio = $candidatura['portifolio'] ?? '';
 $portfolioValido = filter_var($urlPortfolio, FILTER_VALIDATE_URL)
     && in_array(strtolower((string) parse_url($urlPortfolio, PHP_URL_SCHEME)), ['http', 'https'], true);
@@ -90,6 +97,38 @@ $linkedinValido = filter_var($urlLinkedin, FILTER_VALIDATE_URL)
                     <span class="field-label">Status</span>
                     <strong class="status status-<?= htmlspecialchars($candidatura['candidatura_status'], ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($statusCandidaturas[$candidatura['candidatura_status']] ?? 'Indefinido', ENT_QUOTES, 'UTF-8') ?></strong>
                 </div>
+            </section>
+
+            <section class="profile-card status-management">
+                <h2>Atualizar andamento</h2>
+                <?php if ($statusAtualizado): ?>
+                    <div class="status-notice" role="status">O status da candidatura foi atualizado.</div>
+                <?php endif; ?>
+                <?php if ($erroStatus !== ''): ?>
+                    <div class="status-error" role="alert"><?= htmlspecialchars($erroStatus, ENT_QUOTES, 'UTF-8') ?></div>
+                <?php endif; ?>
+                <?php if ($candidatura['candidatura_status'] === 'recebida' || $candidatura['candidatura_status'] === 'em_analise'): ?>
+                    <form action="/src/atualizar-status-candidatura.php" method="POST" class="status-update-form">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarTokenCsrf(), ENT_QUOTES, 'UTF-8') ?>">
+                        <input type="hidden" name="candidatura_id" value="<?= (int) $candidatura['candidatura_id'] ?>">
+                        <div class="status-update-field">
+                            <label for="novo_status">Próximo status</label>
+                            <select id="novo_status" name="status" required>
+                                <?php if ($candidatura['candidatura_status'] === 'recebida'): ?>
+                                    <option value="em_analise">Em análise</option>
+                                    <option value="recusada">Recusada</option>
+                                <?php else: ?>
+                                    <option value="aprovada">Aprovada</option>
+                                    <option value="recusada">Recusada</option>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+                        <button type="submit" class="status-update-button">Atualizar status</button>
+                    </form>
+                    <p class="status-update-help">Após aprovar ou recusar, o status será finalizado.</p>
+                <?php else: ?>
+                    <p class="status-update-help">Esta candidatura foi finalizada e não pode ter o status alterado.</p>
+                <?php endif; ?>
             </section>
 
             <section class="profile-card">

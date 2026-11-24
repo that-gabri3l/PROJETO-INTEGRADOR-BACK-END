@@ -153,6 +153,114 @@ body {
     color: var(--accent);
 }
 
+.status-recebida {
+    color: #1D4ED8;
+}
+
+.status-em_analise {
+    color: #854D0E;
+}
+
+.status-aprovada {
+    color: #065F46;
+}
+
+.status-recusada {
+    color: #991B1B;
+}
+
+[data-theme="dark"] .status-recebida {
+    color: #93C5FD;
+}
+
+[data-theme="dark"] .status-em_analise {
+    color: #FDE68A;
+}
+
+[data-theme="dark"] .status-aprovada {
+    color: #6EE7B7;
+}
+
+[data-theme="dark"] .status-recusada {
+    color: #FCA5A5;
+}
+
+.status-management h2 {
+    margin-bottom: 14px;
+}
+
+.status-update-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    max-width: 560px;
+}
+
+.status-update-field {
+    flex: 1;
+    min-width: 0;
+}
+
+.status-update-field label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-update-field select {
+    width: 100%;
+    min-height: 42px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--background);
+    color: var(--foreground);
+}
+
+.status-update-button {
+    min-height: 42px;
+    padding: 9px 16px;
+    border: 1px solid var(--primary);
+    border-radius: var(--radius);
+    background: var(--primary);
+    color: #FFFFFF;
+    cursor: pointer;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.status-update-button:hover,
+.status-update-button:focus-visible {
+    opacity: 0.88;
+}
+
+.status-update-help {
+    margin: 10px 0 0;
+    color: var(--muted-foreground);
+    font-size: 12px;
+}
+
+.status-notice,
+.status-error {
+    margin-bottom: 14px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 13px;
+}
+
+.status-notice {
+    background: #ECFDF5;
+    color: #065F46;
+}
+
+.status-error {
+    background: #FEF2F2;
+    color: #991B1B;
+}
+
 .profile-details {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -237,6 +345,11 @@ body {
 
     .profile-card {
         padding: 18px 16px;
+    }
+
+    .status-update-form {
+        align-items: stretch;
+        flex-direction: column;
     }
 
     .application-summary,

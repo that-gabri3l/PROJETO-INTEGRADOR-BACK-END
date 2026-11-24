@@ -28,3 +28,7 @@ informações profissionais e os dados enviados pelo candidato na candidatura.
 
 No painel do candidato, a seção **Minhas candidaturas** apresenta o status e uma
 explicação de cada candidatura enviada.
+
+No perfil do candidato aberto pela empresa, candidaturas em andamento podem ser
+movidas para **Em análise**, **Aprovada** ou **Recusada**. Status finais não podem
+ser alterados.

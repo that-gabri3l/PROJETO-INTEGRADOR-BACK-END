@@ -3,6 +3,7 @@ require_once __DIR__ . '/sessao.php';
 exigirTipo('empresa');
 exigirTokenCsrf();
 require_once __DIR__ . '/conexao.php';
+require_once __DIR__ . '/Helpers/armazenar-logo-empresa.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: /empresa/editar-perfil.php');
@@ -19,6 +20,13 @@ $empresaId = $_SESSION['perfil_id'] ?? null;
 if (!$empresaId) {
     header('Location: /cadastro/login.php');
     exit;
+}
+
+$stmtAtual = $pdo->prepare('SELECT usuario_id, logo FROM empresas WHERE id = :id LIMIT 1');
+$stmtAtual->execute(['id' => $empresaId]);
+$empresaAtual = $stmtAtual->fetch();
+if (!$empresaAtual) {
+    redirecionarComErroEmpresa('Não foi possível localizar o perfil da empresa.');
 }
 
 $nome = trim($_POST['nome'] ?? '');

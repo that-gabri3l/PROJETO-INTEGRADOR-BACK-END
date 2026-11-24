@@ -426,6 +426,79 @@
             min-width: 0;
         }
 
+        .company-results {
+            margin-top: 36px;
+        }
+
+        .company-results h2 {
+            margin: 0 0 16px;
+            font-family: 'Fraunces', serif;
+            font-size: 24px;
+        }
+
+        .company-results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+        }
+
+        .company-result-card {
+            display: flex;
+            min-width: 0;
+            align-items: center;
+            gap: 14px;
+            padding: 18px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--card);
+            color: var(--foreground);
+            text-decoration: none;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        .company-result-card:hover,
+        .company-result-card:focus-visible {
+            border-color: var(--primary);
+            background: var(--secondary);
+        }
+
+        .company-result-initial {
+            display: flex;
+            width: 44px;
+            height: 44px;
+            flex: 0 0 44px;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+            background: var(--secondary);
+            color: var(--primary);
+            font-family: 'Fraunces', serif;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .company-result-details {
+            display: grid;
+            min-width: 0;
+            gap: 4px;
+        }
+
+        .company-result-details strong,
+        .company-result-details span {
+            overflow-wrap: anywhere;
+        }
+
+        .company-result-details span,
+        .company-result-details small,
+        .company-results-empty {
+            color: var(--muted-foreground);
+            font-size: 12px;
+        }
+
+        .company-result-details small {
+            color: var(--accent);
+        }
+
         .jobs-pagination {
             display: flex;
             align-items: center;

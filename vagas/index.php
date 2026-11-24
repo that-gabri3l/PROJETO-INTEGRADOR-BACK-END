@@ -94,6 +94,31 @@ $sql = 'SELECT v.*, e.nome AS empresa_nome
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $vagas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$empresasEncontradas = [];
+if ($q !== '') {
+    $buscaEmpresa = '%' . $q . '%';
+    $stmtEmpresas = $pdo->prepare(
+        "SELECT e.id, e.nome, e.razao_social, e.setor, e.cidade_sede,
+                COUNT(v.id) AS vagas_ativas
+         FROM empresas e
+         LEFT JOIN vagas v ON v.empresa_id = e.id AND v.status = 'ativa'
+         WHERE e.nome LIKE :nome
+            OR e.razao_social LIKE :razao_social
+            OR e.setor LIKE :setor
+            OR e.cidade_sede LIKE :cidade
+         GROUP BY e.id, e.nome, e.razao_social, e.setor, e.cidade_sede
+         ORDER BY e.nome ASC"
+    );
+    $stmtEmpresas->execute([
+        'nome' => $buscaEmpresa,
+        'razao_social' => $buscaEmpresa,
+        'setor' => $buscaEmpresa,
+        'cidade' => $buscaEmpresa,
+    ]);
+    $empresasEncontradas = $stmtEmpresas->fetchAll(PDO::FETCH_ASSOC);
+}
+
 $totalVagas = count($vagas);
 $totalPaginas = $totalVagas > 1 ? 2 : ($totalVagas === 1 ? 1 : 0);
 $paginaAtual = filter_input(INPUT_GET, 'pagina', FILTER_VALIDATE_INT);
@@ -224,7 +249,7 @@ $vagas = array_slice($vagas, ($paginaAtual - 1) * $vagasPorPagina, $vagasPorPagi
                 <?php if (!$vagas): ?>
                     <div class="job-card job-card-empty">
                         <h3 class="job-title">Nenhuma vaga encontrada</h3>
-                        <div class="job-meta">Tente alterar os filtros ou buscar outro termo.</div>
+                        <div class="job-meta"><?= $empresasEncontradas ? 'Confira as empresas encontradas abaixo.' : 'Tente alterar os filtros ou buscar outro termo.' ?></div>
                         <div class="job-footer"><a href="/vagas/index.php" class="btn-apply">Limpar filtros</a></div>
                     </div>
                 <?php else: ?>
@@ -254,6 +279,27 @@ $vagas = array_slice($vagas, ($paginaAtual - 1) * $vagasPorPagina, $vagasPorPagi
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
+            <?php if ($q !== ''): ?>
+                <section class="company-results" aria-labelledby="company-results-title">
+                    <h2 id="company-results-title">Empresas cadastradas</h2>
+                    <?php if (!$empresasEncontradas): ?>
+                        <p class="company-results-empty">Nenhuma empresa encontrada para “<?= htmlspecialchars($q, ENT_QUOTES, 'UTF-8') ?>”.</p>
+                    <?php else: ?>
+                        <div class="company-results-grid">
+                            <?php foreach ($empresasEncontradas as $empresaEncontrada): ?>
+                                <a class="company-result-card" href="/empresa/perfil.php?id=<?= (int) $empresaEncontrada['id'] ?>">
+                                    <span class="company-result-initial" aria-hidden="true"><?= htmlspecialchars(strtoupper(substr(trim($empresaEncontrada['nome']), 0, 1)), ENT_QUOTES, 'UTF-8') ?></span>
+                                    <span class="company-result-details">
+                                        <strong><?= htmlspecialchars($empresaEncontrada['nome'], ENT_QUOTES, 'UTF-8') ?></strong>
+                                        <span><?= htmlspecialchars($empresaEncontrada['setor'] ?: 'Empresa cadastrada', ENT_QUOTES, 'UTF-8') ?><?= $empresaEncontrada['cidade_sede'] ? ' · ' . htmlspecialchars($empresaEncontrada['cidade_sede'], ENT_QUOTES, 'UTF-8') : '' ?></span>
+                                        <small><?= (int) $empresaEncontrada['vagas_ativas'] ?> vaga<?= (int) $empresaEncontrada['vagas_ativas'] === 1 ? '' : 's' ?> aberta<?= (int) $empresaEncontrada['vagas_ativas'] === 1 ? '' : 's' ?></small>
+                                    </span>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </section>
+            <?php endif; ?>
             <?php if ($totalPaginas > 1): ?>
                 <nav class="jobs-pagination" aria-label="Paginação das vagas">
                     <a class="pagination-link <?= $paginaAtual === 1 ? 'is-disabled' : '' ?>"

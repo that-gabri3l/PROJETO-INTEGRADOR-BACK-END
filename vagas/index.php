@@ -32,11 +32,11 @@ if ($q !== '') {
                 OR v.descricao LIKE :q
                 OR v.requisitos LIKE :q
                 OR v.beneficios LIKE :q
-                 OR v.regime LIKE :q
-                 OR e.nome LIKE :q
-                 OR e.razao_social LIKE :q
-                 OR e.setor LIKE :q
-                 OR e.cidade_sede LIKE :q)';
+                OR v.regime LIKE :q
+                OR e.nome LIKE :q
+                OR e.razao_social LIKE :q
+                OR e.setor LIKE :q
+                OR e.cidade_sede LIKE :q)';
     $params['q'] = '%' . $q . '%';
 }
 if (in_array($area, $areasDisponiveis, true)) {

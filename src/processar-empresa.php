@@ -26,39 +26,9 @@ function erroEmpresa(string $mensagem, int $etapa = 1): void
     exit;
 }
 
-$opcoesSetor = [
-    'Agronegócio',
-    'Alimentação e Bebidas',
-    'Arquitetura e Construção',
-    'Automotivo',
-    'Comunicação e Mídia',
-    'Consultoria',
-    'Educação',
-    'Energia',
-    'Engenharia',
-    'Finanças',
-    'Indústria e Manufatura',
-    'Imobiliário',
-    'Jurídico',
-    'Logística',
-    'Meio Ambiente',
-    'Recursos Humanos',
-    'Saúde',
-    'Tecnologia',
-    'Telecomunicações',
-    'Transportes',
-    'Turismo e Hotelaria',
-    'Varejo',
-    'Outro',
-];
-
 $cnpj = trim($_POST['cnpj'] ?? '');
 $nome = trim($_POST['nome_empresa'] ?? '');
-$setorRecebido = $_POST['setor'] ?? '';
-if (!is_string($setorRecebido)) {
-    erroEmpresa('Selecione um setor de atuação válido.', 1);
-}
-$setor = trim($setorRecebido);
+$setor = trim($_POST['setor'] ?? '');
 $porte = trim($_POST['porte'] ?? '');
 $email = strtolower(trim($_POST['email_corporativo'] ?? ''));
 $telefone = trim($_POST['telefone_empresa'] ?? '');
@@ -70,10 +40,6 @@ $confirmarSenha = $_POST['confirmar_senha'] ?? '';
 if ($cnpj === '' || $nome === '' || $setor === '' || $porte === '' || $email === '' || $cidade === '' || $senha === '' || $confirmarSenha === '') {
     $etapaErro = $cnpj === '' || $nome === '' || $setor === '' || $porte === '' ? 1 : ($email === '' || $cidade === '' ? 2 : 3);
     erroEmpresa('Preencha todos os campos obrigatórios.', $etapaErro);
-}
-
-if (!in_array($setor, $opcoesSetor, true)) {
-    erroEmpresa('Selecione um setor de atuação válido.', 1);
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {

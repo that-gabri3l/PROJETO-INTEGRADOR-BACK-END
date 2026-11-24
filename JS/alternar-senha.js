@@ -1,9 +1,14 @@
 'use strict';
 
-const passwordInput = document.getElementById('senha-login');
-const passwordToggle = document.querySelector('.password-toggle');
+const passwordToggles = document.querySelectorAll('.password-toggle');
 
-if (passwordInput && passwordToggle) {
+passwordToggles.forEach((passwordToggle) => {
+    const passwordInput = document.getElementById(passwordToggle.getAttribute('aria-controls'));
+
+    if (!passwordInput) {
+        return;
+    }
+
     passwordToggle.addEventListener('click', () => {
         const senhaVisivel = passwordInput.type === 'password';
 
@@ -12,4 +17,4 @@ if (passwordInput && passwordToggle) {
         passwordToggle.setAttribute('aria-label', senhaVisivel ? 'Ocultar senha' : 'Mostrar senha');
         passwordToggle.setAttribute('aria-pressed', String(senhaVisivel));
     });
-}
+});

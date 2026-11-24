@@ -179,6 +179,36 @@
             background-color: var(--background); color: var(--foreground); outline: none;
         }
         .form-input:focus { border-color: var(--primary); }
+        .password-field { position: relative; }
+        .password-field .form-input { padding-right: 76px; }
+        .password-toggle {
+            position: absolute; top: 50%; right: 12px; transform: translateY(-50%);
+            padding: 4px; border: none; background: transparent; color: var(--accent);
+            cursor: pointer; font: inherit; font-size: 13px; font-weight: 600;
+        }
+        .password-toggle:hover { text-decoration: underline; }
+        .password-toggle:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 2px; }
+        .password-settings {
+            min-width: 0;
+            margin: 0;
+            padding: 18px;
+            border: 1px solid var(--border);
+        }
+        .password-settings legend {
+            padding: 0 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .password-help {
+            margin: 0 0 16px;
+            color: var(--muted-foreground);
+            font-size: 12px;
+        }
+        .password-fields {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 18px;
+        }
         textarea.form-input { resize: vertical; }
 
         /* File Upload */
@@ -316,5 +346,8 @@
         padding: 20px 14px;
     }
 
+    .password-settings {
+        padding: 14px;
+    }
 }
 

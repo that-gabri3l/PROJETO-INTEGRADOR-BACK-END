@@ -36,7 +36,7 @@ A aplicação é deliberadamente simples: PHP tradicional, HTML, CSS e JavaScrip
 - `CSS/`: estilos separados por página ou área, incluindo `painel-candidato.css`, `painel-empresa.css` e `perfil-candidato-empresa.css`.
 - `images/`: logotipos claro e escuro.
 - `logs/`: reserva atual para arquivos de log.
-
+ 
 ## Fluxos e rotas existentes
 
 - Página inicial → `/vagas/index.php?q=...`

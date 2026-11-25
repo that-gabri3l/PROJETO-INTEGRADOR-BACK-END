@@ -66,7 +66,7 @@ $portes = ['Microempresa', 'Pequena', 'Média', 'Grande'];
                     <?php if (!empty($empresa['logo'])): ?>
                         <div>
                             <label class="form-label">Logo atual</label>
-                            <img src="<?= htmlspecialchars($empresa['logo'], ENT_QUOTES, 'UTF-8') ?>" alt="Logo atual de <?= htmlspecialchars($empresa['nome'], ENT_QUOTES, 'UTF-8') ?>" style="width:104px;height:104px;object-fit:contain;border:1px solid var(--border);border-radius:var(--radius);background:var(--background);padding:8px;">
+                            <img class="company-logo-current" src="<?= htmlspecialchars($empresa['logo'], ENT_QUOTES, 'UTF-8') ?>" alt="Logo atual de <?= htmlspecialchars($empresa['nome'], ENT_QUOTES, 'UTF-8') ?>">
                         </div>
                     <?php endif; ?>
 

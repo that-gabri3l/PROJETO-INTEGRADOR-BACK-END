@@ -242,7 +242,7 @@ try {
         session_regenerate_id(true);
     }
 
-    $destino = '/candidato/editar-perfil.php?salvo=1';
+    $destino = '/candidato/painel.php?salvo=1';
     if ($senhaHash !== null) {
         $destino .= '&senha=alterada';
     }

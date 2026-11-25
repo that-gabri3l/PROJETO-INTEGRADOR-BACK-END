@@ -82,6 +82,10 @@
 
         * { box-sizing: border-box; }
 
+        a {
+            text-decoration: none;
+        }
+
         body {
             font-family: 'Work Sans', sans-serif;
             background-color: var(--background);
@@ -231,6 +235,10 @@
             display: inline-block;
             text-decoration: none;
         }
+        .btn-back:hover,
+        .btn-back:focus-visible {
+            text-decoration: none;
+        }
 
         /* Checkbox tipo botão (Regime) */
         .btn-checkbox {
@@ -255,6 +263,11 @@
         .btn-secondary {
             background: none; border: 1px solid var(--border); padding: 10px 20px;
             cursor: pointer; font-family: inherit; font-size: 13px; border-radius: var(--radius);
+            text-decoration: none;
+        }
+        .btn-secondary:hover,
+        .btn-secondary:focus-visible {
+            text-decoration: none;
         }
 
         /* Lógica de Visibilidade dos Passos */

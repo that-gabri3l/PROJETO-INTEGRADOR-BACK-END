@@ -4,6 +4,8 @@ exigirTipo('candidato');
 
 $nomeUsuario = $_SESSION['usuario_nome'] ?? 'Candidato';
 $cidadeUsuario = $_SESSION['cidade'] ?? '';
+$perfilSalvo = ($_GET['salvo'] ?? '') === '1';
+$senhaAlterada = ($_GET['senha'] ?? '') === 'alterada';
 require_once __DIR__ . '/../src/conexao.php';
 
 $candidatoId = $_SESSION['perfil_id'] ?? null;
@@ -162,6 +164,12 @@ $vagasRecomendadas = $stmtVagasRecomendadas->fetchAll(PDO::FETCH_ASSOC);
     </header>
 
     <main class="container">
+        <?php if ($perfilSalvo): ?>
+            <div class="form-success" role="status">Perfil atualizado com sucesso.</div>
+        <?php endif; ?>
+        <?php if ($senhaAlterada): ?>
+            <div class="form-success" role="status">Senha alterada com sucesso.</div>
+        <?php endif; ?>
         
         <!-- KPI Cards -->
         <div class="kpi-grid">

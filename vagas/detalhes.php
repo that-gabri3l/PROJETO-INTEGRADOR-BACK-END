@@ -9,7 +9,7 @@ if (!$id) {
 }
 
 $stmt = $pdo->prepare(
-    'SELECT v.*, e.nome AS empresa_nome, e.setor, e.cidade_sede
+    'SELECT v.*, e.nome AS empresa_nome, e.setor, e.cidade_sede, e.logo AS empresa_logo
      FROM vagas v
      INNER JOIN empresas e ON e.id = v.empresa_id
      WHERE v.id = :id AND v.status = \'ativa\'
@@ -24,8 +24,32 @@ if (!$vaga) {
 }
 
 $erro = isset($_GET['erro']) ? trim((string) $_GET['erro']) : '';
+$estadoVagaSalva = trim((string) ($_GET['vaga'] ?? ''));
 $requisitos = array_filter(array_map('trim', preg_split('/\R/', (string) $vaga['requisitos'])));
 $beneficios = array_filter(array_map('trim', preg_split('/\R/', (string) $vaga['beneficios'])));
+$vagaSalva = false;
+$candidatoLogado = usuarioEstaLogado() && ($_SESSION['usuario_tipo'] ?? null) === 'candidato';
+$candidatoId = $_SESSION['perfil_id'] ?? null;
+
+if ($candidatoLogado && $candidatoId) {
+    $stmtVagaSalva = $pdo->prepare(
+        'SELECT 1 FROM vagas_salvas WHERE candidato_id = :candidato_id AND vaga_id = :vaga_id LIMIT 1'
+    );
+    $stmtVagaSalva->execute([
+        'candidato_id' => $candidatoId,
+        'vaga_id' => $vaga['id'],
+    ]);
+    $vagaSalva = (bool) $stmtVagaSalva->fetchColumn();
+}
+
+$logoEmpresa = null;
+if (!empty($vaga['empresa_logo'])) {
+    $nomeLogo = basename(str_replace('\\', '/', (string) $vaga['empresa_logo']));
+    $caminhoLogo = __DIR__ . '/../src/uploads/logos_empresas/' . $nomeLogo;
+    if (preg_match('/\A[a-f0-9]{32}\.(?:jpg|png)\z/i', $nomeLogo) && is_file($caminhoLogo)) {
+        $logoEmpresa = '/src/uploads/logos_empresas/' . $nomeLogo;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -150,14 +174,29 @@ $beneficios = array_filter(array_map('trim', preg_split('/\R/', (string) $vaga['
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarTokenCsrf(), ENT_QUOTES, 'UTF-8') ?>">
                         <input type="hidden" name="vaga_id" value="<?= (int) $vaga['id'] ?>">
                         <input type="hidden" name="origem" value="/vagas/detalhes.php?id=<?= (int) $vaga['id'] ?>">
-                        <button type="submit" name="acao" value="salvar" class="btn-secondary" style="width:100%">Salvar vaga</button>
+                        <?php if ($estadoVagaSalva === 'salva'): ?>
+                            <div class="form-success" role="status">Vaga salva com sucesso.</div>
+                        <?php elseif ($estadoVagaSalva === 'removida'): ?>
+                            <div class="form-success" role="status">Vaga removida dos favoritos.</div>
+                        <?php elseif ($estadoVagaSalva === 'erro'): ?>
+                            <div class="form-error" role="alert">Não foi possível atualizar a vaga salva.</div>
+                        <?php endif; ?>
+                        <button type="submit" name="acao" value="<?= $vagaSalva ? 'remover' : 'salvar' ?>" class="btn-secondary" style="width:100%">
+                            <?= $vagaSalva ? 'Remover vaga salva' : 'Salvar vaga' ?>
+                        </button>
                     </form>
                 </div>
 
                 <!-- Card da Empresa -->
                 <div class="sidebar-card company-card">
                     <div style="flex-shrink: 0;">
-                        <div class="company-logo">TS</div>
+                        <?php if ($logoEmpresa): ?>
+                            <img class="company-logo company-logo-image" src="<?= htmlspecialchars($logoEmpresa, ENT_QUOTES, 'UTF-8') ?>" alt="Logo de <?= htmlspecialchars($vaga['empresa_nome'], ENT_QUOTES, 'UTF-8') ?>">
+                        <?php else: ?>
+                            <div class="company-logo" aria-label="<?= htmlspecialchars($vaga['empresa_nome'], ENT_QUOTES, 'UTF-8') ?>">
+                                <?= htmlspecialchars(strtoupper(substr(trim($vaga['empresa_nome']), 0, 1)), ENT_QUOTES, 'UTF-8') ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <div>
                         <div class="eyebrow" style="margin-bottom: 4px;">Sobre a empresa</div>

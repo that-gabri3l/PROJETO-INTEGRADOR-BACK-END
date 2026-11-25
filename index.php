@@ -209,7 +209,7 @@ $urlLogoEmpresa = static function ($logo): ?string {
                     <div class="job-filter-section">
                         <span class="job-filter-label">Categorias</span>
                         <div class="category-tabs" role="tablist" aria-label="Categorias de vagas">
-                            <a class="filter-tag <?= $areaSelecionada === '' ? 'active' : '' ?>" role="tab" aria-selected="<?= $areaSelecionada === '' ? 'true' : 'false' ?>" href="/index.php<?= $ordemSelecionada !== 'recente' ? '?ordem=' . urlencode($ordemSelecionada) : '' ?>">Todos</a>
+                            <a class="filter-tag <?= $areaSelecionada === '' ? 'active' : '' ?>" role="tab" aria-selected="<?= $areaSelecionada === '' ? 'true' : 'false' ?>" data-preservar-posicao href="/index.php<?= $ordemSelecionada !== 'recente' ? '?ordem=' . urlencode($ordemSelecionada) : '' ?>">Todos</a>
                             <?php foreach ($areasDestaque as $area): ?>
                                 <?php
                                 $parametrosCategoria = ['area' => $area];
@@ -217,7 +217,7 @@ $urlLogoEmpresa = static function ($logo): ?string {
                                     $parametrosCategoria['ordem'] = $ordemSelecionada;
                                 }
                                 ?>
-                                <a class="filter-tag <?= $areaSelecionada === $area ? 'active' : '' ?>" role="tab" aria-selected="<?= $areaSelecionada === $area ? 'true' : 'false' ?>" href="/index.php?<?= http_build_query($parametrosCategoria) ?>"><?= htmlspecialchars($area, ENT_QUOTES, 'UTF-8') ?></a>
+                                <a class="filter-tag <?= $areaSelecionada === $area ? 'active' : '' ?>" role="tab" aria-selected="<?= $areaSelecionada === $area ? 'true' : 'false' ?>" data-preservar-posicao href="/index.php?<?= http_build_query($parametrosCategoria) ?>"><?= htmlspecialchars($area, ENT_QUOTES, 'UTF-8') ?></a>
                             <?php endforeach; ?>
                         </div>
                     </div>
@@ -227,7 +227,7 @@ $urlLogoEmpresa = static function ($logo): ?string {
                                 <input type="hidden" name="area" value="<?= htmlspecialchars($areaSelecionada, ENT_QUOTES, 'UTF-8') ?>">
                             <?php endif; ?>
                             <label for="ordem-destaques">Ordenar por</label>
-                            <select id="ordem-destaques" name="ordem" onchange="this.form.submit()">
+                            <select id="ordem-destaques" name="ordem">
                                 <option value="recente" <?= $ordemSelecionada === 'recente' ? 'selected' : '' ?>>Mais recente</option>
                                 <option value="salario" <?= $ordemSelecionada === 'salario' ? 'selected' : '' ?>>Maior salário</option>
                                 <option value="titulo" <?= $ordemSelecionada === 'titulo' ? 'selected' : '' ?>>Título A-Z</option>
@@ -417,6 +417,7 @@ $urlLogoEmpresa = static function ($logo): ?string {
     </footer>
 
     <script src="/JS/busca-vagas-sugestoes.js"></script>
+    <script src="/JS/index-filtros.js"></script>
     <script src="/JS/tema.js"></script>
 
 </body>

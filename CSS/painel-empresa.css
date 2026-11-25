@@ -373,6 +373,7 @@
             font-size: 13px;
             font-weight: 600;
             color: #F2EDE5;
+            object-fit: cover;
         }
 
         /* Badges de Status */

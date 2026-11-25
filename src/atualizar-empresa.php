@@ -190,7 +190,7 @@ try {
         }
     }
 
-    $destino = '/empresa/editar-perfil.php?salvo=1';
+    $destino = '/empresa/painel.php?perfil=salvo';
     if ($senhaHash !== null) {
         $destino .= '&senha=alterada';
     }

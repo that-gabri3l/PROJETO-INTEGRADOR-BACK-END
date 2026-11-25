@@ -200,7 +200,7 @@ $vagas = array_slice($vagas, ($paginaAtual - 1) * $vagasPorPagina, $vagasPorPagi
     </div>
 
     <div class="main-layout main-layout--filtered">
-        <aside class="sidebar vaga-filter-sidebar">
+        <aside id="filtros-vagas" class="sidebar vaga-filter-sidebar">
             <form class="vaga-filter-form" action="/vagas/index.php" method="GET">
                 <?php if ($q !== ''): ?><input type="hidden" name="q" value="<?= htmlspecialchars($q, ENT_QUOTES, 'UTF-8') ?>"><?php endif; ?>
                 <?php if ($empresa !== null): ?><input type="hidden" name="empresa" value="<?= (int) $empresa ?>"><?php endif; ?>
@@ -238,7 +238,7 @@ $vagas = array_slice($vagas, ($paginaAtual - 1) * $vagasPorPagina, $vagasPorPagi
                 </div>
 
                 <div class="vaga-filter-actions">
-                    <a href="/vagas/index.php" class="vaga-filter-clear">Limpar</a>
+                    <a href="/vagas/index.php" class="vaga-filter-clear" data-preservar-posicao>Limpar</a>
                     <button type="submit" class="vaga-filter-submit">Aplicar filtros</button>
                 </div>
             </form>
@@ -250,7 +250,7 @@ $vagas = array_slice($vagas, ($paginaAtual - 1) * $vagasPorPagina, $vagasPorPagi
                     <div class="job-card job-card-empty">
                         <h3 class="job-title">Nenhuma vaga encontrada</h3>
                         <div class="job-meta"><?= $empresasEncontradas ? 'Confira as empresas encontradas abaixo.' : 'Tente alterar os filtros ou buscar outro termo.' ?></div>
-                        <div class="job-footer"><a href="/vagas/index.php" class="btn-apply">Limpar filtros</a></div>
+                        <div class="job-footer"><a href="/vagas/index.php" class="btn-apply vaga-filter-clear" data-preservar-posicao>Limpar filtros</a></div>
                     </div>
                 <?php else: ?>
                     <?php foreach ($vagas as $vaga): ?>
@@ -333,6 +333,7 @@ $vagas = array_slice($vagas, ($paginaAtual - 1) * $vagasPorPagina, $vagasPorPagi
     </footer>
 
     <script src="/JS/busca-vagas-sugestoes.js"></script>
+    <script src="/JS/vagas-filtros.js"></script>
     <script src="/JS/tema.js"></script>
 
 </body>

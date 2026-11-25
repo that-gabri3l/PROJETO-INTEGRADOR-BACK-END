@@ -16,6 +16,8 @@ $mensagensVaga = [
     'excluida' => 'A vaga foi excluída.',
 ];
 $resultadoVaga = (string) ($_GET['vaga'] ?? '');
+$perfilSalvo = ($_GET['perfil'] ?? '') === 'salvo';
+$senhaAlterada = ($_GET['senha'] ?? '') === 'alterada';
 
 if ($empresaId) {
     $stmtEmpresa = $pdo->prepare('SELECT nome, logo FROM empresas WHERE id = :id LIMIT 1');
@@ -40,7 +42,8 @@ if ($empresaId) {
     $totalVagas = count($vagas);
 
     $stmt = $pdo->prepare(
-        'SELECT c.id AS candidatura_id, c.status, c.criado_em, ca.nome AS candidato_nome, ca.cargo, v.titulo AS vaga_titulo
+        'SELECT c.id AS candidatura_id, c.status, c.criado_em,
+                ca.nome AS candidato_nome, ca.cargo, ca.foto_perfil, v.titulo AS vaga_titulo
          FROM candidaturas c
          INNER JOIN candidatos ca ON ca.id = c.candidato_id
          INNER JOIN vagas v ON v.id = c.vaga_id
@@ -104,6 +107,12 @@ if ($empresaId) {
 
     <main class="container">
 
+        <?php if ($perfilSalvo): ?>
+            <div class="dashboard-notice" role="status">Perfil da empresa atualizado.</div>
+        <?php endif; ?>
+        <?php if ($senhaAlterada): ?>
+            <div class="dashboard-notice" role="status">Senha alterada com sucesso.</div>
+        <?php endif; ?>
         <?php if (isset($mensagensVaga[$resultadoVaga])): ?>
             <div class="dashboard-notice" role="status"><?= htmlspecialchars($mensagensVaga[$resultadoVaga], ENT_QUOTES, 'UTF-8') ?></div>
         <?php endif; ?>
@@ -206,10 +215,26 @@ if ($empresaId) {
                         </thead>
                         <tbody>
                             <?php foreach ($candidatosRecentes as $candidato): ?>
+                                <?php
+                                $fotoCandidato = null;
+                                if (!empty($candidato['foto_perfil'])) {
+                                    $nomeFoto = basename(str_replace('\\', '/', (string) $candidato['foto_perfil']));
+                                    if (
+                                        preg_match('/\A[a-f0-9]{32}\.(?:jpg|png)\z/i', $nomeFoto)
+                                        && is_file(__DIR__ . '/../src/uploads/fotos_perfil/' . $nomeFoto)
+                                    ) {
+                                        $fotoCandidato = '/src/uploads/fotos_perfil/' . $nomeFoto;
+                                    }
+                                }
+                                ?>
                             <tr>
                                 <td>
                                     <div class="candidate-info">
-                                        <div class="avatar"><?= htmlspecialchars($candidato['candidato_nome'][0], ENT_QUOTES, 'UTF-8') ?></div>
+                                        <?php if ($fotoCandidato): ?>
+                                            <img class="avatar" src="<?= htmlspecialchars($fotoCandidato, ENT_QUOTES, 'UTF-8') ?>" alt="Foto de <?= htmlspecialchars($candidato['candidato_nome'], ENT_QUOTES, 'UTF-8') ?>">
+                                        <?php else: ?>
+                                            <div class="avatar" aria-hidden="true"><?= htmlspecialchars(strtoupper(substr($candidato['candidato_nome'], 0, 1)), ENT_QUOTES, 'UTF-8') ?></div>
+                                        <?php endif; ?>
                                         <div>
                                             <div class="text-bold"><?= htmlspecialchars($candidato['candidato_nome'], ENT_QUOTES, 'UTF-8') ?></div>
                                             <div class="text-meta" style="font-family: 'Work Sans', sans-serif;"><?= htmlspecialchars($candidato['cargo'], ENT_QUOTES, 'UTF-8') ?></div>

@@ -339,6 +339,12 @@
             font-weight: 600;
             color: #FAF8F4;
         }
+        .company-logo-image {
+            display: block;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            background: var(--card);
+        }
 
         .form-error {
             margin-bottom: 12px;
@@ -347,6 +353,16 @@
             border-radius: var(--radius);
             background-color: #FEF2F2;
             color: #991B1B;
+            font-size: 12px;
+        }
+
+        .form-success {
+            margin-bottom: 12px;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background-color: var(--secondary);
+            color: var(--foreground);
             font-size: 12px;
         }
 

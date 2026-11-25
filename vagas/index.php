@@ -54,8 +54,8 @@ if (in_array($regime, $regimesDisponiveis, true)) {
 if ($empresa !== null) {
     $empresaExiste = $pdo->prepare(
         "SELECT COUNT(*)
-         FROM vagas
-         WHERE empresa_id = :empresa_id AND status = 'ativa'"
+        FROM vagas
+        WHERE empresa_id = :empresa_id AND status = 'ativa'"
     );
     $empresaExiste->execute(['empresa_id' => $empresa]);
     if ((int) $empresaExiste->fetchColumn() > 0) {

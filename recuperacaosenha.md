@@ -103,25 +103,81 @@ Provedores que exigem SMTP autenticado podem não funcionar diretamente com
 `mail()`; uma alternativa sem Composer é adaptar o envio para a API HTTPS do
 provedor com cURL.
 
-Para testar localmente sem enviar e-mails reais, a opção recomendada é usar
-Mailpit como relay SMTP local (`127.0.0.1:1025`) e abrir sua caixa de entrada de
-teste em `http://127.0.0.1:8025`. Essa configuração ainda não foi instalada nem
-validada neste ambiente.
+Para testar localmente sem enviar e-mails reais, usa-se Mailpit como relay SMTP
+local (`127.0.0.1:1025`) e a caixa de entrada web em `http://127.0.0.1:8025`.
+Em 2026-11-25, o usuário informou que conseguiu abrir a interface web após
+extrair o Mailpit para uma pasta `EMAIL` na Área de Trabalho. Depois de ajustar
+o PHP CLI e iniciar o servidor da aplicação num terminal PowerShell separado,
+confirmou que os e-mails aparecem no Mailpit. Isso confirma a captura local,
+mas não entrega a e-mails reais. O usuário depois confirmou que o link alterou
+a senha com sucesso; a ausência na caixa pessoal é comportamento esperado sem
+um relay externo, pois o Mailpit não encaminha mensagens por padrão.
+
+O usuário localizou no VS Code o `php.ini` em
+`php-8.5.4-Win32-vs17-x86/php.ini`. O usuário editou `[mail function]` para
+`SMTP = 127.0.0.1`, `smtp_port = 1025` e `sendmail_from = no-reply@example.com`;
+uma leitura do PHP CLI confirmou esses valores.
+O usuário inicialmente recebeu uma mensagem genérica de falha e executou
+comandos PowerShell no Prompt de Comando (`cmd`), que retornou erro de sintaxe.
+Após orientar o uso de um terminal PowerShell separado do Mailpit, informou que
+as mensagens passaram a aparecer na interface local. O remetente
+`no-reply@example.com` funciona para esse teste e não precisa corresponder a
+uma caixa real. Para encaminhar ao e-mail pessoal, Mailpit oferece SMTP
+forwarding: envia uma cópia de todas as mensagens recebidas a destinatário(s)
+fixo(s), por um SMTP upstream autenticado. Isso é diferente de SMTP relay.
+Credenciais devem ficar num arquivo de configuração fora do repositório, e o
+encaminhamento só deve ser habilitado para testes controlados.
+Ao tentar iniciar com `--smtp-forward-config`, o usuário recebeu “configuration
+not found or readable” para o caminho literal
+`$env:USERPROFILE\Desktop\EMAIL\mailpit-forward.yml`, indicando que a variável
+de sintaxe PowerShell não foi expandida pelo terminal usado ou que o arquivo
+ainda não existe nesse caminho. O usuário está no Windows e pode usar o caminho
+absoluto `C:\Users\perola.mcsilva\Desktop\EMAIL\mailpit-forward.yml` para evitar
+ambiguidade de shell; verificar também extensão `.yml` exata e legibilidade.
 
 ### Roteiro de teste local com Mailpit
 
-1. Se Docker estiver instalado, rode em um terminal e mantenha-o aberto:
+1. Baixe o binário Windows do projeto oficial. Na página de releases, selecione
+   o ZIP `mailpit-windows-amd64.zip` para Windows x64/AMD64 ou
+   `mailpit-windows-arm64.zip` para Windows ARM64. Em 2026-11-25, a release
+   marcada como mais recente era v1.34.0:
+
+   - Releases oficiais: <https://github.com/axllent/mailpit/releases/latest>
+   - Download direto x64/AMD64 v1.34.0:
+     <https://github.com/axllent/mailpit/releases/download/v1.34.0/mailpit-windows-amd64.zip>
+
+   O usuário informou que extraiu o arquivo para uma pasta `EMAIL` na Área de
+   Trabalho. No PowerShell, o caminho esperado é
+   `"$env:USERPROFILE\Desktop\EMAIL"`; se a Área de Trabalho estiver sincronizada
+   com OneDrive, confirme o caminho exibido pelo Explorador de Arquivos. Não
+   adicione o executável ao Git do projeto.
+
+2. Em PowerShell, inicie Mailpit e deixe essa janela aberta:
+
+   ```powershell
+   Set-Location "$env:USERPROFILE\Desktop\EMAIL"
+   Get-ChildItem
+   ```
+
+   Confirme que `mailpit.exe` aparece na listagem. Se estiver dentro de uma
+   subpasta, entre nela com `Set-Location .\<nome-da-subpasta>`. Então inicie:
+
+   ```powershell
+   .\mailpit.exe
+   ```
+
+   Os padrões documentados são SMTP na porta `1025` e interface web na porta
+   `8025`. Abra `http://127.0.0.1:8025` para conferir que a caixa de entrada
+   local está disponível.
+
+   Se preferir Docker e já o tiver instalado, rode isto em vez do executável e
+   mantenha o terminal aberto:
 
    ```powershell
    docker run --rm --name infodin-mailpit -p 127.0.0.1:1025:1025 -p 127.0.0.1:8025:8025 axllent/mailpit
    ```
 
-   Se não houver Docker, use o executável local do Mailpit. O SMTP de teste
-   escuta em `127.0.0.1:1025` e a interface de mensagens em
-   `http://127.0.0.1:8025`; as mensagens ficam locais e não são entregues ao
-   destinatário real.
-
-2. No terminal do PHP CLI, descubra qual arquivo de configuração está ativo:
+3. No terminal do PHP CLI, descubra qual arquivo de configuração está ativo:
 
    ```powershell
    php --ini
@@ -140,7 +196,7 @@ validada neste ambiente.
    reinicie o servidor PHP. Se estiver usando Apache/XAMPP, configure o `php.ini`
    daquele Apache e reinicie o Apache em vez de usar o arquivo do CLI.
 
-3. Em outro terminal PowerShell, na raiz do repositório, defina as variáveis e
+4. Em outro terminal PowerShell, na raiz do repositório, defina as variáveis e
    inicie o servidor:
 
    ```powershell
@@ -156,7 +212,7 @@ validada neste ambiente.
    filhos; configure-as antes de iniciar `php -S`. Para produção, mantenha o
    pepper estável e protegido, em vez de gerar um novo a cada reinício.
 
-4. Abra `http://127.0.0.1:8025` para deixar a caixa de entrada do Mailpit visível
+5. Abra `http://127.0.0.1:8025` para deixar a caixa de entrada do Mailpit visível
    e `http://localhost:8000/cadastro/login.php` para testar a aplicação. Peça a
    recuperação usando o e-mail de uma conta cadastrada, abra a mensagem no
    Mailpit e siga o link para definir a nova senha.
@@ -171,15 +227,24 @@ validada neste ambiente.
   CSS também respondeu HTTP 200.
 - O usuário informou que o SQL corrigido foi importado sem erros. A aplicação
   ainda não foi testada de ponta a ponta com esse banco nem com envio de e-mail.
-- Mailpit e a configuração de `mail()` no `php.ini` ainda não foram instalados
-  ou validados neste ambiente.
+- O usuário iniciou o Mailpit e confirmou que a interface web abriu; depois
+  confirmou também que mensagens enviadas pelo fluxo aparecem na caixa local.
+- `php -i` confirmou `SMTP = 127.0.0.1`, `smtp_port = 1025` e
+  `sendmail_from = no-reply@example.com`.
+- O usuário confirmou que o link do Mailpit redefiniu a senha. A entrega em uma
+  caixa pessoal não ocorre porque Mailpit é um coletor local e não encaminha
+  mensagens por padrão.
+- Para enviar e-mails reais, falta integrar um relay/provedor autorizado,
+  configurando o encaminhamento SMTP do Mailpit ou adaptando o código para uma
+  API HTTPS de envio com cURL. A opção local atual continua apropriada para
+  desenvolvimento/testes sem entrega externa.
 
 ## Próximos passos ao retomar
 
 1. Opcionalmente confirmar `recuperacoes_senha` e suas colunas no banco com os
    comandos SQL acima.
-2. Configurar Mailpit, o `php.ini` usado pelo servidor e as variáveis de
-   ambiente; reiniciar o PHP depois das alterações.
+2. Com Mailpit aberto, configurar o `php.ini` usado pelo servidor e as
+   variáveis de ambiente; reiniciar o PHP depois das alterações.
 3. Testar pedido com uma conta existente e inexistente, link expirado ou já
    usado, senhas divergentes, senha igual à atual e limite de solicitações.
 4. Após o teste local, configurar um relay/provedor autorizado e HTTPS antes de

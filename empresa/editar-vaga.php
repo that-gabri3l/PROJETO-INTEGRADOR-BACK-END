@@ -25,7 +25,35 @@ $statusVagas = [
     'pausada' => 'Pausada',
     'encerrada' => 'Encerrada',
 ];
-$areas = ['Tecnologia', 'Design', 'Marketing', 'Dados', 'Gestão', 'Vendas', 'Jurídico', 'Financeiro', 'RH'];
+$areas = [
+    'Agronegócio',
+    'Alimentação e Bebidas',
+    'Arquitetura e Construção',
+    'Automotivo',
+    'Comunicação e Mídia',
+    'Consultoria',
+    'Educação',
+    'Energia',
+    'Engenharia',
+    'Finanças',
+    'Indústria e Manufatura',
+    'Imobiliário',
+    'Jurídico',
+    'Logística',
+    'Meio Ambiente',
+    'Recursos Humanos',
+    'Saúde',
+    'Tecnologia',
+    'Telecomunicações',
+    'Transportes',
+    'Turismo e Hotelaria',
+    'Varejo',
+    'Outro',
+];
+$areaAtual = trim((string) ($vaga['area'] ?? ''));
+if ($areaAtual !== '' && !in_array($areaAtual, $areas, true)) {
+    $areas[] = $areaAtual;
+}
 $regimes = ['Presencial', 'Híbrido', 'Remoto'];
 ?>
 <!DOCTYPE html>

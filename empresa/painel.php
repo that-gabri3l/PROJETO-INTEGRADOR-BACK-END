@@ -14,6 +14,8 @@ $totalCandidatos = 0;
 $mensagensVaga = [
     'atualizada' => 'As informações da vaga foram atualizadas.',
     'excluida' => 'A vaga foi excluída.',
+    'publicada' => 'A vaga foi publicada com sucesso.',
+    'rascunho' => 'A vaga foi salva como rascunho.',
 ];
 $resultadoVaga = (string) ($_GET['vaga'] ?? '');
 

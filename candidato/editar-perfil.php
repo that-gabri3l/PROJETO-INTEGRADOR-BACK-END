@@ -66,7 +66,7 @@ $senhaAlterada = ($_GET['senha'] ?? '') === 'alterada';
                     <?php if (!empty($candidato['foto_perfil'])): ?>
                         <div>
                             <label class="form-label">Foto atual</label>
-                            <img src="<?= htmlspecialchars($candidato['foto_perfil'], ENT_QUOTES, 'UTF-8') ?>" alt="Foto de perfil atual" style="width:88px;height:88px;object-fit:cover;border-radius:50%;">
+                            <img class="candidate-photo-current" src="<?= htmlspecialchars($candidato['foto_perfil'], ENT_QUOTES, 'UTF-8') ?>" alt="Foto de perfil atual">
                         </div>
                     <?php endif; ?>
 
@@ -100,6 +100,7 @@ $senhaAlterada = ($_GET['senha'] ?? '') === 'alterada';
                         <div>
                             <label id="foto-perfil-label" class="form-label" for="foto_perfil" data-default-text="Alterar foto (JPG/PNG, até 2 MB)" aria-live="polite">Alterar foto (JPG/PNG, até 2 MB)</label>
                             <input id="foto_perfil" type="file" name="foto_perfil" class="form-input" accept="image/png,image/jpeg">
+                            <img id="foto-perfil-preview" class="candidate-photo-current" alt="Prévia da nova foto" hidden>
                         </div>
                     </div>
 

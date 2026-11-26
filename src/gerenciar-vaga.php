@@ -50,7 +50,15 @@ if ($acao === 'salvar') {
     if ($titulo === '' || !textoDentroDoLimite($titulo, 150) || $area === '' || $regime === '' || $localizacao === '' || !textoDentroDoLimite($localizacao, 150) || $descricao === '' || $requisitos === '') {
         erroGerenciarVaga($vagaId, 'Preencha todos os campos obrigatórios e confira o título informado.');
     }
-    if (!in_array($area, ['Tecnologia', 'Design', 'Marketing', 'Dados', 'Gestão', 'Vendas', 'Jurídico', 'Financeiro', 'RH'], true)) {
+    $areasPermitidas = [
+        'Agronegócio', 'Alimentação e Bebidas', 'Arquitetura e Construção', 'Automotivo',
+        'Comunicação e Mídia', 'Consultoria', 'Educação', 'Energia', 'Engenharia',
+        'Finanças', 'Indústria e Manufatura', 'Imobiliário', 'Jurídico', 'Logística',
+        'Meio Ambiente', 'Recursos Humanos', 'Saúde', 'Tecnologia', 'Telecomunicações',
+        'Transportes', 'Turismo e Hotelaria', 'Varejo', 'Outro',
+        'Design', 'Marketing', 'Dados', 'Gestão', 'Vendas', 'Financeiro', 'RH',
+    ];
+    if (!in_array($area, $areasPermitidas, true)) {
         erroGerenciarVaga($vagaId, 'Informe uma área válida.');
     }
     if (!in_array($regime, ['Presencial', 'Híbrido', 'Remoto'], true)) {

@@ -107,6 +107,25 @@
             color: var(--primary);
             text-decoration: none;
         }
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .navbar .nav-btn {
+            display: inline-flex;
+            min-height: 44px;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 16px;
+            border: 1px solid transparent;
+            border-radius: var(--radius);
+            background: var(--primary);
+            color: #FFFFFF;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
 
         /* Layout Principal */
         .container {
@@ -256,6 +275,18 @@
             background-color: #FEF2F2;
             color: #991B1B;
             font-size: 13px;
+        }
+
+        [data-theme="dark"] .form-error {
+            border-color: #7F1D1D;
+            background-color: #450A0A;
+            color: #FCA5A5;
+        }
+
+        [data-theme="dark"] .form-success {
+            border-color: #166534;
+            background-color: #14532D;
+            color: #86EFAC;
         }
 
         @media (max-width: 768px) {

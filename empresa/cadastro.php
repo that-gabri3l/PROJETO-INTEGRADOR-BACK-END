@@ -5,31 +5,7 @@ $dadosFormulario = $_SESSION['cadastro_empresa_dados'] ?? [];
 unset($_SESSION['cadastro_empresa_dados']);
 $etapaInicial = max(1, min(3, (int) ($_GET['etapa'] ?? 1)));
 $valorCampo = static fn(string $campo): string => htmlspecialchars((string) ($dadosFormulario[$campo] ?? ''), ENT_QUOTES, 'UTF-8');
-$opcoesSetor = [
-    'Agronegócio',
-    'Alimentação e Bebidas',
-    'Arquitetura e Construção',
-    'Automotivo',
-    'Comunicação e Mídia',
-    'Consultoria',
-    'Educação',
-    'Energia',
-    'Engenharia',
-    'Finanças',
-    'Indústria e Manufatura',
-    'Imobiliário',
-    'Jurídico',
-    'Logística',
-    'Meio Ambiente',
-    'Recursos Humanos',
-    'Saúde',
-    'Tecnologia',
-    'Telecomunicações',
-    'Transportes',
-    'Turismo e Hotelaria',
-    'Varejo',
-    'Outro',
-];
+$opcoesSetor = require __DIR__ . '/../src/opcoes-setor-empresa.php';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">

@@ -8,6 +8,8 @@ require_once __DIR__ . '/Helpers/ValidacoesFormulario.php';
 
 use Infodin\Helpers\ValidacoesFormulario;
 
+$opcoesSetor = require __DIR__ . '/opcoes-setor-empresa.php';
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: /empresa/editar-perfil.php');
     exit;
@@ -81,7 +83,7 @@ if (!ValidacoesFormulario::telefoneBrasileiro($telefone)) {
     redirecionarComErroEmpresa('Informe um telefone com DDD e 10 ou 11 dígitos.');
 }
 
-if (!in_array($setor, ['Tecnologia', 'Finanças', 'Saúde', 'Educação', 'Varejo', 'Logística', 'Outro'], true)) {
+if (!in_array($setor, $opcoesSetor, true)) {
     redirecionarComErroEmpresa('Selecione um setor válido.');
 }
 

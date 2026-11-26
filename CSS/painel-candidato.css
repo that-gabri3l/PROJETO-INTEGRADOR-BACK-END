@@ -100,6 +100,16 @@
             font-size: 13px;
         }
 
+        .form-error {
+            margin-bottom: 20px;
+            padding: 12px 14px;
+            border: 1px solid #FCA5A5;
+            border-radius: var(--radius);
+            background-color: #FEF2F2;
+            color: #991B1B;
+            font-size: 13px;
+        }
+
         a {
             text-decoration: none;
         }
@@ -360,6 +370,16 @@
         .application-item {
             align-items: flex-start;
         }
+        .application-link {
+            color: inherit;
+            text-decoration: none;
+        }
+        .application-link:focus-visible {
+            position: relative;
+            z-index: 1;
+            outline: 2px solid var(--primary);
+            outline-offset: -2px;
+        }
         .application-status {
             display: flex;
             flex: 0 0 170px;
@@ -371,6 +391,51 @@
             color: var(--muted-foreground);
             font-size: 11px;
             line-height: 1.4;
+        }
+        .saved-job-item {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: background-color 0.1s;
+        }
+        .saved-job-item:first-child { border-top: none; }
+        .saved-job-item:hover { background-color: var(--secondary); }
+        .saved-job-link {
+            display: flex;
+            flex: 1;
+            min-width: 0;
+            align-items: center;
+            gap: 14px;
+            color: inherit;
+            text-decoration: none;
+        }
+        .saved-job-link:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+        .saved-job-remove-form { flex-shrink: 0; }
+        .btn-remove-saved-job {
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--card);
+            color: var(--foreground);
+            font: inherit;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.15s, border-color 0.15s;
+        }
+        .btn-remove-saved-job:hover,
+        .btn-remove-saved-job:focus-visible {
+            border-color: #DC2626;
+            background-color: #FEF2F2;
+            color: #991B1B;
+        }
+        .btn-remove-saved-job:focus-visible {
+            outline: 2px solid #DC2626;
+            outline-offset: 2px;
         }
 
         /* Checklist do Perfil */
@@ -531,6 +596,14 @@
             }
             .application-status {
                 flex-basis: 135px;
+            }
+            .saved-job-item {
+                padding: 14px;
+                align-items: flex-start;
+                flex-wrap: wrap;
+            }
+            .saved-job-link {
+                flex-basis: 100%;
             }
 
             .item-title {

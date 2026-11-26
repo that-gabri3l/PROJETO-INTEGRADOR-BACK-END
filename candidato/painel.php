@@ -6,6 +6,8 @@ $nomeUsuario = $_SESSION['usuario_nome'] ?? 'Candidato';
 $cidadeUsuario = $_SESSION['cidade'] ?? '';
 $perfilSalvo = ($_GET['salvo'] ?? '') === '1';
 $senhaAlterada = ($_GET['senha'] ?? '') === 'alterada';
+$vagaRemovida = ($_GET['vaga'] ?? '') === 'removida';
+$erroRemocaoVaga = ($_GET['vaga'] ?? '') === 'erro';
 require_once __DIR__ . '/../src/conexao.php';
 
 $candidatoId = $_SESSION['perfil_id'] ?? null;
@@ -170,6 +172,11 @@ $vagasRecomendadas = $stmtVagasRecomendadas->fetchAll(PDO::FETCH_ASSOC);
         <?php if ($senhaAlterada): ?>
             <div class="form-success" role="status">Senha alterada com sucesso.</div>
         <?php endif; ?>
+        <?php if ($vagaRemovida): ?>
+            <div class="form-success" role="status">Vaga removida das suas vagas salvas.</div>
+        <?php elseif ($erroRemocaoVaga): ?>
+            <div class="form-error" role="alert">Não foi possível remover a vaga. Tente novamente.</div>
+        <?php endif; ?>
         
         <!-- KPI Cards -->
         <div class="kpi-grid">
@@ -207,7 +214,7 @@ $vagasRecomendadas = $stmtVagasRecomendadas->fetchAll(PDO::FETCH_ASSOC);
                         'descricao' => 'Consulte a empresa para mais informações.',
                         'classe' => 'badge-gray',
                     ]; ?>
-                    <div class="list-item application-item">
+                    <a class="list-item application-item application-link" href="/vagas/detalhes.php?id=<?= (int) $candidatura['vaga_id'] ?>" aria-label="Abrir vaga: <?= htmlspecialchars($candidatura['titulo'], ENT_QUOTES, 'UTF-8') ?>">
                         <div class="company-logo" style="background-color: #6B21A8;">N</div>
                         <div class="item-details">
                             <div class="item-title"><?= htmlspecialchars($candidatura['titulo'], ENT_QUOTES, 'UTF-8') ?></div>
@@ -217,7 +224,7 @@ $vagasRecomendadas = $stmtVagasRecomendadas->fetchAll(PDO::FETCH_ASSOC);
                             <span class="badge <?= htmlspecialchars($statusCandidatura['classe'], ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($statusCandidatura['rotulo'], ENT_QUOTES, 'UTF-8') ?></span>
                             <span class="application-status-description"><?= htmlspecialchars($statusCandidatura['descricao'], ENT_QUOTES, 'UTF-8') ?></span>
                         </div>
-                    </div>
+                    </a>
                     <?php endforeach; ?>
                     <?php if (!$candidaturas): ?>
                         <div class="list-item"><div class="item-details"><div class="item-title">Nenhuma candidatura enviada</div><div class="item-meta">Explore vagas e envie uma candidatura para acompanhar o andamento aqui.</div></div></div>
@@ -236,16 +243,25 @@ $vagasRecomendadas = $stmtVagasRecomendadas->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                     <div class="list-container">
                         <?php foreach ($vagasSalvas as $vaga): ?>
-                        <a class="list-item saved-job-link" href="/vagas/detalhes.php?id=<?= (int) $vaga['id'] ?>" aria-label="Ver detalhes de <?= htmlspecialchars($vaga['titulo'], ENT_QUOTES, 'UTF-8') ?>">
-                            <div class="item-details">
-                                <div class="item-title"><?= htmlspecialchars($vaga['titulo'], ENT_QUOTES, 'UTF-8') ?></div>
-                                <div class="item-meta"><?= htmlspecialchars($vaga['empresa_nome'], ENT_QUOTES, 'UTF-8') ?> · <?= htmlspecialchars($vaga['localizacao'], ENT_QUOTES, 'UTF-8') ?> · <?= htmlspecialchars($vaga['regime'], ENT_QUOTES, 'UTF-8') ?></div>
-                                <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">
-                                    R$ <?= number_format($vaga['salario_min'], 0, ',', '.') ?> – R$ <?= number_format($vaga['salario_max'], 0, ',', '.') ?>
+                        <div class="saved-job-item">
+                            <a class="saved-job-link" href="/vagas/detalhes.php?id=<?= (int) $vaga['id'] ?>" aria-label="Ver detalhes de <?= htmlspecialchars($vaga['titulo'], ENT_QUOTES, 'UTF-8') ?>">
+                                <div class="item-details">
+                                    <div class="item-title"><?= htmlspecialchars($vaga['titulo'], ENT_QUOTES, 'UTF-8') ?></div>
+                                    <div class="item-meta"><?= htmlspecialchars($vaga['empresa_nome'], ENT_QUOTES, 'UTF-8') ?> · <?= htmlspecialchars($vaga['localizacao'], ENT_QUOTES, 'UTF-8') ?> · <?= htmlspecialchars($vaga['regime'], ENT_QUOTES, 'UTF-8') ?></div>
+                                    <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px;">
+                                        R$ <?= number_format($vaga['salario_min'], 0, ',', '.') ?> – R$ <?= number_format($vaga['salario_max'], 0, ',', '.') ?>
+                                    </div>
                                 </div>
-                            </div>
-                            <span aria-hidden="true" style="font-size: 14px; color: var(--muted-foreground);">→</span>
-                        </a>
+                                <span aria-hidden="true" style="font-size: 14px; color: var(--muted-foreground);">→</span>
+                            </a>
+                            <form class="saved-job-remove-form" action="/src/vagas-salvas.php" method="post">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarTokenCsrf(), ENT_QUOTES, 'UTF-8') ?>">
+                                <input type="hidden" name="vaga_id" value="<?= (int) $vaga['id'] ?>">
+                                <input type="hidden" name="acao" value="remover">
+                                <input type="hidden" name="origem" value="/candidato/painel.php">
+                                <button class="btn-remove-saved-job" type="submit">Remover vaga</button>
+                            </form>
+                        </div>
                         <?php endforeach; ?>
                         <?php if (!$vagasSalvas): ?>
                             <div class="list-item"><div class="item-details"><div class="item-title">Nenhuma vaga salva</div><div class="item-meta">Use o botão salvar na página de vagas.</div></div></div>

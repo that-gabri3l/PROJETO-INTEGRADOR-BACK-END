@@ -550,7 +550,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: var(--radius);
+            border-radius: 50%;
             flex-shrink: 0;
             font-family: 'Fraunces', serif;
             font-size: 20px;
@@ -563,10 +563,10 @@
             height: 48px;
             flex-shrink: 0;
             border: 1px solid var(--border);
-            border-radius: var(--radius);
-            background-color: #FFFFFF;
-            object-fit: contain;
-            padding: 4px;
+            border-radius: 50%;
+            background-color: transparent;
+            object-fit: cover;
+            padding: 0;
         }
 
         /* How it Works Section */

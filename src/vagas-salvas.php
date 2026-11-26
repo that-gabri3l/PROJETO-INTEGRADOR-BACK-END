@@ -20,18 +20,18 @@ if (!$vagaId || !$candidatoId) {
 }
 
 try {
-    $stmtVaga = $pdo->prepare('SELECT id FROM vagas WHERE id = :vaga_id AND status = "ativa" LIMIT 1');
-    $stmtVaga->execute(['vaga_id' => $vagaId]);
-    if (!$stmtVaga->fetchColumn()) {
-        header('Location: /vagas/index.php');
-        exit;
-    }
-
     if ($acao === 'remover') {
         $stmt = $pdo->prepare('DELETE FROM vagas_salvas WHERE candidato_id = :candidato_id AND vaga_id = :vaga_id');
         $stmt->execute(['candidato_id' => $candidatoId, 'vaga_id' => $vagaId]);
         $acaoResultado = 'removida';
     } else {
+        $stmtVaga = $pdo->prepare('SELECT id FROM vagas WHERE id = :vaga_id AND status = "ativa" LIMIT 1');
+        $stmtVaga->execute(['vaga_id' => $vagaId]);
+        if (!$stmtVaga->fetchColumn()) {
+            header('Location: /vagas/index.php');
+            exit;
+        }
+
         $stmt = $pdo->prepare('INSERT IGNORE INTO vagas_salvas (candidato_id, vaga_id) VALUES (:candidato_id, :vaga_id)');
         $stmt->execute(['candidato_id' => $candidatoId, 'vaga_id' => $vagaId]);
         $acaoResultado = 'salva';

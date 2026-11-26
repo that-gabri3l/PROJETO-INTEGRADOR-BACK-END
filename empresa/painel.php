@@ -131,16 +131,6 @@ if ($empresaId) {
                 <div class="kpi-label">Total de candidatos</div>
                 <div class="kpi-delta">Candidaturas recentes</div>
             </div>
-            <div class="kpi-card">
-                <div class="kpi-value">—</div>
-                <div class="kpi-label">Visualizações totais</div>
-                <div class="kpi-delta">Disponível após métricas</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-value">—</div>
-                <div class="kpi-label">Taxa de conversão</div>
-                <div class="kpi-delta">Disponível após métricas</div>
-            </div>
         </div>
 
         <!-- Tabelas -->

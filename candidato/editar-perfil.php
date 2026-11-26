@@ -2,6 +2,9 @@
 require_once __DIR__ . '/../src/sessao.php';
 exigirTipo('candidato');
 require_once __DIR__ . '/../src/conexao.php';
+$opcoesPerfil = require __DIR__ . '/../src/opcoes-perfil-candidato.php';
+$opcoesArea = $opcoesPerfil['area'];
+$opcoesEscolaridade = $opcoesPerfil['escolaridade'];
 
 $candidatoId = $_SESSION['perfil_id'] ?? null;
 if (!$candidatoId) {
@@ -21,6 +24,10 @@ if (!$candidato) {
 $erro = trim((string) ($_GET['erro'] ?? ''));
 $salvo = ($_GET['salvo'] ?? '') === '1';
 $senhaAlterada = ($_GET['senha'] ?? '') === 'alterada';
+$areaAtual = (string) ($candidato['area'] ?? '');
+$escolaridadeAtual = (string) ($candidato['escolaridade'] ?? '');
+$areaLegada = $areaAtual !== '' && !in_array($areaAtual, $opcoesArea, true);
+$escolaridadeLegada = $escolaridadeAtual !== '' && !in_array($escolaridadeAtual, $opcoesEscolaridade, true);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -111,7 +118,15 @@ $senhaAlterada = ($_GET['senha'] ?? '') === 'alterada';
                         </div>
                         <div>
                             <label class="form-label" for="area">Área de atuação</label>
-                            <input id="area" type="text" name="area" class="form-input" value="<?= htmlspecialchars($candidato['area'] ?? '', ENT_QUOTES, 'UTF-8') ?>" maxlength="100">
+                            <select id="area" name="area" class="form-input">
+                                <option value="">Selecione...</option>
+                                <?php if ($areaLegada): ?>
+                                    <option value="<?= htmlspecialchars($areaAtual, ENT_QUOTES, 'UTF-8') ?>" selected>Valor atual: <?= htmlspecialchars($areaAtual, ENT_QUOTES, 'UTF-8') ?></option>
+                                <?php endif; ?>
+                                <?php foreach ($opcoesArea as $opcaoArea): ?>
+                                    <option value="<?= htmlspecialchars($opcaoArea, ENT_QUOTES, 'UTF-8') ?>" <?= $areaAtual === $opcaoArea ? 'selected' : '' ?>><?= htmlspecialchars($opcaoArea, ENT_QUOTES, 'UTF-8') ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                     </div>
 
@@ -127,7 +142,15 @@ $senhaAlterada = ($_GET['senha'] ?? '') === 'alterada';
                         </div>
                         <div>
                             <label class="form-label" for="escolaridade">Escolaridade</label>
-                            <input id="escolaridade" type="text" name="escolaridade" class="form-input" value="<?= htmlspecialchars($candidato['escolaridade'] ?? '', ENT_QUOTES, 'UTF-8') ?>" maxlength="100">
+                            <select id="escolaridade" name="escolaridade" class="form-input">
+                                <option value="">Selecione...</option>
+                                <?php if ($escolaridadeLegada): ?>
+                                    <option value="<?= htmlspecialchars($escolaridadeAtual, ENT_QUOTES, 'UTF-8') ?>" selected><?= htmlspecialchars($escolaridadeAtual, ENT_QUOTES, 'UTF-8') ?></option>
+                                <?php endif; ?>
+                                <?php foreach ($opcoesEscolaridade as $opcaoEscolaridade): ?>
+                                    <option value="<?= htmlspecialchars($opcaoEscolaridade, ENT_QUOTES, 'UTF-8') ?>" <?= $escolaridadeAtual === $opcaoEscolaridade ? 'selected' : '' ?>><?= htmlspecialchars($opcaoEscolaridade, ENT_QUOTES, 'UTF-8') ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                     </div>
 

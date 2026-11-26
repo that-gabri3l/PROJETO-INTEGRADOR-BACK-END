@@ -3,6 +3,7 @@ require_once __DIR__ . '/sessao.php';
 exigirTipo('candidato');
 exigirTokenCsrf();
 require_once __DIR__ . '/conexao.php';
+$opcoesPerfil = require __DIR__ . '/opcoes-perfil-candidato.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: /candidato/editar-perfil.php');
@@ -81,6 +82,13 @@ $stmtAtual->execute(['id' => $candidatoId]);
 $perfilAtual = $stmtAtual->fetch();
 if (!$perfilAtual) {
     redirecionarComErroPerfil('Não foi possível localizar seu perfil.');
+}
+
+if (
+    ($area !== '' && !in_array($area, $opcoesPerfil['area'], true) && $area !== ($perfilAtual['area'] ?? ''))
+    || ($escolaridade !== '' && !in_array($escolaridade, $opcoesPerfil['escolaridade'], true) && $escolaridade !== ($perfilAtual['escolaridade'] ?? ''))
+) {
+    redirecionarComErroPerfil('Selecione uma opção válida para área de atuação e escolaridade.');
 }
 
 $senhaHash = null;

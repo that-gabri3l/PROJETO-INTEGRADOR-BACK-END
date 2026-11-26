@@ -171,7 +171,7 @@ $portes = ['Microempresa', 'Pequena', 'Média', 'Grande'];
 
                 <div class="form-actions">
                     <a href="/empresa/painel.php" class="btn-secondary">Cancelar</a> 
-                    <a href="/empresa/painel.php" class="btn-primary">Salvar alterações</a>
+                    <button type="submit" class="btn-primary">Salvar alterações</button>
                 </div>
             </form>
         </div>

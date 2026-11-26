@@ -31,7 +31,7 @@ if ($candidatoId) {
     }
 
     $stmt = $pdo->prepare(
-        'SELECT c.status, c.criado_em, v.id AS vaga_id, v.titulo, e.nome AS empresa_nome
+        'SELECT c.status, c.criado_em, v.id AS vaga_id, v.titulo, e.nome AS empresa_nome, e.logo AS empresa_logo
          FROM candidaturas c
          INNER JOIN vagas v ON v.id = c.vaga_id
          INNER JOIN empresas e ON e.id = v.empresa_id
@@ -214,8 +214,19 @@ $vagasRecomendadas = $stmtVagasRecomendadas->fetchAll(PDO::FETCH_ASSOC);
                         'descricao' => 'Consulte a empresa para mais informações.',
                         'classe' => 'badge-gray',
                     ]; ?>
+                    <?php
+                    $nomeLogoEmpresa = basename(str_replace('\\', '/', (string) $candidatura['empresa_logo']));
+                    $logoEmpresaCandidatura = preg_match('/\A[a-f0-9]{32}\.(?:jpg|png)\z/i', $nomeLogoEmpresa)
+                        && is_file(__DIR__ . '/../src/uploads/logos_empresas/' . $nomeLogoEmpresa)
+                        ? '/src/uploads/logos_empresas/' . $nomeLogoEmpresa
+                        : null;
+                    ?>
                     <a class="list-item application-item application-link" href="/vagas/detalhes.php?id=<?= (int) $candidatura['vaga_id'] ?>" aria-label="Abrir vaga: <?= htmlspecialchars($candidatura['titulo'], ENT_QUOTES, 'UTF-8') ?>">
-                        <div class="company-logo" style="background-color: #6B21A8;">N</div>
+                        <?php if ($logoEmpresaCandidatura !== null): ?>
+                            <img class="company-logo company-logo-image" src="<?= htmlspecialchars($logoEmpresaCandidatura, ENT_QUOTES, 'UTF-8') ?>" alt="Logo de <?= htmlspecialchars($candidatura['empresa_nome'], ENT_QUOTES, 'UTF-8') ?>">
+                        <?php else: ?>
+                            <div class="company-logo" aria-hidden="true"><?= htmlspecialchars(strtoupper(substr(trim($candidatura['empresa_nome']), 0, 1)), ENT_QUOTES, 'UTF-8') ?></div>
+                        <?php endif; ?>
                         <div class="item-details">
                             <div class="item-title"><?= htmlspecialchars($candidatura['titulo'], ENT_QUOTES, 'UTF-8') ?></div>
                             <div class="item-meta"><?= htmlspecialchars($candidatura['empresa_nome'], ENT_QUOTES, 'UTF-8') ?> · <?= date('d/m/Y', strtotime($candidatura['criado_em'])) ?></div>

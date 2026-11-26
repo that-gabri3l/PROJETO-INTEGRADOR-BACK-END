@@ -91,7 +91,7 @@ $escolaridadeLegada = $escolaridadeAtual !== '' && !in_array($escolaridadeAtual,
                     <div class="grid-2">
                         <div>
                             <label class="form-label" for="telefone">Telefone</label>
-                            <input id="telefone" type="tel" name="telefone" class="form-input" value="<?= htmlspecialchars($candidato['telefone'] ?? '', ENT_QUOTES, 'UTF-8') ?>" maxlength="30">
+                            <input id="telefone" type="tel" name="telefone" class="form-input" value="<?= htmlspecialchars($candidato['telefone'] ?? '', ENT_QUOTES, 'UTF-8') ?>" inputmode="tel" maxlength="15" pattern="(?:\([0-9]{2}\)|[0-9]{2}) ?[0-9]{4,5}-?[0-9]{4}" title="Informe um telefone com DDD e 10 ou 11 dígitos.">
                         </div>
                         <div>
                             <label class="form-label" for="cidade">Cidade<span class="required">*</span></label>
@@ -102,7 +102,7 @@ $escolaridadeLegada = $escolaridadeAtual !== '' && !in_array($escolaridadeAtual,
                     <div class="grid-2">
                         <div>
                             <label class="form-label" for="data_nascimento">Data de nascimento</label>
-                            <input id="data_nascimento" type="date" name="data_nascimento" class="form-input" value="<?= htmlspecialchars($candidato['data_nascimento'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                            <input id="data_nascimento" type="date" name="data_nascimento" class="form-input" value="<?= htmlspecialchars($candidato['data_nascimento'] ?? '', ENT_QUOTES, 'UTF-8') ?>" max="<?= date('Y-m-d') ?>">
                         </div>
                         <div>
                             <label id="foto-perfil-label" class="form-label" for="foto_perfil" data-default-text="Alterar foto (JPG/PNG, até 2 MB)" aria-live="polite">Alterar foto (JPG/PNG, até 2 MB)</label>

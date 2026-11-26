@@ -49,9 +49,9 @@ function changeStep(direction) {
     const passoAtualEl = document.getElementById(`step-${currentStep}`);
 
     if (direction === 1) {
-        const inputsObrigatorios = passoAtualEl.querySelectorAll('input[required], select[required], textarea[required]');
+        const camposEtapa = passoAtualEl.querySelectorAll('input:not([type="hidden"]), select, textarea');
 
-        for (let input of inputsObrigatorios) {
+        for (let input of camposEtapa) {
             if (!input.checkValidity()) {
                 input.reportValidity();
                 return;
@@ -111,8 +111,8 @@ function changeStep(direction) {
 
 if (formularioEmpresa) {
     formularioEmpresa.addEventListener('submit', function (evento) {
-        const camposObrigatorios = formularioEmpresa.querySelectorAll('input[required], select[required], textarea[required]');
-        for (const campo of camposObrigatorios) {
+        const camposFormulario = formularioEmpresa.querySelectorAll('input:not([type="hidden"]), select, textarea');
+        for (const campo of camposFormulario) {
             if (!campo.checkValidity()) {
                 evento.preventDefault();
 

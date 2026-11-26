@@ -3,6 +3,10 @@ require_once __DIR__ . '/sessao.php';
 exigirTipo('candidato');
 exigirTokenCsrf();
 require_once __DIR__ . '/conexao.php';
+require_once __DIR__ . '/Helpers/ValidacoesFormulario.php';
+
+use Infodin\Helpers\ValidacoesFormulario;
+
 $opcoesPerfil = require __DIR__ . '/opcoes-perfil-candidato.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -66,15 +70,16 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     redirecionarComErroPerfil('Informe um e-mail válido.');
 }
 
+if (!ValidacoesFormulario::telefoneBrasileiro($telefone)) {
+    redirecionarComErroPerfil('Informe um telefone com DDD e 10 ou 11 dígitos.');
+}
+
 if ($linkedin !== '' && !filter_var($linkedin, FILTER_VALIDATE_URL)) {
     redirecionarComErroPerfil('Informe uma URL válida para o LinkedIn.');
 }
 
-if ($dataNascimento !== '') {
-    $dataValida = DateTime::createFromFormat('!Y-m-d', $dataNascimento);
-    if (!$dataValida || $dataValida->format('Y-m-d') !== $dataNascimento) {
-        redirecionarComErroPerfil('Informe uma data de nascimento válida.');
-    }
+if (!ValidacoesFormulario::dataNascimentoValida($dataNascimento)) {
+    redirecionarComErroPerfil('Informe uma data de nascimento válida que não seja futura.');
 }
 
 $stmtAtual = $pdo->prepare('SELECT usuario_id, foto_perfil, senha FROM candidatos WHERE id = :id LIMIT 1');

@@ -4,6 +4,9 @@ exigirTipo('empresa');
 exigirTokenCsrf();
 require_once __DIR__ . '/conexao.php';
 require_once __DIR__ . '/Helpers/armazenar-logo-empresa.php';
+require_once __DIR__ . '/Helpers/ValidacoesFormulario.php';
+
+use Infodin\Helpers\ValidacoesFormulario;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: /empresa/editar-perfil.php');
@@ -31,7 +34,7 @@ if (!$empresaAtual) {
 
 $nome = trim($_POST['nome'] ?? '');
 $razaoSocial = trim($_POST['razao_social'] ?? '');
-$cnpjDigitos = preg_replace('/\D/', '', (string) ($_POST['cnpj'] ?? ''));
+$cnpjDigitos = ValidacoesFormulario::normalizarCnpj((string) ($_POST['cnpj'] ?? ''));
 $setor = trim($_POST['setor'] ?? '');
 $porte = trim($_POST['porte'] ?? '');
 $email = strtolower(trim($_POST['email_corporativo'] ?? ''));
@@ -62,16 +65,20 @@ if ($solicitouAlteracaoSenha) {
     }
 }
 
-if ($nome === '' || $cnpjDigitos === '' || $setor === '' || $porte === '' || $email === '' || $cidade === '') {
+if ($nome === '' || $cnpjDigitos === null || $setor === '' || $porte === '' || $email === '' || $cidade === '') {
     redirecionarComErroEmpresa('Preencha nome, CNPJ, setor, porte, e-mail corporativo e cidade.');
 }
 
-if (strlen($nome) > 150 || strlen($razaoSocial) > 180 || strlen($cnpjDigitos) !== 14) {
+if (strlen($nome) > 150 || strlen($razaoSocial) > 180) {
     redirecionarComErroEmpresa('Confira o nome, a razão social e o CNPJ informados.');
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     redirecionarComErroEmpresa('Informe um e-mail corporativo válido.');
+}
+
+if (!ValidacoesFormulario::telefoneBrasileiro($telefone)) {
+    redirecionarComErroEmpresa('Informe um telefone com DDD e 10 ou 11 dígitos.');
 }
 
 if (!in_array($setor, ['Tecnologia', 'Finanças', 'Saúde', 'Educação', 'Varejo', 'Logística', 'Outro'], true)) {

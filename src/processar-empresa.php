@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . '/conexao.php';
 require_once __DIR__ . '/sessao.php';
+require_once __DIR__ . '/Helpers/ValidacoesFormulario.php';
+
+use Infodin\Helpers\ValidacoesFormulario;
 
 exigirTokenCsrf();
 
@@ -46,9 +49,13 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     erroEmpresa('Informe um e-mail corporativo válido.', 2);
 }
 
-$cnpjDigitos = preg_replace('/\D/', '', $cnpj);
-if (strlen($cnpjDigitos) !== 14) {
+$cnpjDigitos = ValidacoesFormulario::normalizarCnpj($cnpj);
+if ($cnpjDigitos === null) {
     erroEmpresa('Informe um CNPJ com 14 dígitos.', 1);
+}
+
+if (!ValidacoesFormulario::telefoneBrasileiro($telefone)) {
+    erroEmpresa('Informe um telefone com DDD e 10 ou 11 dígitos.', 2);
 }
 
 if (strlen($senha) < 8) {

@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'Agronegócio',
+    'Alimentação e Bebidas',
+    'Arquitetura e Construção',
+    'Automotivo',
+    'Comunicação e Mídia',
+    'Consultoria',
+    'Educação',
+    'Energia',
+    'Engenharia',
+    'Finanças',
+    'Indústria e Manufatura',
+    'Imobiliário',
+    'Jurídico',
+    'Logística',
+    'Meio Ambiente',
+    'Recursos Humanos',
+    'Saúde',
+    'Tecnologia',
+    'Telecomunicações',
+    'Transportes',
+    'Turismo e Hotelaria',
+    'Varejo',
+    'Outro',
+];

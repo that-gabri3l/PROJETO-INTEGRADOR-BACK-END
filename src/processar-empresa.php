@@ -5,6 +5,8 @@ require_once __DIR__ . '/Helpers/ValidacoesFormulario.php';
 
 use Infodin\Helpers\ValidacoesFormulario;
 
+$opcoesSetor = require __DIR__ . '/opcoes-setor-empresa.php';
+
 exigirTokenCsrf();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -47,6 +49,10 @@ if ($cnpj === '' || $nome === '' || $setor === '' || $porte === '' || $email ===
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     erroEmpresa('Informe um e-mail corporativo válido.', 2);
+}
+
+if (!in_array($setor, $opcoesSetor, true)) {
+    erroEmpresa('Selecione um setor válido.', 1);
 }
 
 $cnpjDigitos = ValidacoesFormulario::normalizarCnpj($cnpj);

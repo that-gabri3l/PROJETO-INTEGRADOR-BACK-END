@@ -20,7 +20,7 @@ if (!$empresa) {
 $erro = trim((string) ($_GET['erro'] ?? ''));
 $salvo = ($_GET['salvo'] ?? '') === '1';
 $senhaAlterada = ($_GET['senha'] ?? '') === 'alterada';
-$setores = ['Tecnologia', 'Finanças', 'Saúde', 'Educação', 'Varejo', 'Logística', 'Outro'];
+$opcoesSetor = require __DIR__ . '/../src/opcoes-setor-empresa.php';
 $portes = ['Microempresa', 'Pequena', 'Média', 'Grande'];
 ?>
 <!DOCTYPE html>
@@ -90,7 +90,7 @@ $portes = ['Microempresa', 'Pequena', 'Média', 'Grande'];
                             <label class="form-label" for="setor">Setor<span class="required">*</span></label>
                             <select id="setor" name="setor" class="form-input" required>
                                 <option value="">Selecione...</option>
-                                <?php foreach ($setores as $setor): ?>
+                                <?php foreach ($opcoesSetor as $setor): ?>
                                     <option value="<?= htmlspecialchars($setor, ENT_QUOTES, 'UTF-8') ?>" <?= ($empresa['setor'] ?? '') === $setor ? 'selected' : '' ?>><?= htmlspecialchars($setor, ENT_QUOTES, 'UTF-8') ?></option>
                                 <?php endforeach; ?>
                             </select>

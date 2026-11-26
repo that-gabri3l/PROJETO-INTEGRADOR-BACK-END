@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . '/conexao.php';
 require_once __DIR__ . '/sessao.php';
+require_once __DIR__ . '/Helpers/ValidacoesFormulario.php';
+
+use Infodin\Helpers\ValidacoesFormulario;
 
 exigirTokenCsrf();
 
@@ -58,6 +61,14 @@ if ($senha === '' || $confirmarSenha === '') {
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     voltarComErro('Informe um e-mail válido.', 1);
+}
+
+if (!ValidacoesFormulario::telefoneBrasileiro($telefone)) {
+    voltarComErro('Informe um telefone com DDD e 10 ou 11 dígitos.', 1);
+}
+
+if (!ValidacoesFormulario::dataNascimentoValida($dataNascimento)) {
+    voltarComErro('Informe uma data de nascimento válida que não seja futura.', 1);
 }
 
 if (strlen($senha) < 8) {

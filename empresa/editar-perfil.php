@@ -84,7 +84,7 @@ $portes = ['Microempresa', 'Pequena', 'Média', 'Grande'];
                     <div class="grid-2">
                         <div>
                             <label class="form-label" for="cnpj">CNPJ<span class="required">*</span></label>
-                            <input id="cnpj" name="cnpj" class="form-input" value="<?= htmlspecialchars($empresa['cnpj'] ?? '', ENT_QUOTES, 'UTF-8') ?>" maxlength="18" required>
+                            <input id="cnpj" name="cnpj" class="form-input" value="<?= htmlspecialchars($empresa['cnpj'] ?? '', ENT_QUOTES, 'UTF-8') ?>" inputmode="numeric" pattern="(?:[0-9]{14}|[0-9]{2}\.[0-9]{3}\.[0-9]{3}/[0-9]{4}-[0-9]{2})" maxlength="18" title="Informe um CNPJ com exatamente 14 dígitos." required>
                         </div>
                         <div>
                             <label class="form-label" for="setor">Setor<span class="required">*</span></label>
@@ -116,7 +116,7 @@ $portes = ['Microempresa', 'Pequena', 'Média', 'Grande'];
                     <div class="grid-2">
                         <div>
                             <label class="form-label" for="telefone">Telefone</label>
-                            <input id="telefone" name="telefone" class="form-input" value="<?= htmlspecialchars($empresa['telefone'] ?? '', ENT_QUOTES, 'UTF-8') ?>" maxlength="30">
+                            <input id="telefone" type="tel" name="telefone" class="form-input" value="<?= htmlspecialchars($empresa['telefone'] ?? '', ENT_QUOTES, 'UTF-8') ?>" inputmode="tel" maxlength="15" pattern="(?:\([0-9]{2}\)|[0-9]{2}) ?[0-9]{4,5}-?[0-9]{4}" title="Informe um telefone com DDD e 10 ou 11 dígitos.">
                         </div>
                         <div>
                             <label class="form-label" for="cidade_sede">Cidade sede<span class="required">*</span></label>
@@ -171,7 +171,7 @@ $portes = ['Microempresa', 'Pequena', 'Média', 'Grande'];
 
                 <div class="form-actions">
                     <a href="/empresa/painel.php" class="btn-secondary">Cancelar</a> 
-                    <a href="/empresa/painel.php" class="btn-primary">Salvar alterações</a>
+                    <button type="submit" class="btn-primary">Salvar alterações</button>
                 </div>
             </form>
         </div>

@@ -93,7 +93,7 @@ $regimesSelecionadosIniciais = array_filter(explode(',', (string) ($dadosFormula
                             </div>
                             <div>
                                 <label class="form-label">Telefone</label>
-                                <input type="text" name="telefone" class="form-input" placeholder="(11) 99999-9999" value="<?= $valorCampo('telefone') ?>">
+                                <input type="tel" name="telefone" class="form-input" placeholder="(11) 99999-9999" value="<?= $valorCampo('telefone') ?>" inputmode="tel" maxlength="15" pattern="(?:\([0-9]{2}\)|[0-9]{2}) ?[0-9]{4,5}-?[0-9]{4}" title="Informe um telefone com DDD e 10 ou 11 dígitos.">
                             </div>
                         </div>
 
@@ -104,7 +104,7 @@ $regimesSelecionadosIniciais = array_filter(explode(',', (string) ($dadosFormula
                             </div>
                             <div>
                                 <label class="form-label">Data de nascimento</label>
-                                <input type="date" name="data_nascimento" class="form-input" value="<?= $valorCampo('data_nascimento') ?>">
+                                <input type="date" name="data_nascimento" class="form-input" value="<?= $valorCampo('data_nascimento') ?>" max="<?= date('Y-m-d') ?>">
                             </div>
                         </div>
 

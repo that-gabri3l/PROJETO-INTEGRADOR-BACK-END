@@ -139,7 +139,7 @@ $opcoesSetor = [
                         </div>
                         <div>
                             <label class="form-label">Telefone</label>
-                            <input type="text" name="telefone_empresa" class="form-input" placeholder="(11) 99999-9999" value="<?= $valorCampo('telefone_empresa') ?>">
+                            <input type="tel" name="telefone_empresa" class="form-input" placeholder="(11) 99999-9999" value="<?= $valorCampo('telefone_empresa') ?>" inputmode="tel" maxlength="15" pattern="(?:\([0-9]{2}\)|[0-9]{2}) ?[0-9]{4,5}-?[0-9]{4}" title="Informe um telefone com DDD e 10 ou 11 dígitos.">
                         </div>
                         <div>
                             <label class="form-label">Site da empresa</label>

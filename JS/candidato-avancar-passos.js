@@ -9,8 +9,8 @@ function changeStep(direction) {
 
     // Se estiver avançando, valida os campos obrigatórios do passo atual antes de esconder
     if (direction === 1) {
-        const inputsObrigatorios = passoAtualEl.querySelectorAll('input[required], select[required], textarea[required]');
-        for (let input of inputsObrigatorios) {
+        const camposEtapa = passoAtualEl.querySelectorAll('input:not([type="hidden"]), select, textarea');
+        for (let input of camposEtapa) {
             if (!input.checkValidity()) {
                 input.reportValidity(); // Mostra o balãozinho de erro do navegador na hora
                 return; // Trava o avanço até preencher corretamente

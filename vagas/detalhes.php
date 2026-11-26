@@ -53,6 +53,7 @@ if (!empty($vaga['empresa_logo'])) {
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -60,8 +61,9 @@ if (!empty($vaga['empresa_logo'])) {
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/CSS/detalhes-vaga.css">
     <link rel="stylesheet" href="/CSS/mobile.css">
-    
+
 </head>
+
 <body>
 
     <nav class="navbar">
@@ -72,16 +74,27 @@ if (!empty($vaga['empresa_logo'])) {
             <!-- Imagem para o Modo Escuro -->
             <img src="/images/logo-infodin.png" alt="Logo do site" class="logo-dark"
                 style="height: 40px; width: auto; object-fit: contain;"></a>
-                <button id="theme-toggle" class="theme-toggle" title="Mudar tema" aria-label="Alternar tema"><svg class="bi bi-moon-fill" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M6 .278a.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/></svg></button>
+        <button id="theme-toggle" class="theme-toggle" title="Mudar tema" aria-label="Alternar tema"><svg class="bi bi-moon-fill" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path d="M6 .278a.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278" />
+            </svg></button>
     </nav>
 
     <div class="breadcrumb">
         <div class="breadcrumb-inner">
-            <a href="/index.php">Início</a>
-            <span class="separator">›</span>
-            <a href="/vagas/index.php">Vagas</a>
-            <span class="separator">›</span>
-            <span class="current"><?= htmlspecialchars($vaga['titulo'], ENT_QUOTES, 'UTF-8') ?></span>
+            <nav class="breadcrumb-trail" aria-label="Navegação estrutural">
+                <?php if ($candidatoLogado): ?>
+                    <a class="breadcrumb-back" href="/candidato/painel.php" aria-label="Voltar ao painel do candidato">
+                        <span aria-hidden="true">←</span> Voltar
+                    </a>
+                    <span class="separator breadcrumb-divider" aria-hidden="true">|</span>
+                <?php endif; ?>
+                <a href="/index.php">Início</a>
+                <span class="separator">›</span>
+
+                <a href="/vagas/index.php">Vagas</a>
+                <span class="separator">›</span>
+                <span class="current"><?= htmlspecialchars($vaga['titulo'], ENT_QUOTES, 'UTF-8') ?></span>
+            </nav>
         </div>
     </div>
 
@@ -153,7 +166,7 @@ if (!empty($vaga['empresa_logo'])) {
                 <!-- Card de Candidatura -->
                 <div class="sidebar-card">
                     <div class="eyebrow" style="margin-bottom: 16px;">Candidatura</div>
-                    
+
                     <!-- Formulário para o Back-End -->
                     <form action="/src/processar-candidatura.php" method="POST">
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(gerarTokenCsrf(), ENT_QUOTES, 'UTF-8') ?>">
@@ -165,7 +178,7 @@ if (!empty($vaga['empresa_logo'])) {
                             <label class="form-label">Link do Currículo ou Portfólio</label>
                             <input type="url" name="portfolio" class="form-input" placeholder="https://linkedin.com/in/..." required>
                         </div>
-                        
+
                         <button type="submit" class="btn-primary" style="margin-top: 8px;">
                             Me candidatar
                         </button>
@@ -208,7 +221,8 @@ if (!empty($vaga['empresa_logo'])) {
         </aside>
     </main>
 
-        <script src="/JS/tema.js"></script>
+    <script src="/JS/tema.js"></script>
 
 </body>
+
 </html>

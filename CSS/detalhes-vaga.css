@@ -117,7 +117,11 @@
         .breadcrumb-inner {
             max-width: 1200px;
             margin: 0 auto;
+        }
+        .breadcrumb-trail {
+            min-width: 0;
             display: flex;
+            flex-wrap: wrap;
             gap: 8px;
             align-items: center;
             font-size: 13px;
@@ -129,6 +133,31 @@
         .breadcrumb a:hover { text-decoration: underline; }
         .breadcrumb span.separator { color: var(--border); font-size: 12px; }
         .breadcrumb span.current { color: var(--foreground); font-weight: 500; }
+        .breadcrumb .breadcrumb-back {
+            display: inline-flex;
+            flex-shrink: 0;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background-color: var(--secondary);
+            color: var(--foreground);
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.15s, border-color 0.15s;
+        }
+        .breadcrumb .breadcrumb-back:hover,
+        .breadcrumb .breadcrumb-back:focus-visible {
+            border-color: var(--primary);
+            background-color: var(--card);
+            text-decoration: none;
+        }
+        .breadcrumb .breadcrumb-back:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
 
         /* Layout Principal */
         .detail-layout {
@@ -381,10 +410,6 @@
         @media (max-width: 768px) {
             .breadcrumb {
                 padding: 12px 16px;
-            }
-
-            .breadcrumb-inner {
-                flex-wrap: wrap;
             }
 
             .detail-layout {

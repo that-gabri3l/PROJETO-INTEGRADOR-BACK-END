@@ -334,6 +334,7 @@ $vagas = array_slice($vagas, ($paginaAtual - 1) * $vagasPorPagina, $vagasPorPagi
 
     <script src="/JS/busca-vagas-sugestoes.js"></script>
     <script src="/JS/vagas-filtros.js"></script>
+    <script src="/JS/vagas-salvar.js"></script>
     <script src="/JS/tema.js"></script>
 
 </body>

@@ -55,18 +55,30 @@ if ($site !== '' && !preg_match('#^https?://#i', $site)) {
     <link rel="stylesheet" href="/CSS/mobile.css">
 </head>
 <body>
-    <nav class="navbar">
+    <nav class="navbar navbar--menu">
         <a href="/index.php" class="navbar-logo">
             <img src="/images/logo-claro-infodin.png" alt="Logo do site" class="logo-light">
             <img src="/images/logo-infodin.png" alt="Logo do site" class="logo-dark">
         </a>
-        <div class="navbar-actions">
-            <button id="theme-toggle" class="theme-toggle" type="button" title="Mudar tema" aria-label="Alternar tema"><svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/></svg></button>
-            <?php if ($usuarioLogado): ?>
-                <a href="<?= $usuarioTipo === 'empresa' ? '/empresa/painel.php' : '/candidato/painel.php' ?>" class="nav-btn"><?= htmlspecialchars($usuarioNome !== '' ? $usuarioNome : 'Meu painel', ENT_QUOTES, 'UTF-8') ?></a>
-            <?php else: ?>
+
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+        <label for="menu-toggle" class="hamburger" aria-label="Abrir menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </label>
+
+        <div class="menu-links">
+            <a href="/vagas/index.php" class="nav-link">Buscar Vagas</a>
+            <?php if (!$usuarioLogado): ?>
+                <a href="/empresa/cadastro.php" class="nav-link">Para Empresas</a>
+                <a href="/candidato/cadastro.php" class="nav-link">Cadastrar</a>
                 <a href="/cadastro/login.php" class="nav-btn">Entrar</a>
+            <?php else: ?>
+                <a href="<?= $usuarioTipo === 'empresa' ? '/empresa/painel.php' : '/candidato/painel.php' ?>" class="nav-btn"><?= htmlspecialchars($usuarioNome !== '' ? $usuarioNome : 'Meu painel', ENT_QUOTES, 'UTF-8') ?></a>
+                <a href="/src/logout.php" class="nav-link">Sair</a>
             <?php endif; ?>
+            <button id="theme-toggle" class="theme-toggle" type="button" title="Mudar tema" aria-label="Alternar tema"><svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/></svg></button>
         </div>
     </nav>
 
@@ -110,7 +122,10 @@ if ($site !== '' && !preg_match('#^https?://#i', $site)) {
 
         <section class="company-content">
             <article class="profile-card">
-                <h2>Sobre a empresa</h2>
+                <div class="section-header">
+                    <span class="section-eyebrow">Perfil empresarial</span>
+                    <h2 class="section-title">Sobre a empresa</h2>
+                </div>
                 <?php if ($empresa['descricao']): ?>
                     <p class="company-description"><?= nl2br(htmlspecialchars($empresa['descricao'], ENT_QUOTES, 'UTF-8')) ?></p>
                 <?php else: ?>
@@ -119,7 +134,10 @@ if ($site !== '' && !preg_match('#^https?://#i', $site)) {
             </article>
 
             <aside class="profile-card company-details">
-                <h2>Informações</h2>
+                <div class="section-header">
+                    <span class="section-eyebrow">Contato</span>
+                    <h2 class="section-title">Informações</h2>
+                </div>
                 <?php if ($empresa['cidade_sede']): ?>
                     <div class="detail-row"><span class="detail-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/></svg></span><div><strong>Localização</strong><span><?= htmlspecialchars($empresa['cidade_sede'], ENT_QUOTES, 'UTF-8') ?></span></div></div>
                 <?php endif; ?>
@@ -136,7 +154,10 @@ if ($site !== '' && !preg_match('#^https?://#i', $site)) {
         </section>
 
         <section class="company-vagas profile-card">
-            <h2>Vagas abertas</h2>
+            <div class="section-header">
+                <span class="section-eyebrow">Oportunidades</span>
+                <h2 class="section-title">Vagas abertas</h2>
+            </div>
             <?php if (!$vagas): ?>
                 <p class="empty-state">Esta empresa não possui vagas abertas no momento.</p>
             <?php else: ?>

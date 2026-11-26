@@ -344,7 +344,7 @@
         .company-logo {
             width: 36px;
             height: 36px;
-            border-radius: 2px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -354,6 +354,7 @@
             font-weight: 600;
             color: #FAF8F4;
         }
+        .company-logo-image { object-fit: cover; }
         .item-details { flex: 1; min-width: 0; }
         .item-title {
             font-weight: 500;

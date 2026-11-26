@@ -5,46 +5,9 @@ $dadosFormulario = $_SESSION['cadastro_candidato_dados'] ?? [];
 unset($_SESSION['cadastro_candidato_dados']);
 $etapaInicial = max(1, min(3, (int) ($_GET['etapa'] ?? 1)));
 $valorCampo = static fn(string $campo): string => htmlspecialchars((string) ($dadosFormulario[$campo] ?? ''), ENT_QUOTES, 'UTF-8');
-$opcoesArea = [
-    'Administração e Negócios',
-    'Agronegócio',
-    'Arquitetura e Urbanismo',
-    'Artes e Comunicação',
-    'Atendimento ao Cliente',
-    'Comercial e Vendas',
-    'Contabilidade e Finanças',
-    'Design',
-    'Educação',
-    'Engenharia',
-    'Indústria e Manufatura',
-    'Jurídico',
-    'Logística',
-    'Marketing',
-    'Meio Ambiente',
-    'Recursos Humanos',
-    'Saúde',
-    'Segurança do Trabalho',
-    'Serviço Social',
-    'Tecnologia',
-    'Turismo e Hotelaria',
-    'Varejo',
-];
-$opcoesEscolaridade = [
-    'Ensino fundamental incompleto',
-    'Ensino fundamental completo',
-    'Ensino médio incompleto',
-    'Ensino médio completo',
-    'Ensino técnico incompleto',
-    'Ensino técnico completo',
-    'Ensino superior incompleto',
-    'Ensino superior completo',
-    'Pós-graduação incompleta',
-    'Pós-graduação completa',
-    'Mestrado incompleto',
-    'Mestrado completo',
-    'Doutorado incompleto',
-    'Doutorado completo',
-];
+$opcoesPerfil = require __DIR__ . '/../src/opcoes-perfil-candidato.php';
+$opcoesArea = $opcoesPerfil['area'];
+$opcoesEscolaridade = $opcoesPerfil['escolaridade'];
 $escolaridadeSelecionada = $dadosFormulario['escolaridade'] ?? '';
 $regimesSelecionadosIniciais = array_filter(explode(',', (string) ($dadosFormulario['regime_preferido'] ?? '')));
 ?>

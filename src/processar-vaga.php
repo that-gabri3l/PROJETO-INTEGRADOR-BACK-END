@@ -32,7 +32,13 @@ if ($titulo === '' || $area === '' || $regime === '' || $localizacao === '' || $
     erroVaga('Preencha todos os campos obrigatórios.');
 }
 
-if (!in_array($area, ['Tecnologia', 'Design', 'Marketing', 'Dados', 'Gestão', 'Vendas', 'Jurídico', 'Financeiro', 'RH'], true)) {
+if (!in_array($area, [
+    'Agronegócio', 'Alimentação e Bebidas', 'Arquitetura e Construção', 'Automotivo',
+    'Comunicação e Mídia', 'Consultoria', 'Educação', 'Energia', 'Engenharia',
+    'Finanças', 'Indústria e Manufatura', 'Imobiliário', 'Jurídico', 'Logística',
+    'Meio Ambiente', 'Recursos Humanos', 'Saúde', 'Tecnologia', 'Telecomunicações',
+    'Transportes', 'Turismo e Hotelaria', 'Varejo', 'Outro',
+], true)) {
     erroVaga('Informe uma área válida.');
 }
 
@@ -79,7 +85,8 @@ try {
         'status' => $status,
     ]);
 
-    header('Location: /empresa/painel.php?vaga=sucesso');
+    $resultado = $status === 'rascunho' ? 'rascunho' : 'publicada';
+    header('Location: /empresa/painel.php?vaga=' . $resultado);
     exit;
 } catch (PDOException $e) {
     erroVaga('Não foi possível publicar a vaga. Tente novamente.');
